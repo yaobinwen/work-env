@@ -1,0 +1,9 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+
+# vim: set expandtab shiftwidth=2:
+

@@ -1,0 +1,45 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+# Refer to:
+# https://hub.docker.com/r/jetbrains/youtrack/
+
+- hosts: all
+  name: Provision the target machine with YouTrack.
+  tasks:
+    - name: Pull the YouTrack docker image.
+      docker_image:
+        name: "jetbrains/youtrack:{{ youtrack_tag }}"
+
+    - name: Create YouTrack folders.
+      file:
+        path: "{{ youtrack_dir_base }}/{{ item }}"
+        state: directory
+        mode: 0755
+        owner: 13001
+        group: 13001
+      loop:
+        - backups
+        - conf
+        - data
+        - logs
+      become: yes
+
+    - name: Run the YouTrack docker container.
+      docker_container:
+        name: "YouTrack"
+        image: "jetbrains/youtrack:{{ youtrack_tag }}"
+        volumes:
+          - "{{ youtrack_dir_base }}/data:/opt/youtrack/data"
+          - "{{ youtrack_dir_base }}/conf:/opt/youtrack/conf"
+          - "{{ youtrack_dir_base }}/logs:/opt/youtrack/logs"
+          - "{{ youtrack_dir_base }}/backups:/opt/youtrack/backups"
+        published_ports:
+          - 8080:8080
+        detach: yes
+        interactive: yes
+
+  vars:
+    - youtrack_tag: "2018.2.45513"
+    - youtrack_dir_base: "{{ ansible_env.HOME }}/yaobin/youtrack"
+
+# vim: set expandtab shiftwidth=2:
