@@ -6,4 +6,3 @@ all:
       ansible_connection: local
 
 # vim: set expandtab shiftwidth=2:
-
