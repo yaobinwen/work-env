@@ -17,9 +17,12 @@
       include_role:
         name: slack
 
-    - name: Install the "Open in Terminal" right-click menu.
+    - name: Install helpful tools.
       become: yes
       apt:
-        name: nautilus-open-terminal
+        name:
+          - meld
+          - nautilus-open-terminal
+          - vim
 
 # vim: set expandtab shiftwidth=2:
