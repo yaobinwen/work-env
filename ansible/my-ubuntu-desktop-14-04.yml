@@ -1,0 +1,25 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- hosts: all
+  name: >
+    Provision the target machine, assuming it's installed with Ubuntu Desktop
+    14.04, with the software I like to use.
+  tasks:
+    - name: Perform necessary package upgrades.
+      include_role:
+        name: ubuntu-14-04-upgrades
+  
+    - name: Install Google Chrome.
+      include_role:
+        name: google-chrome
+
+    - name: Install Slack Desktop.
+      include_role:
+        name: slack
+
+    - name: Install the "Open in Terminal" right-click menu.
+      become: yes
+      apt:
+        name: nautilus-open-terminal
+
+# vim: set expandtab shiftwidth=2:

@@ -1,0 +1,14 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Create a temporary directory.
+  file:
+    state: directory
+    path: "{{ cache_dir }}"
+    mode: 0755
+
+- name: Download and install the Debian package.
+  become: yes
+  apt:
+    deb: "https://dl.google.com/linux/direct/{{ package_name }}"
+
+# vim: set expandtab shiftwidth=2:

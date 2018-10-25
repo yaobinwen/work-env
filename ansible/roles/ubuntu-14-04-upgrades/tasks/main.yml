@@ -1,0 +1,17 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Upgrade libnss3.
+  become: yes
+  apt:
+    name: libnss3
+    state: latest
+    # only_upgrade: yes
+
+- name: Upgrade firefox.
+  become: yes
+  apt:
+    name: firefox
+    state: latest
+    # only_upgrade: yes
+
+# vim: set expandtab shiftwidth=2:

@@ -1,0 +1,8 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Install Slack Desktop
+  become: yes
+  apt:
+    deb: https://downloads.slack-edge.com/linux_releases/slack-desktop-3.3.3-amd64.deb
+
+# vim: set expandtab shiftwidth=2:
