@@ -1,0 +1,13 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+all:
+  # Variables that apply to all hosts.
+  vars:
+    # SSH login name.
+    ansible_user: ywen
+
+  hosts:
+    target-name:
+      ansible_host: 127.0.0.1
+
+# vim: set expandtab shiftwidth=2 filetype=yaml:
