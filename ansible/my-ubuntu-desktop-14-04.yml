@@ -9,6 +9,10 @@
       include_role:
         name: ubuntu-14-04-upgrades
   
+    - name: Install SSH server.
+      include_role:
+        name: ssh-server
+
     - name: Install Google Chrome.
       include_role:
         name: google-chrome
