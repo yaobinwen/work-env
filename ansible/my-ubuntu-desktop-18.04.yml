@@ -5,6 +5,10 @@
     Provision the target machine, assuming it's installed with Ubuntu Desktop
     18.04, with the software I like to use.
   tasks:
+    - name: Install and configure git.
+      include_role:
+        name: git
+
     - name: Install SSH server.
       include_role:
         name: ssh-server

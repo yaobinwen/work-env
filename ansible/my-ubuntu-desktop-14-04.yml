@@ -8,7 +8,11 @@
     - name: Perform necessary package upgrades.
       include_role:
         name: ubuntu-14-04-upgrades
-  
+
+    - name: Install and configure git.
+      include_role:
+        name: git
+
     - name: Install SSH server.
       include_role:
         name: ssh-server

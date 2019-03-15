@@ -1,0 +1,32 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Install git.
+  become: yes
+  apt:
+    name: git
+    state: latest
+
+- name: Configure git.
+  block:
+
+    - name: Git Config - Get current configuration.
+      git_config:
+        list_all: yes
+        scope: global
+      register: config
+
+    - name: Git Config - Set user name to {{git_user_full_name}}.
+      git_config:
+        name: user.name
+        value: '{{git_user_full_name}}'
+        scope: global
+      when: "'user.name' not in config.config_values"
+
+    - name: Git Config - Set user email to {{git_user_email}}.
+      git_config:
+        name: user.email
+        value: '{{git_user_email}}'
+        scope: global
+      when: "'user.email' not in config.config_values"
+
+# vim: set expandtab shiftwidth=2:
