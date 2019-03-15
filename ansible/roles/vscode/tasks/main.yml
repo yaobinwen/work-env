@@ -1,0 +1,59 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+# https://code.visualstudio.com/docs/setup/linux
+
+- name: Get Visual Studio Code installation status.
+  shell: dpkg --get-selections | grep '^code\s\+install$' | wc -l
+  register: installation_count
+
+- name: Install Visual Studio Code.
+  block:
+
+    - name: Add the key
+      become: yes
+      apt_key:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        id: EB3E94ADBE1229CF
+        state: present
+
+    # NOTE(ywen): The following are the steps mentioned in the link above.
+    # However, they don't seem to work. Need to use 'apt_key'.
+    #
+    # - name: Get the GPG key.
+    #   uri:
+    #     url: https://packages.microsoft.com/keys/microsoft.asc
+    #     return_content: yes
+    #   register: armored_key
+    #
+    # - name: Dearmor the GPG key.
+    #   command: gpg --dearmor
+    #   args:
+    #     stdin: "{{armored_key.content}}"
+    #   register: dearmored_key
+    #
+    # - name: Create the gpg file.
+    #   become: yes
+    #   copy:
+    #     content: "{{dearmored_key.stdout}}"
+    #     dest: '/etc/apt/trusted.gpg.d/microsoft.gpg'
+    #     owner: root
+    #     group: root
+    #     mode: 0644
+
+    - name: Add to the source list.
+      become: yes
+      copy:
+        content: >-
+          deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main
+        dest: '/etc/apt/sources.list.d/vscode.list'
+        mode: 0644
+
+    - name: Install Visual Studio Code.
+      become: yes
+      apt:
+        name: ['apt-transport-https', 'code']
+        update_cache: yes
+
+  when: "installation_count.stdout|int == 0"
+
+# vim: set expandtab shiftwidth=2:

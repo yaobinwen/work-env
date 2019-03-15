@@ -32,4 +32,8 @@
       include_role:
         name: virtualbox
 
+    - name: Install Visual Studio Code.
+      include_role:
+        name: vscode
+
 # vim: set expandtab shiftwidth=2:
