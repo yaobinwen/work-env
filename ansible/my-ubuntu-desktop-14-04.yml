@@ -29,4 +29,8 @@
           - nautilus-open-terminal
           - vim
 
+    - name: Install VirtualBox.
+      include_role:
+        name: virtualbox
+
 # vim: set expandtab shiftwidth=2:
