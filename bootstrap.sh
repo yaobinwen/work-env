@@ -28,8 +28,6 @@ test ${ARCHITECTURE} = "x86_64" || {
     exit 2;
 }
 
-exit 0
-
 # Update the APT package list.
 sudo apt-get update
 
