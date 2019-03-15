@@ -1,8 +1,16 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
+- name: Get Google Chrome installation status.
+  shell: >-
+    dpkg --get-selections |
+    grep -e '^google-chrome-stable\s\+install$' |
+    wc -l
+  register: installation_num
+
 - name: Download and install the Debian package.
   become: yes
   apt:
     deb: "https://dl.google.com/linux/direct/{{ package_name }}"
+  when: "installation_num.stdout|int == 0"
 
 # vim: set expandtab shiftwidth=2:
