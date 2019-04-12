@@ -1,0 +1,5 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+slack_desktop_version: 3.3.3
+
+# vim: set expandtab shiftwidth=2:

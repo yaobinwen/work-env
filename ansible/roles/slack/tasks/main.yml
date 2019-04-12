@@ -1,8 +1,10 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
-- name: Install Slack Desktop
+- name: Install Slack Desktop.
   become: yes
   apt:
-    deb: https://downloads.slack-edge.com/linux_releases/slack-desktop-3.3.3-amd64.deb
+    deb: https://downloads.slack-edge.com/linux_releases/slack-desktop-{{slack_desktop_version}}-amd64.deb
+  when: |
+    ansible_facts.packages['slack-desktop'] is not defined
 
 # vim: set expandtab shiftwidth=2:

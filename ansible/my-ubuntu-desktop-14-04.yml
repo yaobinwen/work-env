@@ -5,6 +5,10 @@
     Provision the target machine, assuming it's installed with Ubuntu Desktop
     14.04, with the software I like to use.
   tasks:
+    - name: Get the package facts.
+      package_facts:
+        manager: apt
+
     - name: Perform necessary package upgrades.
       include_role:
         name: ubuntu-14-04-upgrades
@@ -36,5 +40,9 @@
     - name: Install VirtualBox.
       include_role:
         name: virtualbox
+
+    - name: Install Visual Studio Code.
+      include_role:
+        name: vscode
 
 # vim: set expandtab shiftwidth=2:

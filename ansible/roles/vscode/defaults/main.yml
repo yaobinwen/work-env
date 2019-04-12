@@ -1,0 +1,16 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+vscode_extensions:
+  - alefragnani.Bookmarks
+  - EditorConfig.EditorConfig
+  - marcostazi.VS-code-vagrantfile
+  - mauve.terraform
+  - ms-python.python
+  - ms-vscode.cpptools
+  - nobuhito.printcode
+  - PeterJausovec.vscode-docker
+  - Stephanvs.dot
+  - vscoss.vscode-ansible
+  - wholroyd.jinja
+
+# vim: set expandtab shiftwidth=2:

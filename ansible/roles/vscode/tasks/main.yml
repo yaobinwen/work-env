@@ -2,11 +2,8 @@
 
 # https://code.visualstudio.com/docs/setup/linux
 
-- name: Get Visual Studio Code installation status.
-  shell: dpkg --get-selections | grep '^code\s\+install$' | wc -l
-  register: installation_count
-
 - name: Install Visual Studio Code.
+  when: ansible_facts.packages['code'] is not defined
   block:
 
     - name: Add the key
@@ -54,6 +51,15 @@
         name: ['apt-transport-https', 'code']
         update_cache: yes
 
-  when: "installation_count.stdout|int == 0"
+- name: Get the installed extensions.
+  command: code --list-extensions
+  register: installed
+
+- name: Install Visual Studio Code extensions that haven't been installed.
+  command: code --install-extension {{item}}
+  # I can't quote the line like this '{{vscode_extensions|difference(...)}}'
+  # because otherwise the list is turned into its string representation.
+  with_items: |
+    {{vscode_extensions|difference(installed.stdout.splitlines())}}
 
 # vim: set expandtab shiftwidth=2:
