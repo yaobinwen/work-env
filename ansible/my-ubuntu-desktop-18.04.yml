@@ -32,6 +32,10 @@
       include_role:
         name: virtualbox
 
+    - name: Install Vagrant.
+      include_role:
+        name: vagrant
+
     - name: Install Visual Studio Code.
       include_role:
         name: vscode

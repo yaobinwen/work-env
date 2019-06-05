@@ -1,0 +1,15 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Download Vagrant debian package.
+  get_url:
+    url: https://releases.hashicorp.com/vagrant/{{vagrant_version}}/{{deb_fname}}
+    dest: /tmp/{{deb_fname}}
+    checksum: '{{vagrant_checksum}}'
+    mode: 0644
+
+- name: Install Vagrant.
+  become: yes
+  apt:
+    deb: /tmp/{{deb_fname}}
+
+# vim: set expandtab shiftwidth=2:
