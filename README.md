@@ -16,6 +16,10 @@ Decide the root folder of your own workspace. You can use any folder as you like
 
 Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `docker`, etc..
 
+### Setup Work Environment
+
+- 1). Run `ansible-playbook -Kvv -i ./ansible/inventory/localhost.yml ./ansible/my-ubuntu-desktop-14-04.yml`, or `my-ubuntu-desktop-18-04.yml`, depending on the version of Ubuntu.
+
 ### Setup YouTrack
 
 - 1). Run `ansible-playbook -Kvv -i ./ansible/inventory/localhost.yml ./ansible/youtrack-server.yml`.
