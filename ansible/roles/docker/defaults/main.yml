@@ -1,0 +1,5 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+docker_compose_version: 1.24.0
+
+# vim: set expandtab shiftwidth=2:

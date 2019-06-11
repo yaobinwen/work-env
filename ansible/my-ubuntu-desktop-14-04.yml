@@ -17,9 +17,17 @@
       include_role:
         name: git
 
+    - name: Install PIP.
+      include_role:
+        name: pip
+
     - name: Install SSH server.
       include_role:
         name: ssh-server
+
+    - name: Install Docker CE.
+      include_role:
+        name: docker
 
     - name: Install Google Chrome.
       include_role:
@@ -40,6 +48,10 @@
     - name: Install VirtualBox.
       include_role:
         name: virtualbox
+
+    - name: Install Vagrant.
+      include_role:
+        name: vagrant
 
     - name: Install Visual Studio Code.
       include_role:

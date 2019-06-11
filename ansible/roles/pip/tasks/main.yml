@@ -1,0 +1,10 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Install PIP.
+  become: yes
+  apt:
+    name:
+      - python-pip
+    state: latest
+
+# vim: set expandtab shiftwidth=2:
