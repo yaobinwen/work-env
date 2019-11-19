@@ -5,10 +5,10 @@ vscode_extensions:
   - EditorConfig.EditorConfig
   - marcostazi.VS-code-vagrantfile
   - mauve.terraform
+  - ms-azuretools.vscode-docker
   - ms-python.python
   - ms-vscode.cpptools
   - nobuhito.printcode
-  - PeterJausovec.vscode-docker
   - Stephanvs.dot
   - vscoss.vscode-ansible
   - wholroyd.jinja
