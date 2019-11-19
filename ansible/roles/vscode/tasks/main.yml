@@ -54,6 +54,7 @@
 - name: Get the installed extensions.
   command: code --list-extensions
   register: installed
+  changed_when: False
 
 - name: Install Visual Studio Code extensions that haven't been installed.
   command: code --install-extension {{item}}

@@ -38,4 +38,8 @@
       include_role:
         name: vscode
 
+    - name: Set up utilities.
+      include_role:
+        name: utilities
+
 # vim: set expandtab shiftwidth=2:

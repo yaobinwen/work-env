@@ -1,0 +1,14 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Set up the home bin directory.
+  file:
+    path: '{{ansible_env.HOME}}/bin'
+    state: directory
+
+- name: Install the utility that disables the track stick
+  copy:
+    src: 'disable-track-stick.py'
+    dest: '{{ansible_env.HOME}}/bin'
+    mode: 0774
+
+# vim: set expandtab shiftwidth=2:
