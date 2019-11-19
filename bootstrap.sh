@@ -28,11 +28,17 @@ test ${ARCHITECTURE} = "x86_64" || {
     exit 2;
 }
 
+# Decide the APT tool.
+APT_GET="apt-get"
+if [ $(dpkg --compare-versions "${OS_VERSION}" ge "18.04"; echo $?) = "0" ]; then
+    APT_GET="apt"
+fi
+
 # Update the APT package list.
-sudo apt-get update
+sudo ${APT_GET} update
 
 # Install software-properties-common so we can use apt-add-repository.
-sudo apt-get --yes install software-properties-common
+sudo ${APT_GET} --yes install software-properties-common
 
 # Add PPAs
 # Git: https://launchpad.net/~git-core/+archive/ubuntu/ppa
@@ -43,9 +49,9 @@ fi
 sudo apt-add-repository --yes ppa:ansible/ansible
 
 # Update the APT package list after adding all the PPAs.
-sudo apt-get update
+sudo ${APT_GET} update
 
 # Install the required tools.
-sudo apt-get --yes install \
+sudo ${APT_GET} --yes install \
     git \
     ansible
