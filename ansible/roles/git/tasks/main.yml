@@ -20,13 +20,17 @@
         name: user.name
         value: '{{git_user_full_name}}'
         scope: global
-      when: "'user.name' not in config.config_values"
+      when: >-
+        (git_user_full_name is defined) and
+        ('user.name' not in config.config_values)
 
     - name: Git Config - Set user email to {{git_user_email}}.
       git_config:
         name: user.email
         value: '{{git_user_email}}'
         scope: global
-      when: "'user.email' not in config.config_values"
+      when: >-
+        (git_user_email is defined) and
+        (user.email not in config.config_values)
 
 # vim: set expandtab shiftwidth=2:
