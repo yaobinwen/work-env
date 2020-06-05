@@ -1,0 +1,13 @@
+# See: https://wiki.debian.org/DebianRepository/SetupWithReprepro
+
+- name: Install tools for hosting a package server.
+  apt:
+    name:
+      - nginx
+      - reprepro
+    state: latest
+
+- name: Start the nginx service.
+  service:
+    name: nginx
+    state: started
