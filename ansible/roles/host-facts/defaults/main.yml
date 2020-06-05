@@ -1,0 +1,6 @@
+# See: https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html#local-facts-facts-d
+# Note that the documentation uses "local" which is said to be a "misnomer" by
+# the documentation itself. The "local" is not about the controller machine;
+# rather, it is about the host machine that is being provisioned. This is why
+# I name it "host_facts_dir" instead of "local_facts_dir".
+host_facts_dir: /etc/ansible/facts.d

@@ -9,6 +9,10 @@
       package_facts:
         manager: apt
 
+    - name: Set up the directory for the dynamically determined host facts.
+      include_role:
+        name: host-facts
+
     - name: Install and configure git.
       include_role:
         name: git

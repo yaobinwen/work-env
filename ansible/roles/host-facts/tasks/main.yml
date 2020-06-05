@@ -1,0 +1,8 @@
+- name: "Create {{host_facts_dir}}."
+  file:
+    path: "{{host_facts_dir}}"
+    state: directory
+    mode: "0o755"
+    owner: "0"
+    group: "0"
+  become: yes
