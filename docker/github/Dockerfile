@@ -25,6 +25,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
 
 # Install other necessary packages.
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    bash-completion \
     openssh-server \
     openssh-client \
     vim
