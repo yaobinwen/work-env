@@ -1,0 +1,45 @@
+ARG UBUNTU_VERSION=18.04
+FROM ubuntu:${UBUNTU_VERSION}
+ARG USER_NAME=ywen
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+ARG HOST_SSH_PRIVATE_KEY_FILE_NAME="id_rsa"
+ARG GIT_USER_EMAIL
+ARG GIT_USER_NAME
+
+# NOTE: As of 2020-06-01, we still use `apt-get` because `apt` would
+# report the warning of "apt does not have a stable CLI interface. Use
+# with caution in scripts."
+
+RUN groupadd -g ${GROUP_ID} ${USER_NAME} && \
+    useradd -r --create-home -u ${USER_ID} -g ${USER_NAME} ${USER_NAME}
+
+RUN apt-get update
+
+# Install the needed packages.
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    bash-completion \
+    git \
+    openssh-server \
+    openssh-client \
+    vim
+
+# Switch to the non-root user.
+USER ${USER_NAME}
+
+# Configure git.
+# NOTE(ywen): Must double-quote the variables to get them interpolated.
+RUN git config --global user.email "${GIT_USER_EMAIL}"
+RUN git config --global user.name "${GIT_USER_NAME}"
+
+# Copy the SSH private key.
+# NOTE(ywen): Somehow, I have to COPY the file to an intermediate location and
+# then I am able to correctly copy it to "${HOME}/.ssh". If I directly run
+# "COPY ./${HOST_SSH_PRIVATE_KEY_FILE_NAME} ${HOME}/.ssh/id_rsa", the last
+# "chmod" would fail.
+RUN mkdir -pv ${HOME}/.ssh
+COPY ./${HOST_SSH_PRIVATE_KEY_FILE_NAME} /tmp/id_rsa.copy
+RUN cp /tmp/id_rsa.copy ${HOME}/.ssh/id_rsa
+
+# The SSH private key must be only accessible to the owner, hence 600.
+RUN chmod 600 ${HOME}/.ssh/id_rsa
