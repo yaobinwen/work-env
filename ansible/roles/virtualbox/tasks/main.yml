@@ -1,36 +1,44 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
-- name: Install GPG keys for the VirtualBox APT repository.
-  become: yes
-  apt_key:
-    id: '{{item.id}}'
-    url: 'https://www.virtualbox.org/download/{{item.fname}}'
-  with_items:
-    - id: '0xB9F8D658297AF3EFC18D5CDFA2F683C52980AECF'
-      fname: 'oracle_vbox_2016.asc'
-    - id: '0x7B0FAB3A13B907435925D9C954422A4B98AB5139'
-      fname: 'oracle_vbox.asc'
+- name: Get the number of running VMs.
+  command: vboxmanage list runningvms
+  register: runningvms
 
-- name: >-
-    Install prerequisites for building VirtualBox kernel modules
-    (required on Ubuntu 18.04).
-  become: yes
-  apt:
-    name: [build-essential, dkms]
-    install_recommends: no
+# Ref: https://www.virtualbox.org/wiki/Linux_Downloads
+- name: Install VirtualBox when there is no running VM.
+  when: runningvms.stdout_lines|length == 0
+  block:
+  - name: Install GPG keys for the VirtualBox APT repository.
+    become: yes
+    apt_key:
+      id: '{{item.id}}'
+      url: 'https://www.virtualbox.org/download/{{item.fname}}'
+    with_items:
+      - id: '0xB9F8D658297AF3EFC18D5CDFA2F683C52980AECF'
+        fname: 'oracle_vbox_2016.asc'
+      - id: '0x7B0FAB3A13B907435925D9C954422A4B98AB5139'
+        fname: 'oracle_vbox.asc'
 
-- name: Add the VirtualBox APT repository.
-  become: yes
-  apt_repository:
-    repo: >-
-      deb https://download.virtualbox.org/virtualbox/debian
-      {{ansible_distribution_release}} contrib
+  - name: >-
+      Install prerequisites for building VirtualBox kernel modules
+      (required on Ubuntu 18.04).
+    become: yes
+    apt:
+      name: [build-essential, dkms]
+      install_recommends: no
 
-- name: Install VirtualBox.
-  become: yes
-  apt:
-    name: virtualbox-{{virtualbox_version}}
-    state: present
-    install_recommends: no
+  - name: Add the VirtualBox APT repository.
+    become: yes
+    apt_repository:
+      repo: >-
+        deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian
+        {{ansible_distribution_release}} contrib
+
+  - name: Install VirtualBox {{virtualbox_version}}.
+    become: yes
+    apt:
+      name: virtualbox-{{virtualbox_version}}
+      state: present
+      install_recommends: no
 
 # vim: set expandtab shiftwidth=2:

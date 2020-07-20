@@ -4,8 +4,8 @@ vscode_extensions:
   - alefragnani.Bookmarks
   - EditorConfig.EditorConfig
   - foxundermoon.shell-format
+  - hashicorp.terraform
   - marcostazi.VS-code-vagrantfile
-  - mauve.terraform
   - ms-azuretools.vscode-docker
   - ms-python.python
   - ms-vscode.cpptools

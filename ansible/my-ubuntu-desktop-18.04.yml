@@ -33,11 +33,15 @@
       become: yes
       apt:
         name:
+          - curl
           - meld
           - shellcheck
           - vim
-          - virtualbox
           - vagrant
+
+    - name: Install helpful tools (VirtualBox).
+      include_role:
+        name: virtualbox
 
     - name: Install Visual Studio Code.
       include_role:

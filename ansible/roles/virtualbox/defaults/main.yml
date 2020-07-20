@@ -1,5 +1,5 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
-virtualbox_version: 5.2
+virtualbox_version: 6.1
 
 # vim: set expandtab shiftwidth=2:

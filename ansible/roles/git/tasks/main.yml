@@ -31,6 +31,6 @@
         scope: global
       when: >-
         (git_user_email is defined) and
-        (user.email not in config.config_values)
+        ('user.email' not in config.config_values)
 
 # vim: set expandtab shiftwidth=2:
