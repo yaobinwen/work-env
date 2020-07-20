@@ -1,11 +1,6 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 all:
-  # Variables that apply to all hosts.
-  vars:
-    git_user_full_name: "Yaobin Wen"
-    git_user_email: "robin.wyb@gmail.com"
-
   hosts:
     localhost:
       ansible_connection: local

@@ -6,11 +6,9 @@ all:
     # SSH login name.
     ansible_user: ywen
 
-    git_user_full_name: "Yaobin Wen"
-    git_user_email: "robin.wyb@gmail.com"
-
   hosts:
     target-name:
       ansible_host: 127.0.0.1
+      ansible_python_interpreter: /usr/bin/python3
 
 # vim: set expandtab shiftwidth=2 filetype=yaml:
