@@ -18,7 +18,14 @@ Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `doc
 
 ### Setup Work Environment
 
-- 1). Run `ansible-playbook -Kvv -i ./ansible/inventory/localhost.yml ./ansible/my-ubuntu-desktop-14-04.yml`, or `my-ubuntu-desktop-18-04.yml`, depending on the version of Ubuntu.
+- 1). Determine the work environment you want to set up, including:
+  - The target machine (e.g., `localhost`).
+  - The host operating system (e.g., Ubuntu 18.04).
+  - The code committer variables, including at least (see the `code-committer-<name>.yml` for all the variables):
+    - `code_committer_ssh_private_key_file_path`
+    - `code_committer_host_code_root_dir`
+- 2). Run `ansible-playbook -Kvvv -i ./ansible/inventory/localhost.yml ./ansible/my-ubuntu-desktop-18-04.yml`.
+- 3). Run `ansible-playbook -vvv -i ./ansible/inventory/localhost.yml -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" code_committer_host_code_root_dir="/path/to/code/root-dir" ./ansible/code-committer-personal.yml`.
 
 ### Setup YouTrack
 

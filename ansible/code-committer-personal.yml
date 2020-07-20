@@ -1,9 +1,8 @@
-- name: "Set up the Ubuntu Desktop 18.04."
-  import_playbook: "my-ubuntu-desktop-18.04.yml"
-
 - hosts: all
   name: >
-    Provision the target machine with my personal work environment.
+    Provision the target machine with the docker image and the container as
+    a code committer (in order to isolate different commit settings, e.g., the
+    user name, user email, and credentials).
 
   vars:
     code_committer_name: "personal"

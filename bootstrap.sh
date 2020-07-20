@@ -54,4 +54,5 @@ sudo ${APT_GET} update
 # Install the required tools.
 sudo ${APT_GET} --yes install \
     git \
-    ansible
+    ansible \
+    python3
