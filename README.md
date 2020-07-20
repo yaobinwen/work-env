@@ -24,12 +24,3 @@ Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `doc
 
 - 1). Run `ansible-playbook -Kvv -i ./ansible/inventory/localhost.yml ./ansible/youtrack-server.yml`.
 - 2). Open `http://localhost:8080` in a browser.
-
-### Setup GitHub Container
-
-- 1). Change into `docker` folder.
-- 2). Copy the SSH private key of your personal GitHub account into the `docker/github` folder and name it `id_rsa.personal`.
-- 3). Run `docker-compose -f docker-compose-build.yml build` to build the docker images:
-  - `github-container`
-- 4). Run `GITHUB_ROOT_DIR="$HOME/yaobin/github" docker-compose up -d` to start the GitHub container.
-- 5). Delete the `id_rsa.personal` from the `docker/github` folder.
