@@ -24,8 +24,8 @@ Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `doc
   - The code committer variables, including at least (see the `code-committer-<name>.yml` for all the variables):
     - `code_committer_ssh_private_key_file_path`
     - `code_committer_host_code_root_dir`
-- 2). Run `ansible-playbook -Kvvv -i ./ansible/inventory/localhost.yml ./ansible/my-ubuntu-desktop-18-04.yml`.
-- 3). Run `ansible-playbook -vvv -i ./ansible/inventory/localhost.yml -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" code_committer_host_code_root_dir="/path/to/code/root-dir" ./ansible/code-committer-personal.yml`.
+- 2). Run `ansible-playbook -Kvvv -i ./ansible/inventory/localhost.yml ./ansible/my-ubuntu-desktop-18.04.yml`.
+- 3). Run `ansible-playbook -vvv -i ./ansible/inventory/localhost.yml -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" -e code_committer_host_code_root_dir="/path/to/code/root-dir" ./ansible/code-committer-personal.yml`.
 
 ### Setup YouTrack
 
