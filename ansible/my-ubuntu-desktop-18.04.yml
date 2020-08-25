@@ -37,7 +37,15 @@
           - meld
           - shellcheck
           - vim
-          - vagrant
+          # NOTE(ywen): We install `virtualbox` by downloading the Debian
+          # image. If we install `vagrant` via `apt`, its version may be too
+          # old to work with the `virtualbox`. Therefore, we also install
+          # `vagrant` by downloading the Debian image.
+          # - vagrant
+
+    - name: Install vagrant.
+      include_role:
+        name: vagrant
 
     - name: Install helpful tools (VirtualBox).
       include_role:
