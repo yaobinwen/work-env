@@ -1,0 +1,13 @@
+- hosts: all
+  name: Play around with Ansible.
+
+  pre_tasks:
+    - name: Verify that Ansible version meets the requirement.
+      assert:
+        that: "ansible_version.full is version_compare(minimum_version, '>=')"
+        msg: Ansible version {{minimum_version}} or later is required.
+      vars:
+        minimum_version: 2.7.8
+
+  tasks:
+    - include_tasks: tasks.yml

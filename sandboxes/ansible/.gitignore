@@ -1,0 +1,5 @@
+.vagrant
+
+ubuntu-bionic-*-cloudimg-console.log
+
+tasks.yml
