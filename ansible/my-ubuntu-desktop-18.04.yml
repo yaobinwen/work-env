@@ -33,7 +33,7 @@
       include_role:
         name: vagrant
 
-    - name: Install helpful tools (VirtualBox).
+    - name: Install VirtualBox.
       include_role:
         name: virtualbox
 
