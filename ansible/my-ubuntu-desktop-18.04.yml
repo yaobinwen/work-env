@@ -29,20 +29,6 @@
       include_role:
         name: slack
 
-    - name: Install helpful tools.
-      become: yes
-      apt:
-        name:
-          - curl
-          - meld
-          - shellcheck
-          - vim
-          # NOTE(ywen): We install `virtualbox` by downloading the Debian
-          # image. If we install `vagrant` via `apt`, its version may be too
-          # old to work with the `virtualbox`. Therefore, we also install
-          # `vagrant` by downloading the Debian image.
-          # - vagrant
-
     - name: Install vagrant.
       include_role:
         name: vagrant
@@ -55,8 +41,8 @@
       include_role:
         name: vscode
 
-    - name: Set up utilities.
+    - name: Set up system environment.
       include_role:
-        name: utilities
+        name: system-environment
 
 # vim: set expandtab shiftwidth=2:
