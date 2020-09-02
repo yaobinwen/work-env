@@ -18,6 +18,7 @@
       - curl
       - meld
       - shellcheck
+      - tree
       - vim
       # NOTE(ywen): We install `virtualbox` by downloading the Debian
       # image. If we install `vagrant` via `apt`, its version may be too
