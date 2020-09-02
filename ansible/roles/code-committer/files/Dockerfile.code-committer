@@ -7,6 +7,9 @@ ARG HOST_SSH_PRIVATE_KEY_FILE_NAME="id_rsa"
 ARG GIT_USER_EMAIL
 ARG GIT_USER_NAME
 
+# The name of this code committer (e.g., 'personal').
+ARG COMMITTER_NAME
+
 # NOTE: As of 2020-06-01, we still use `apt-get` because `apt` would
 # report the warning of "apt does not have a stable CLI interface. Use
 # with caution in scripts."
@@ -31,6 +34,9 @@ USER ${USER_NAME}
 # NOTE(ywen): Must double-quote the variables to get them interpolated.
 RUN git config --global user.email "${GIT_USER_EMAIL}"
 RUN git config --global user.name "${GIT_USER_NAME}"
+
+# Configure the CLI prompt.
+RUN echo "export PS1=\"(${COMMITTER_NAME}) \$PS1\"" >> ${HOME}/.bashrc
 
 # Copy the SSH private key.
 # NOTE(ywen): Somehow, I have to COPY the file to an intermediate location and

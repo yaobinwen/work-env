@@ -45,6 +45,7 @@
           GIT_USER_EMAIL: "{{code_committer_git_user_email}}"
           GIT_USER_NAME: "{{code_committer_git_user_name}}"
           HOST_SSH_PRIVATE_KEY_FILE_NAME: "id_rsa"
+          COMMITTER_NAME: "{{code_committer_name}}"
         dockerfile: Dockerfile.code-committer
         path: "{{tmpdir.path}}"
         pull: no
@@ -61,6 +62,7 @@
         read_only: no
         source: "{{code_committer_host_code_root_dir}}"
         target: "/home/ywen/code"
+
   always:
   - name: Remove the temporary directory.
     file:
