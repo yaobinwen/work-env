@@ -68,5 +68,3 @@
     file:
       path: "{{tmpdir.path}}"
       state: absent
-
-# TODO(ywen): Remove the temporary folder.
