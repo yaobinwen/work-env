@@ -4,6 +4,6 @@
   become: yes
   apt:
     name: openssh-server
-    state: latest
+    state: present
 
 # vim: set expandtab shiftwidth=2:
