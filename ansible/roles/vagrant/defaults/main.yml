@@ -1,8 +1,10 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
+# See: https://www.vagrantup.com/downloads.html
 vagrant_version: 2.2.10
 vagrant_architecture: x86_64
-vagrant_checksum: sha256:e770e3c6169ace1bdaed716cfbc084a2de2b0212a162303dffec6857a758b616
-deb_fname: vagrant_{{vagrant_version}}_{{vagrant_architecture}}.deb
+vagrant_checksum: >
+  sha256:e770e3c6169ace1bdaed716cfbc084a2de2b0212a162303dffec6857a758b616
+vagrant_deb_fname: vagrant_{{vagrant_version}}_{{vagrant_architecture}}.deb
 
 # vim: set expandtab shiftwidth=2:
