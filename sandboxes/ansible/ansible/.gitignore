@@ -1,0 +1,5 @@
+# We want to ignore all the YAML files created by the user, but `play.yml` and
+# `setup.yml` are infrastructural playbooks and shouldn't be ignored.
+*.yml
+!play.yml
+!setup.yml
