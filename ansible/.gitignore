@@ -1,1 +1,5 @@
 *.retry
+
+# The third-party Ansible role we dynamically download but is out of our
+# control.
+nexus3-oss
