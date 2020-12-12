@@ -56,3 +56,18 @@ sudo ${APT_GET} --yes install \
     git \
     ansible \
     python3
+
+# Set up a temporary storage.
+TMP_DIR=$(mktemp --directory)
+
+cleanup() {
+    rm -fr "$TMP_DIR" || echo "WARNING: cleanup() failed" >&2
+}
+trap cleanup EXIT INT TERM
+
+# Find all the `requirements.yml`.
+find . -name "requirements.txt" -type f -print0 > "$TMP_DIR/REQUIREMENTS_FILES"
+
+# Install the needed Ansible roles/collections.
+xargs --arg-file "$TMP_DIR/REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
+    ansible-galaxy install -r "{}"
