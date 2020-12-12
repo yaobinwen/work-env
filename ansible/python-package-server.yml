@@ -65,4 +65,4 @@
             email: robin.wyb@gmail.com
             password: "s3cr3t"
             roles:
-              - developpers # role ID here
+              - developers # role ID here
