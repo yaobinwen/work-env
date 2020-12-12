@@ -46,32 +46,14 @@
         nexus_backup_rotate: true
         nexus_backup_keep_rotations: 10
 
-        nexus_privileges:
-          # TODO(ywen): `all-repos-read` is already the default value. How can
-          # we extend the list instead of overriding?
-          - name: all-repos-read
-            description: 'Read & Browse access to all repos'
-            repository: '*'
-            actions:
-              - read
-              - browse
-          - name: python-internal-publishing
-            description: "Publish internal Python packages."
-            # "pypi-internal" is the default repository name for hosted PyPI.
-            # Defined in `defaults/main.yml`.
-            repository: pypi-internal
-            actions:
-              - add
-              - edit
-
         nexus_roles:
-        - id: developers  # can map to a LDAP group id, also used as a key to update a role
+        - id: developers
           name: developers
           description: All developers
           privileges:
-            - nx-search-read
             - all-repos-read
-            - python-internal-publishing
+            - nx-repository-view-pypi-*-*
+            - nx-search-read
           roles: []
 
         nexus_local_users:
@@ -81,4 +63,4 @@
             email: robin.wen@guangyuanbj.com
             password: "s3cr3t"
             roles:
-              - Developpers # role ID here
+              - developpers # role ID here
