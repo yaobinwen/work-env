@@ -53,6 +53,17 @@
           version_policy: snapshot
           write_policy: allow
 
+        # We use the default `nexus_repos_pypi_group` setting which combines
+        # `pypi-internal` and `pypi` but excludes `pypi-snapshot`. We want the
+        # users to install from official (public or internal) releases. If a
+        # test engineer needs to access a snapshot package, he/she should
+        # explicitly specify the `pypi-snapshot`.
+        # nexus_repos_pypi_group
+        # - name: pypi-all
+        #   member_repos:
+        #     - pypi-internal
+        #     - pypi
+
         # We want backup.
         nexus_backup_configure: true
         nexus_backup_rotate: true
