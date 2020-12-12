@@ -66,7 +66,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 # Find all the `requirements.yml`.
-find . -name "requirements.txt" -type f -print0 > "$TMP_DIR/REQUIREMENTS_FILES"
+find . -name "requirements.yml" -type f -print0 > "$TMP_DIR/REQUIREMENTS_FILES"
 
 # Install the needed Ansible roles/collections.
 xargs --arg-file "$TMP_DIR/REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
