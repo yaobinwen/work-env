@@ -51,9 +51,9 @@
           name: developers
           description: All developers
           privileges:
-            - all-repos-read
-            - nx-repository-view-pypi-*-*
-            - nx-search-read
+            - "all-repos-read"
+            - "nx-repository-view-pypi-*-*"
+            - "nx-search-read"
           roles: []
 
         nexus_local_users:
