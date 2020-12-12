@@ -41,6 +41,18 @@
         # We want to create PyPI repositories.
         nexus_config_pypi: true
 
+        # `pypi-internal` is for internal releases. Once a specific version of
+        # a package is uploaded to `pypi-internal`, it cannot be overwritten.
+        # `pypi-snapshot` is for development testing, primarily to test if a
+        # package can be published successfully, so it allows overwritting.
+        nexus_repos_pypi_hosted:
+        - name: pypi-internal
+          version_policy: release
+          write_policy: allow_once
+        - name: pypi-snapshot
+          version_policy: snapshot
+          write_policy: allow
+
         # We want backup.
         nexus_backup_configure: true
         nexus_backup_rotate: true
