@@ -13,6 +13,9 @@
   roles:
     - role: geerlingguy.java
       java_packages:
+        # Per [1], it looks like Nexus requires Java 8 exactly. Java 11 (once
+        # I installed) wouldn't work.
+        # [1] https://help.sonatype.com/repomanager3/installation/system-requirements#SystemRequirements-Java
         - openjdk-8-jdk
       become: yes
 
