@@ -57,10 +57,12 @@
           roles: []
 
         nexus_local_users:
+          # It looks like all of the fields below are mandatory. If any one is
+          # missing, a `NullPointerException` would be thrown.
           - username: ywen # used as key to update
             first_name: Yaobin
             last_name: Wen
-            email: robin.wen@guangyuanbj.com
+            email: robin.wyb@gmail.com
             password: "s3cr3t"
             roles:
               - developpers # role ID here
