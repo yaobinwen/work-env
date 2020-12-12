@@ -1,0 +1,72 @@
+- name: Set up a Python package server.
+  hosts: all
+  vars:
+    nexus3_oss_role_path: "{{playbook_dir}}/roles/nexus3-oss"
+  pre_tasks:
+    - name: Make sure we are running under the correct location.
+      debug:
+        msg: "playbook_dir = {{playbook_dir}}"
+
+    - name: Determine if the role `nexus3-oss` is checked out or not.
+      stat:
+        path: "{{nexus3_oss_role_path}}"
+      register: nexus3_oss_stat
+
+    - name: Check out the role `nexus3-oss` if needed.
+      when: not nexus3_oss_stat.stat.exists
+      git:
+        dest: "{{nexus3_oss_role_path}}"
+        repo: "https://github.com/ansible-ThoTeam/nexus3-oss.git"
+        version: "v2.4.14"
+
+    - name: Make sure the role is checked out.
+      assert:
+        that: "nexus3_oss_role_path is directory"
+
+  tasks:
+    - name: Set up Nexus 3.
+      include_role:
+        name: nexus3-oss
+      vars:
+        # We want anonymous access for now for sake of simplicity. We set up
+        # this for publishing and downloading our own Python packages and we
+        # want the users to do that with a simple `pip install` command without
+        # bothering with the username and password.
+        nexus_anonymous_access: true
+
+        # We want to create PyPI repositories.
+        nexus_config_pypi: true
+
+        # We want backup.
+        nexus_backup_configure: true
+        nexus_backup_rotate: true
+        nexus_backup_keep_rotations: 10
+
+        nexus_privileges:
+          - name: python-internal-publishing
+            description: "Publish internal Python packages."
+            # "pypi-internal" is the default repository name for hosted PyPI.
+            # Defined in `defaults/main.yml`.
+            repository: pypi-internal
+            actions:
+              - add
+              - edit
+
+        nexus_roles:
+        - id: developers  # can map to a LDAP group id, also used as a key to update a role
+          name: developers
+          description: All developers
+          privileges:
+            - nx-search-read
+            - all-repos-read
+            - python-internal-publishing
+          roles: []
+
+        nexus_local_users:
+          - username: ywen # used as key to update
+            first_name: Yaobin
+            last_name: Wen
+            email: robin.wen@guangyuanbj.com
+            password: "s3cr3t"
+            roles:
+              - Developpers # role ID here
