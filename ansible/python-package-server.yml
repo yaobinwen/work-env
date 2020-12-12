@@ -1,32 +1,33 @@
 - name: Set up a Python package server.
   hosts: all
-  vars:
-    nexus3_oss_role_path: "{{playbook_dir}}/roles/nexus3-oss"
   pre_tasks:
-    - name: Make sure we are running under the correct location.
-      debug:
-        msg: "playbook_dir = {{playbook_dir}}"
+    - name: Install Python packages.
+      become: yes
+      apt:
+        name:
+        - python-jmespath
+        - python3-jmespath
+        update_cache: true
+        cache_valid_time: 900
 
-    - name: Determine if the role `nexus3-oss` is checked out or not.
-      stat:
-        path: "{{nexus3_oss_role_path}}"
-      register: nexus3_oss_stat
+  roles:
+    - role: geerlingguy.java
+      java_packages:
+        - openjdk-8-jdk
+      become: yes
 
-    - name: Check out the role `nexus3-oss` if needed.
-      when: not nexus3_oss_stat.stat.exists
-      git:
-        dest: "{{nexus3_oss_role_path}}"
-        repo: "https://github.com/ansible-ThoTeam/nexus3-oss.git"
-        version: "v2.4.14"
+    - role: geerlingguy.apache
+      become: yes
+      vars:
+        apache_create_vhosts: no
+        apache_mods_enabled:
+          - "proxy.load"
+          - "proxy_http.load"
+          - "headers.load"
+        apache_remove_default_vhost: true
 
-    - name: Make sure the role is checked out.
-      assert:
-        that: "nexus3_oss_role_path is directory"
-
-  tasks:
-    - name: Set up Nexus 3.
-      include_role:
-        name: nexus3-oss
+    - role: ansible-thoteam.nexus3-oss
+      become: yes
       vars:
         # We want anonymous access for now for sake of simplicity. We set up
         # this for publishing and downloading our own Python packages and we
@@ -43,6 +44,14 @@
         nexus_backup_keep_rotations: 10
 
         nexus_privileges:
+          # TODO(ywen): `all-repos-read` is already the default value. How can
+          # we extend the list instead of overriding?
+          - name: all-repos-read
+            description: 'Read & Browse access to all repos'
+            repository: '*'
+            actions:
+              - read
+              - browse
           - name: python-internal-publishing
             description: "Publish internal Python packages."
             # "pypi-internal" is the default repository name for hosted PyPI.
