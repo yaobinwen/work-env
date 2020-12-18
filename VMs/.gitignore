@@ -1,2 +1,5 @@
+# Vagrant files.
+.vagrant
+
 # The names of the VM directories start with `vm-`.
 vm-*
