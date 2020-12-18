@@ -1,0 +1,49 @@
+# References:
+# [1] [System requirements](https://ubuntu.com/server/docs/installation)
+
+# 1536 MB = 1.5 GB
+def stdopt(
+  config, box: 'ubuntu/focal64', hostname:, ip:, cpus: 1, memory_mb: 1536
+)
+  config.vm.box = box
+  config.vm.hostname = hostname
+
+  config.ssh.forward_agent = true
+
+  # TODO(ywen): Handle the private network.
+  # Probably I need to make this `Vagrantfile` a Jinja2 template.
+  config.vm.network :private_network, name: "vboxnet1", ip: ip
+
+  config.vm.synced_folder "./shared", "/host_shared", disabled: true
+
+  config.vm.provider "virtualbox" do |vbox|
+    vbox.linked_clone = true
+    vbox.cpus = cpus
+    vbox.memory = memory_mb
+
+    # Preallocate all specified VM memory so the VMs are guaranteed to have
+    # sufficient RAM during execution. Change 31 to 0 to "allocate as needed".
+    vbox.customize ["setextradata", :id, "VBoxInternal/RamPreAlloc", 1]
+  end
+end
+
+Vagrant.configure("2") do |config|
+  config.vm.define "infra-01" do |cfg|
+    stdopt(cfg, hostname: "infra01", ip: "198.51.100.11")
+  end
+
+  config.vm.define "infra-02" do |cfg|
+    stdopt(cfg, hostname: "infra02", ip: "198.51.100.12")
+  end
+
+  config.vm.define "vpn-ca-01" do |cfg|
+    stdopt(cfg, hostname: "vpnca01", ip: "198.51.100.21")
+  end
+
+  # The development server needs more RAM to run the services.
+  config.vm.define "dev-01" do |cfg|
+    stdopt(
+      cfg, hostname: "dev01", ip: "198.51.100.31", memory_mb: 4096
+    )
+  end
+end
