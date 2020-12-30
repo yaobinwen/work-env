@@ -1,0 +1,35 @@
+all:
+  # All the hosts.
+  hosts:
+    infra-01:
+      ansible_user: admin
+    infra-02:
+      ansible_user: admin
+    vpn-ca-01:
+      ansible_user: admin
+    dev-01:
+      ansible_user: admin
+
+  # Host groups.
+  children:
+    dns_servers:
+      hosts:
+        infra-01:
+        infra-02:
+
+    dhcp_servers:
+      hosts:
+        infra-01:
+        infra-02:
+
+    vpn_ca_servers:
+      hosts:
+        vpn-ca-01:
+
+    openvpn_servers:
+      hosts:
+        dev-01:
+
+    dev_servers:
+      hosts:
+        dev-01:

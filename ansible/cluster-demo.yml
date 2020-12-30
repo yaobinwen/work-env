@@ -1,0 +1,6 @@
+- name: Start.
+  hosts: all
+  tasks:
+  - name: Display a welcome message.
+    debug:
+      msg: "Hello, cluster demo!"

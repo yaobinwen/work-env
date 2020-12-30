@@ -1,3 +1,4 @@
 *.yml
+!cluster-demo.yml
 !localhost.yml
 !target-example.yml
