@@ -13,6 +13,13 @@
       - software-properties-common
     state: latest
 
+- name: Install pip3.
+  become: yes
+  apt:
+    name:
+      - python3-pip
+    state: latest
+
 - name: Install Python packages for SNI verification of CA certificate.
   become: yes
   pip:
@@ -39,13 +46,30 @@
   apt:
     name:
       - docker-ce
+    state: latest
+
+# The pip usually has newer version of the Docker module than the package
+# server.
+- name: Install the newer version of Docker Python modules.
+  pip:
+    name:
+      - docker
 
 - name: Add "{{ansible_user_id}}" to the "docker" group.
-  become: yes
-  user:
-    name: '{{ansible_user_id}}'
-    groups: docker
-    append: yes
+  when: enable_nonroot_docker|default(true) == true
+  block:
+    - name: Create the `docker` group.
+      become: yes
+      group:
+        name: docker
+        state: present
+
+    - name: Add "{{ansible_user_id}}" to the "docker" group.
+      become: yes
+      user:
+        name: '{{ansible_user_id}}'
+        groups: docker
+        append: yes
 
 - name: Install docker-compose.
   become: yes
