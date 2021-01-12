@@ -1,0 +1,4 @@
+- hosts: all
+  name: Set up docker.
+  roles:
+    - docker
