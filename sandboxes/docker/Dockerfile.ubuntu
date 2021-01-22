@@ -1,0 +1,33 @@
+ARG UBUNTU_VERSION=18.04
+FROM ubuntu:${UBUNTU_VERSION}
+ARG USER_NAME=ywen
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
+# NOTE: As of 2021-01-22, we still use `apt-get` because `apt` would
+# report the warning of "apt does not have a stable CLI interface. Use
+# with caution in scripts."
+RUN apt-get update
+
+# Install the needed packages.
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    bash-completion \
+    libcap2-bin \
+    openssh-server \
+    openssh-client \
+    sudo \
+    tree \
+    vim
+
+# Add a non-privileged user.
+RUN groupadd -g ${GROUP_ID} ${USER_NAME} && \
+    useradd -r --create-home -u ${USER_ID} -g ${USER_NAME} ${USER_NAME}
+
+# Give the non-privileged user the privilege to run `sudo` without a password.
+RUN echo "${USER_NAME} ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USER_NAME}
+
+# Switch to the non-root user.
+USER ${USER_NAME}
+
+# The default command when the container is run.
+CMD ["/bin/sleep", "infinity"]

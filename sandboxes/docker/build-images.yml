@@ -1,0 +1,16 @@
+- hosts: all
+  name: Build the sandbox Docker images.
+
+  tasks:
+  - name: Build the sandbox Docker image.
+    docker_image:
+      name: "sandbox-ubuntu:{{ubuntu_version}}"
+      build:
+        args:
+          UBUNTU_VERSION: "{{ubuntu_version}}"
+        dockerfile: Dockerfile.ubuntu
+        path: "."
+        pull: no
+      source: build
+    vars:
+      ubuntu_version: "18.04"
