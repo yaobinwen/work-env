@@ -1,0 +1,4 @@
+- hosts: all
+  name: Set up `quilt` for Debian maintainers.
+  roles:
+    - quilt

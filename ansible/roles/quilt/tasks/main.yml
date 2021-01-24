@@ -1,0 +1,32 @@
+# Ref: https://www.debian.org/doc/manuals/maint-guide/modify.en.html
+
+- name: Install `quilt`.
+  become: yes
+  apt:
+    name:
+      - quilt
+    state: present
+
+- name: Add the `quilt` configuration file.
+  copy:
+    src: .quiltrc-dpkg
+    dest: "{{ ansible_env.HOME }}/.quiltrc-dpkg"
+    backup: yes
+
+- name: Add `dquilt` alias to the `.bashrc`.
+  block:
+  - name: Create the `.bashrc.quilt`.
+    copy:
+      content: |
+        alias dquilt="quilt --quiltrc=${HOME}/.quiltrc-dpkg"
+        complete -F _quilt_completion -o filenames dquilt
+      dest: "{{ ansible_env.HOME }}/.bashrc.quilt"
+      backup: yes
+
+  - name: Source the `.bashrc.quilt` from within `.bashrc`.
+    lineinfile:
+      path: "{{ ansible_env.HOME }}/.bashrc"
+      regexp: test -f "\$HOME\/.bashrc.quilt" && . "\$HOME\/.bashrc.quilt"
+      line: test -f "$HOME/.bashrc.quilt" && . "$HOME/.bashrc.quilt"
+      state: present
+      backup: yes
