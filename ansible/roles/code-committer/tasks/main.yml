@@ -9,6 +9,10 @@
       - code_committer_host_code_root_dir is defined
 
 - name: Build the docker image and start the docker container.
+  vars:
+    committer_image_name: "code-committer-{{code_committer_name}}"
+    committer_image_tag: "ubuntu-{{code_committer_ubuntu_version}}"
+    committer_container_name: "code-committer-{{code_committer_name}}"
   block:
   - name: Create a temporary directory for use.
     tempfile:
@@ -38,7 +42,7 @@
 
   - name: Build the docker image.
     docker_image:
-      name: "code-committer-{{code_committer_name}}"
+      name: "{{committer_image_name}}:{{committer_image_tag}}"
       build:
         args:
           UBUNTU_VERSION: "{{code_committer_ubuntu_version}}"
@@ -53,8 +57,8 @@
 
   - name: Create the docker container as the code committer.
     docker_container:
-      name: "code-committer-{{code_committer_name}}"
-      image: "code-committer-{{code_committer_name}}"
+      name: "{{committer_container_name}}"
+      image: "{{committer_image_name}}:{{committer_image_tag}}"
       detach: true
       tty: yes
       mounts:
