@@ -6,6 +6,7 @@ ARG GROUP_ID=1000
 ARG HOST_SSH_PRIVATE_KEY_FILE_NAME="id_rsa"
 ARG GIT_USER_EMAIL
 ARG GIT_USER_NAME
+ARG TZ=Etc/UTC
 
 # The name of this code committer (e.g., 'personal').
 ARG COMMITTER_NAME
@@ -26,6 +27,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     openssh-server \
     openssh-client \
     vim
+
+# Set the timezone.
+RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime
+RUN echo ${TZ} > /etc/timezone
 
 # Switch to the non-root user.
 USER ${USER_NAME}
