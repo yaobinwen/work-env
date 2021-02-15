@@ -1,0 +1,20 @@
+# Ref: https://racket-lang.org/download/
+
+- name: Add the Racket PPA.
+  become: yes
+  ansible.builtin.apt_repository:
+    repo: ppa:plt/racket
+    state: present
+
+- name: Update APT cache.
+  become: yes
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install Racket.
+  become: yes
+  apt:
+    name:
+      - racket
+    state: present
