@@ -20,6 +20,7 @@
       - shellcheck
       - tree
       - vim
+      - xclip
       # NOTE(ywen): We install `virtualbox` by downloading the Debian
       # image. If we install `vagrant` via `apt`, its version may be too
       # old to work with the `virtualbox`. Therefore, we also install
