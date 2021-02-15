@@ -50,6 +50,7 @@
           GIT_USER_NAME: "{{code_committer_git_user_name}}"
           HOST_SSH_PRIVATE_KEY_FILE_NAME: "id_rsa"
           COMMITTER_NAME: "{{code_committer_name}}"
+          TZ: "{{ansible_facts.date_time.tz}}"
         dockerfile: Dockerfile.code-committer
         path: "{{tmpdir.path}}"
         pull: no
