@@ -1,0 +1,26 @@
+all:
+  hosts:
+    localhost:
+      ansible_connection: local
+      ansible_python_interpreter: /usr/bin/python3
+    dell-precision-7510:
+      ansible_host: 10.0.0.10
+      ansible_user: ywen
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+    dell-precision-m4800:
+      ansible_host: 10.0.0.20
+      ansible_user: ywen
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+  children:
+    dns_primary_servers:
+      hosts:
+        dell-precision-7510:
+    dns_secondary_servers:
+      hosts:
+        dell-precision-m4800:
+    dns_clients:
+      hosts:
+        dell-precision-7510:
+        dell-precision-m4800:

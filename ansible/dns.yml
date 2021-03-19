@@ -1,0 +1,17 @@
+- name: Set up the home DNS primary servers.
+  hosts: dns_primary_servers
+  vars:
+    ansible_become: yes
+  roles:
+    - role: dns
+      vars:
+        server_role: primary
+
+- name: Set up the home DNS secondary servers.
+  hosts: dns_secondary_servers
+  vars:
+    ansible_become: yes
+  roles:
+    - role: dns
+      vars:
+        server_role: secondary

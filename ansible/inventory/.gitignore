@@ -1,3 +1,4 @@
 *.yml
 !localhost.yml
+!home-cave.yml
 !target-example.yml
