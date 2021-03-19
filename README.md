@@ -31,3 +31,18 @@ Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `doc
 
 - 1). Run `ansible-playbook -Kvv -i ./ansible/inventory/localhost.yml ./ansible/youtrack-server.yml`.
 - 2). Open `http://localhost:8080` in a browser.
+
+## Home Network Planning
+
+| IP Addresses | Description |
+|:------------:|:------------|
+| 10.0.0.0/24 | Home network |
+| 10.0.0.1 | Gateway |
+| 10.0.0.2 ~ 10.0.0.9 | (Reserved) |
+| 10.0.0.10 ~ 10.0.0.19 | DNS primary server; laptop 1 |
+| 10.0.0.20 ~ 10.0.0.29 | DNS seconary server; laptop 2 |
+| 10.0.0.30 ~ 10.0.0.49 | Infrastructural servers |
+| 10.0.0.50 ~ 10.0.0.149 | External work |
+| 10.0.0.150 ~ 10.0.0.199 | Personal work |
+| 10.0.0.200 ~ 10.0.0.254 | (Reserved) |
+| 10.0.0.255 | Broadcast address |
