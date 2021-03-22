@@ -1,0 +1,11 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- hosts: all
+  name: Install `openssh-server` on the target machines.
+  vars:
+    ansible_become: yes
+
+  roles:
+    - role: ssh-server
+
+# vim: set expandtab shiftwidth=2:

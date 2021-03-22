@@ -1,0 +1,34 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Install the authorized keys (if any).
+  authorized_key:
+    state: present
+    user: "{{item.user}}"
+    key: "{{item.key}}"
+  loop: "{{authorized_keys}}"
+
+- name: Set the target machine as a known host.
+  block:
+    - name: Fetch the target machine's host RSA public key.
+      fetch:
+        src: /etc/ssh/ssh_host_ecdsa_key.pub
+        dest: /tmp/
+        mode: "0o644"
+        flat: yes
+
+    - name: Read the content of the host RSA public key.
+      set_fact:
+        host_pub_key: "{{lookup('file', '/tmp/ssh_host_ecdsa_key.pub')}}"
+      delegate_to: 127.0.0.1
+
+    - name: Add the target host to `known_hosts`.
+      known_hosts:
+        hash_host: yes
+        name: "{{item}}"
+        key: "{{item}},{{target_host_info.ip}} {{host_pub_key}}"
+      loop:
+        - "{{target_host_info.name}}" # Access via hostname.
+        - "{{target_host_info.ip}}" # Access via IP.
+      delegate_to: 127.0.0.1
+
+# vim: set expandtab shiftwidth=2:

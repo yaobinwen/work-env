@@ -30,6 +30,16 @@ def opt_network(config, ifname:, ip:, forwarded_ports: {})
   end
 end
 
+def provision(config, name:, playbook_fname:, run: "never", extra_vars: {})
+  config.vm.provision name, type: "ansible", run: run do |ansible|
+    ansible.verbose = "vvv"
+    ansible.playbook = File.join("..", "ansible", playbook_fname)
+    ansible.extra_vars = {
+      "ansible_python_interpreter": "auto",
+    }.merge(extra_vars)
+  end
+end
+
 Vagrant.configure("2") do |config|
   # For IT infrastructure (primary).
   config.vm.define "infra0" do |infra0|
@@ -43,6 +53,29 @@ Vagrant.configure("2") do |config|
       infra0,
       ifname: "enp0s31f6",
       ip: "10.0.0.20",
+    )
+
+    provision(
+      infra0,
+      name: "infra0",
+      playbook_fname: "ssh-server.yml",
+      run: "once",
+    )
+
+    provision(
+      infra0,
+      name: "infra0",
+      playbook_fname: "ssh-passwordless.yml",
+      run: "once",
+      extra_vars: {
+        "authorized_keys": [
+          {
+            "user": "vagrant",
+            "key": "https://gist.githubusercontent.com/yaobinwen/92b92a583f2030323ec7fa843c467cc5/raw/fa6792deb02d06c4336ecd767a0d638b2622f475/id_ed25519-yaobinwen-work-env.pub"
+          }
+        ],
+        "target_host_info": {"name": "infra0", "ip": "10.0.0.20"},
+      },
     )
   end
 
@@ -58,6 +91,29 @@ Vagrant.configure("2") do |config|
       infra1,
       ifname: "enp0s31f6",
       ip: "10.0.0.21",
+    )
+
+    provision(
+      infra1,
+      name: "infra1",
+      playbook_fname: "ssh-server.yml",
+      run: "once",
+    )
+
+    provision(
+      infra1,
+      name: "infra1",
+      playbook_fname: "ssh-passwordless.yml",
+      run: "once",
+      extra_vars: {
+        "authorized_keys": [
+          {
+            "user": "vagrant",
+            "key": "https://gist.githubusercontent.com/yaobinwen/92b92a583f2030323ec7fa843c467cc5/raw/fa6792deb02d06c4336ecd767a0d638b2622f475/id_ed25519-yaobinwen-work-env.pub"
+          }
+        ],
+        "target_host_info": {"name": "infra1", "ip": "10.0.0.21"},
+      },
     )
   end
 end

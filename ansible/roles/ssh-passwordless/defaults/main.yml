@@ -1,0 +1,9 @@
+authorized_keys: []
+
+# Although password authentication is not safe, we want the users to make the
+# choice explicitly if they want to disable it.
+disable_password_authentication: false
+
+target_host_info:
+  name: ~
+  ip: ~
