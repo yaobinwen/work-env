@@ -1,6 +1,26 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 - name: Get the number of running VMs.
+  vars:
+    login_user: "{{lookup('env', 'USER')}}"
+  become: yes
+  # NOTE(ywen): `virtualbox` VMs are created on a per-user basis, so running
+  # `vboxmanage list runningvms` on one user account usually produces different
+  # result than running on another user account. For example, `ywen` may have
+  # one VM running currently, but without `become_user`, `list runningvms` is
+  # run under `root` according to the current playbook configuration. Because
+  # `root` doesn't have any running VMs, the command would return 0 but not 1.
+  # Therefore, we must run `vboxmanage list runningvms` on the desired user
+  # account. People are discussing how to share a VM across different user
+  # accounts, such as: https://askubuntu.com/q/455389/514711.
+  # NOTE(ywen): This also assumes that the target machine is actively used by
+  # only one unprivileged user. If the target machine allows multiple users to
+  # log in simultaneously, we may need to check all the user accounts that are
+  # currently logged in.
+  # NOTE(ywen): If the entire playbook is called in the context of an
+  # unprivileged user, all the "become_" stuff may not be needed. I still put
+  # them here for purpose of learning and future reference.
+  become_user: "{{ansible_user|default(login_user)}}"
   command: vboxmanage list runningvms
   register: runningvms
   # NOTE(ywen): If `virtualbox` is not installed, `vboxmanage` won't be found
@@ -46,18 +66,43 @@
       name: [build-essential, dkms]
       install_recommends: no
 
-  - name: Add the VirtualBox APT repository.
-    become: yes
-    apt_repository:
-      repo: >-
-        deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian
-        {{ansible_distribution_release}} contrib
+  - name: Install the latest version from the official Download page.
+    when: install_latest
+    block:
+      - name: Install Beautiful Soup 4 for `vb_download_link` module.
+        become: yes
+        apt:
+          name:
+            - python3-bs4
+          state: latest
 
-  - name: Install VirtualBox {{virtualbox_version}}.
-    become: yes
-    apt:
-      name: virtualbox-{{virtualbox_version}}
-      state: present
-      install_recommends: no
+      - name: Get the download link of the latest version.
+        vb_download_link:
+          homepage: https://www.virtualbox.org/wiki/Linux_Downloads
+          os_name: Ubuntu # case-insensitive
+          os_version: "18.04"
+        register: deb_pkg
+
+      - name: Install VirtualBox {{deb_pkg.version}} at {{deb_pkg.link}}.
+        become: yes
+        apt:
+          deb: "{{deb_pkg.link}}"
+
+  - name: Install the version on the official Ubuntu package server.
+    when: not install_latest
+    block:
+    - name: Add the VirtualBox APT repository.
+      become: yes
+      apt_repository:
+        repo: >-
+          deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian
+          {{ansible_distribution_release}} contrib
+
+    - name: Install VirtualBox {{virtualbox_version}}.
+      become: yes
+      apt:
+        name: virtualbox-{{virtualbox_version}}
+        state: present
+        install_recommends: no
 
 # vim: set expandtab shiftwidth=2:
