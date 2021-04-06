@@ -34,15 +34,34 @@ Run `bootstrap.sh` to install the required tools, such as `git`, `ansible`, `doc
 
 ## Home Network Planning
 
+### IP Assignments
+
 | IP Addresses | Description |
 |:------------:|:------------|
 | 10.0.0.0/24 | Home network |
 | 10.0.0.1 | Gateway |
 | 10.0.0.2 ~ 10.0.0.9 | (Reserved) |
-| 10.0.0.10 ~ 10.0.0.19 | DNS primary server; laptop 1 |
-| 10.0.0.20 ~ 10.0.0.29 | DNS seconary server; laptop 2 |
-| 10.0.0.30 ~ 10.0.0.49 | Infrastructural servers |
+| 10.0.0.10 | Dell Precision M4800 |
+| 10.0.0.11 | Dell Precision 7510 |
+| 10.0.0.12 | Mac |
+| 10.0.0.13 | VM Ubuntu 18.04 Desktop |
+| 10.0.0.14 ~ 10.0.0.19 | Laptops |
+| 10.0.0.20 | (Infrastructural server) DNS primary server |
+| 10.0.0.21 | (Infrastructural server) DNS secondary server |
+| 10.0.0.22 ~ 10.0.0.49 | Infrastructural servers |
 | 10.0.0.50 ~ 10.0.0.149 | External work |
 | 10.0.0.150 ~ 10.0.0.199 | Personal work |
 | 10.0.0.200 ~ 10.0.0.254 | (Reserved) |
 | 10.0.0.255 | Broadcast address |
+
+### Domain Names
+
+| IP Address | Domain Name | Aliases |
+|:----------:|:-----------:|:-------:|
+| 10.0.0.10 | dell-precision-m4800.cave.yaobinwen.io | m4800 |
+| 10.0.0.11 | dell-precision-7510.cave.yaobinwen.io | 7510 |
+| 10.0.0.20 | infra0.cave.yaobinwen.io | infra0 |
+| 10.0.0.20 | infra1.cave.yaobinwen.io | infra1 |
+| 10.0.0.110 | xmap.cave.yaobinwen.io | vm.xmap.io |
+| 10.0.0.250 | vm_server.cave.yaobinwen.io | vm_server |
+| 10.0.0.251 | vm_desktop.cave.yaobinwen.io | vm_desktop |

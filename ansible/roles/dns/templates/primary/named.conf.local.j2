@@ -1,0 +1,11 @@
+zone "cave.yaobinwen.com" {
+    type master;
+    file "{{zones_dir}}/db.cave.yaobinwen.com"; # zone file path
+    allow-transfer { {{hostvars["dell-precision-m4800"]["ansible_host"]}}; };  # secondary server
+};
+
+zone "0.0.10.in-addr.arpa" {
+    type master;
+    file "{{zones_dir}}/db.10.0.0";  # 10.0.0.0/24 subnet
+    allow-transfer { {{hostvars["dell-precision-m4800"]["ansible_host"]}}; };  # secondary server
+};

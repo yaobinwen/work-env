@@ -18,14 +18,9 @@
     line: OPTIONS="-u bind -4"
     path: /etc/default/bind9
 
-# {{hostvars[h]["ansible_default_ipv4"]["address"]}} 
-# NOTE(ywen): In the 
-- name: Configure the Options file.
+- name: Configure the primary DNS.
   when: server_role == "primary"
-  template:
-    backup: yes
-    src: primary/named.conf.options.j2
-    dest: /etc/bind/named.conf.options
+  include_tasks: dns-primary.yml
 
 - name: Restart BIND.
   systemd:

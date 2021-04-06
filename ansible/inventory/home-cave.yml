@@ -3,24 +3,34 @@ all:
     localhost:
       ansible_connection: local
       ansible_python_interpreter: /usr/bin/python3
-    dell-precision-7510:
+    dell-precision-m4800:
       ansible_host: 10.0.0.10
       ansible_user: ywen
       ansible_port: 22
       ansible_python_interpreter: /usr/bin/python3
-    dell-precision-m4800:
-      ansible_host: 10.0.0.20
+    dell-precision-7510:
+      ansible_host: 10.0.0.11
       ansible_user: ywen
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+    infra0:
+      ansible_host: 10.0.0.20
+      ansible_user: vagrant
+      ansible_port: 22
+      ansible_python_interpreter: /usr/bin/python3
+    infra1:
+      ansible_host: 10.0.0.21
+      ansible_user: vagrant
       ansible_port: 22
       ansible_python_interpreter: /usr/bin/python3
   children:
     dns_primary_servers:
       hosts:
-        dell-precision-7510:
+        infra0:
     dns_secondary_servers:
       hosts:
-        dell-precision-m4800:
+        infra1:
     dns_clients:
       hosts:
-        dell-precision-7510:
         dell-precision-m4800:
+        dell-precision-7510:

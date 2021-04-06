@@ -1,0 +1,32 @@
+- name: Configure the Options file.
+  template:
+    backup: yes
+    src: primary/named.conf.options.j2
+    dest: /etc/bind/named.conf.options
+
+- name: Configure the Local file.
+  template:
+    backup: yes
+    src: primary/named.conf.local.j2
+    dest: /etc/bind/named.conf.local
+
+- name: Creating the directory for the zone files.
+  file:
+    path: "{{zones_dir}}"
+    state: directory
+
+- name: Copy the zone files.
+  template:
+    src: "primary/zones/{{item}}"
+    dest: "{{zones_dir}}"
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+  loop:
+    - db.10.0.0.j2
+    - db.cave.yaobinwen.com.j2
+
+- name: Check the configuration file syntax.
+  command:
+    argv:
+      - named-checkconf
