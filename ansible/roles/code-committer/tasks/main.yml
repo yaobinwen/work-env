@@ -2,17 +2,20 @@
   assert:
     that:
       - code_committer_name is defined
-      - code_committer_ssh_private_key_file_path is defined
       - code_committer_ubuntu_version is defined
       - code_committer_git_user_email is defined
       - code_committer_git_user_name is defined
       - code_committer_host_code_root_dir is defined
 
-- name: Build the docker image and start the docker container.
-  vars:
-    committer_image_name: "code-committer-{{code_committer_name}}"
-    committer_image_tag: "ubuntu-{{code_committer_ubuntu_version}}"
-    committer_container_name: "code-committer-{{code_committer_name}}"
+- name: Tell the user that the Docker image won't be built.
+  when: code_committer_ssh_private_key_file_path is undefined
+  debug:
+    msg: >-
+      "WARNING: The Docker image will not be built because the variable "
+      "'code_committer_ssh_private_key_file_path' is not defined."
+
+- name: Build the Docker image.
+  when: code_committer_ssh_private_key_file_path is defined
   block:
   - name: Create a temporary directory for use.
     tempfile:
@@ -40,7 +43,7 @@
       # within the Dockerfile which uses a different user ID to access it.
       mode: '0644'
 
-  - name: Build the docker image.
+  - name: Build the Docker image.
     docker_image:
       name: "{{committer_image_name}}:{{committer_image_tag}}"
       build:
@@ -56,20 +59,20 @@
         pull: no
       source: build
 
-  - name: Create the docker container as the code committer.
-    docker_container:
-      name: "{{committer_container_name}}"
-      image: "{{committer_image_name}}:{{committer_image_tag}}"
-      detach: true
-      tty: yes
-      mounts:
-      - type: bind
-        read_only: no
-        source: "{{code_committer_host_code_root_dir}}"
-        target: "/home/ywen/code"
-
   always:
   - name: Remove the temporary directory.
     file:
       path: "{{tmpdir.path}}"
       state: absent
+
+- name: Create the Docker container as the code committer.
+  docker_container:
+    name: "{{committer_container_name}}"
+    image: "{{committer_image_name}}:{{committer_image_tag}}"
+    detach: true
+    tty: yes
+    mounts:
+    - type: bind
+      read_only: no
+      source: "{{code_committer_host_code_root_dir}}"
+      target: "/home/ywen/code"

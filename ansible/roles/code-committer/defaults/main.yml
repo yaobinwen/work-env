@@ -1,1 +1,6 @@
 code_committer_ubuntu_version: 20.04
+
+committer_image_name: "code-committer-{{code_committer_name}}"
+committer_image_tag: "ubuntu-{{code_committer_ubuntu_version}}"
+
+committer_container_name: "code-committer-{{code_committer_name}}"
