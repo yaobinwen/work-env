@@ -1,0 +1,13 @@
+- name: Get the unprivileged user's home directory.
+  vars:
+    login_user: "{{lookup('env', 'USER')}}"
+  user:
+    name: "{{ansible_user|default(login_user)}}"
+  register: unprivileged_user
+
+- name: Create Vim configuration file.
+  copy:
+    src: 'vimrc'
+    dest: '{{unprivileged_user.home}}/.vimrc'
+    force: no
+    mode: "0o0664"
