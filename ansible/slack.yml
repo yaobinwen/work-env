@@ -1,0 +1,5 @@
+- hosts: all
+  name: Install `Slack` on the target machines.
+
+  roles:
+    - role: slack

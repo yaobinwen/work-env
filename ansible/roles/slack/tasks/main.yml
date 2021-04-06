@@ -3,6 +3,8 @@
 - name: Install Slack Desktop.
   become: yes
   apt:
+    # The direct download link is obtained from "Try again" link on this page:
+    # https://slack.com/downloads/instructions/ubuntu
     deb: https://downloads.slack-edge.com/linux_releases/slack-desktop-{{slack_desktop_version}}-amd64.deb
   when: |
     ansible_facts.packages['slack-desktop'] is not defined
