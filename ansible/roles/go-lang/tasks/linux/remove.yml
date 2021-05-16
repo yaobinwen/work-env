@@ -1,0 +1,21 @@
+- block:
+  - name: Update `$HOME/.bashrc`.
+    lineinfile:
+      path: "{{ansible_env.HOME}}/.bashrc"
+      line: "test -f \"$HOME/.bashrc.go\" && . \"$HOME/.bashrc.go\""
+      state: absent
+
+  - name: Remove `$HOME/.bashrc.go`.
+    file:
+      path: "{{ansible_env.HOME}}/.bashrc.go"
+      state: absent
+
+  - name: Remove the Go installation.
+    file:
+      path: /usr/local/go
+      state: absent
+
+  # NOTE(ywen): We don't remove the installer tarball in /tmp in case the user
+  # wants to install it shortly. But the developers can benefit from this the
+  # most: the developers can test the playbooks repeatedly without having to
+  # download the tarball every time (which takes a few seconds).

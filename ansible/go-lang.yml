@@ -1,0 +1,6 @@
+- name: Install or remove the programming language Go compiler.
+  hosts: all
+  gather_facts: yes
+  roles:
+    - role: go-lang
+      become: yes

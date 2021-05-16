@@ -1,0 +1,9 @@
+# The expected state of go-lang. Must be either "present" or "absent". Default
+# value is "present".
+go_lang_state: "present"
+
+go_lang_version: "1.16.4"
+
+architecture_mapping:
+  x86_32: amd32
+  x86_64: amd64

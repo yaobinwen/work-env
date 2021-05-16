@@ -1,0 +1,74 @@
+- vars:
+    arch: "{{architecture_mapping[ansible_facts.architecture]}}"
+    go_expected_version: "go{{go_lang_version}}"
+    filename: "{{go_expected_version}}.linux-{{arch}}.tar.gz"
+    go_curr_version: "" # Unknown initially.
+  block:  #1
+  - name: Determine the version of the installed Go.
+    block:  #2
+    - name: Get the status of "/usr/local/go/VERSION".
+      stat:
+        path: /usr/local/go/VERSION
+      register: go_version_file
+
+    - name: Get the version of the currently installed Go.
+      when: go_version_file.stat.exists and go_version_file.stat.isreg
+      set_fact: #1
+        go_curr_version: "{{lookup('file', '/usr/local/go/VERSION')}}"
+
+    - name: Print the current and the expected versions.
+      debug:
+        msg: >
+          go_curr_version = {{go_curr_version}};
+          go_expected_version = {{go_expected_version}};
+          go_curr_version != go_expected_version ? {{go_curr_version != go_expected_version}}
+
+  - name: Install the expected version of Go.
+    when: go_curr_version != go_expected_version
+    block:  #3
+    - name: Download the installer tarball.
+      get_url:
+        url: https://golang.org/dl/{{filename}}
+        dest: /tmp/{{filename}}
+        mode: "0o644"
+
+    - name: Remove the previous installation.
+      file:
+        path: /usr/local/go
+        state: absent
+
+    - name: Extract the tarball into /usr/local.
+      unarchive:
+        src: /tmp/{{filename}}
+        dest: /usr/local
+
+    - name: Get the version of the currently installed Go.
+      set_fact: #2
+        go_curr_version: "{{lookup('file', '/usr/local/go/VERSION')}}"
+
+  # NOTE(ywen): This assert task must not be in the block #3 because the
+  # `set_fact` #2 changes the value of `go_curr_version` if everything goes
+  # right. As a result, the `when` condition becomes false and this `assert`
+  # wouldn't be executed.
+  - name: Verify that the version is correct.
+    assert:
+      that:
+        - go_curr_version == go_expected_version
+      success_msg: "Go {{go_lang_version}} has been installed successfully."
+      fail_msg: >
+        Currently installed Go ({{go_curr_version}}) is not the
+        expected version {{go_expected_version}}.
+
+  - name: Add /usr/local/go/bin to the `PATH` environment variable.
+    block:
+    - name: Create `$HOME/.bashrc.go`.
+      copy:
+        content: "export PATH=$PATH:/usr/local/go/bin"
+        dest: "{{ansible_env.HOME}}/.bashrc.go"
+        mode: "0o644"
+
+    - name: Update `$HOME/.bashrc`.
+      lineinfile:
+        path: "{{ansible_env.HOME}}/.bashrc"
+        line: "test -f \"$HOME/.bashrc.go\" && . \"$HOME/.bashrc.go\""
+        state: present

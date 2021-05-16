@@ -1,0 +1,26 @@
+- name: Check if `go_lang_state` is set to the correct value.
+  assert:
+    that:
+      - go_lang_state == "present" or go_lang_state == "absent"
+    success_msg: "go_lang_state = '{{go_lang_state}}'"
+    fail_msg: >-
+      'go_lang_state' must be either 'present' or 'absent' but it is
+      '{{go_lang_state}}' now.
+
+- name: Display the OS information.
+  debug:
+    msg: "ansible_facts.system = '{{ansible_facts.system}}'"
+
+- name: Debug
+  vars:
+    arch: "{{architecture_mapping[ansible_facts.architecture]}}"
+  debug:
+    msg: "architecture: {{arch}}"
+
+- name: Install the programming language Go.
+  when: go_lang_state == "present"
+  include_tasks: "{{ansible_facts.system|lower}}/install.yml"
+
+- name: Remove the programming language Go.
+  when: go_lang_state == "absent"
+  include_tasks: "{{ansible_facts.system|lower}}/remove.yml"
