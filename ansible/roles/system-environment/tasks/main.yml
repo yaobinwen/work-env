@@ -11,4 +11,10 @@
     state: present
     line: 'test -f "$HOME/.bashrc.ywen" && . "$HOME/.bashrc.ywen"'
 
+- name: Create ~/.ssh.
+  file:
+    path: "{{ansible_env.HOME}}/.ssh"
+    state: directory
+    mode: 0o755
+
 # vim: set expandtab shiftwidth=2:
