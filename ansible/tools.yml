@@ -1,0 +1,5 @@
+- hosts: all
+  name: Install helpful tools.
+  roles:
+    - role: tools
+      become: yes

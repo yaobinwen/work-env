@@ -1,0 +1,35 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Set up the home bin directory.
+  file:
+    path: '{{ansible_env.HOME}}/bin'
+    state: directory
+
+- name: Install the utility that disables the track stick
+  copy:
+    src: 'disable-track-stick.py'
+    dest: '{{ansible_env.HOME}}/bin'
+    mode: '0774'
+
+- name: Update APT cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install helpful tools.
+  become: yes
+  apt:
+    name:
+      - curl
+      - meld
+      - shellcheck
+      - tree
+      - vim
+      - xclip
+      # NOTE(ywen): We install `virtualbox` by downloading the Debian
+      # image. If we install `vagrant` via `apt`, its version may be too
+      # old to work with the `virtualbox`. Therefore, we also install
+      # `vagrant` by downloading the Debian image.
+      # - vagrant
+
+# vim: set expandtab shiftwidth=2:
