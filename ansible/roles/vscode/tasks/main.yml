@@ -12,10 +12,20 @@
         state: directory
       register: tmpdir
 
-    - name: Download the key.
-      shell: >
-        curl https://packages.microsoft.com/keys/microsoft.asc |
-        gpg --dearmor > {{tmpdir.path}}/packages.microsoft.gpg
+    - name: Download the GPG key.
+      get_url:
+        url: https://packages.microsoft.com/keys/microsoft.asc
+        dest: "{{tmpdir.path}}/packages.microsoft.asc"
+        mode: "0o644"
+
+    - name: Dearmor the GPG key.
+      command:
+        argv:
+          - gpg
+          - --output
+          - "{{tmpdir.path}}/packages.microsoft.gpg"
+          - --dearmor
+          - "{{tmpdir.path}}/packages.microsoft.asc"
 
     - name: Add the key.
       become: yes
