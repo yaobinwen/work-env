@@ -11,7 +11,7 @@ vscode_extensions:
   - ms-vscode.cpptools
   - nobuhito.printcode
   - Stephanvs.dot
-  - vscoss.vscode-ansible
   - wholroyd.jinja
+  - zbr.vscode-ansible
 
 # vim: set expandtab shiftwidth=2:
