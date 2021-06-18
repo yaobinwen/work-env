@@ -1,0 +1,4 @@
+- hosts: all
+  name: Set up system environment.
+  roles:
+    - system-environment
