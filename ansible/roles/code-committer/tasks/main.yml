@@ -53,7 +53,10 @@
           GIT_USER_NAME: "{{code_committer_git_user_name}}"
           HOST_SSH_PRIVATE_KEY_FILE_NAME: "id_rsa"
           COMMITTER_NAME: "{{code_committer_name}}"
-          TZ: "{{ansible_facts.date_time.tz}}"
+          # NOTE(ywen): `ansible_facts.date_time.tz` could be `EDT` that is
+          # not in `/usr/share/zoneinfo` because it only has `EST5EDT`.
+          # Therefore, we use the value in `/etc/timezone` directly.
+          TZ: "{{lookup('file', '/etc/timezone')}}"
         dockerfile: Dockerfile.code-committer
         path: "{{tmpdir.path}}"
         pull: no
