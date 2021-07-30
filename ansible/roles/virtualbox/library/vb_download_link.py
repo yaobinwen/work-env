@@ -82,7 +82,8 @@ def main():
         pkg_link = _find_pkg_link(soup, os_name, os_version)
         if pkg_link is None:
             raise ValueError(
-                f"Cannot find the link to VirtualBox package {pkg_version}."
+                "Cannot find the link to VirtualBox package "
+                "{pkg_version}.".format(pkg_version=pkg_version)
             )
     except ValueError as e:
         module.fail_json(msg=_exception_msg(e))
