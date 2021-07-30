@@ -12,6 +12,7 @@
     mode: '0774'
 
 - name: Update APT cache.
+  become: yes
   apt:
     update_cache: yes
     cache_valid_time: 900
