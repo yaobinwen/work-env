@@ -3,6 +3,11 @@
 # Echo the commands.
 set -x
 
+# Constants.
+EXPECTED_ARCHITECTURE="x86_64"
+EXPECTED_OS="Ubuntu"
+MINIMUM_OS_VERSION="18.04"
+
 # Detect the environment.
 OS_NAME=$(lsb_release --id --short)
 OS_VERSION=$(lsb_release --release --short)
@@ -11,6 +16,9 @@ ARCHITECTURE=$(uname --processor)
 
 # Debugging output.
 cat <<__EOS__ || exit
+EXPECTED_ARCHITECTURE=${EXPECTED_ARCHITECTURE}
+EXPECTED_OS=${EXPECTED_OS}
+MINIMUM_OS_VERSION=${MINIMUM_OS_VERSION}
 OS_NAME=${OS_NAME}
 OS_VERSION=${OS_VERSION}
 OS_CODENAME=${OS_CODENAME}
@@ -18,56 +26,51 @@ ARCHITECTURE=${ARCHITECTURE}
 __EOS__
 
 # Check we are running on a supported platform.
-test "${OS_NAME}" = "Ubuntu" -a $(dpkg --compare-versions "${OS_VERSION}" ge "14.04"; echo $?) = "0" || {
-    echo "Error: We only support Ubuntu 14.04 and later, but the current OS is ${OS_NAME} ${OS_VERSION}.";
-    exit 2;
+test "${OS_NAME}" = "${EXPECTED_OS}" || {
+    echo "Error: We only support the OS '${EXPECTED_OS}', but the current OS is '${OS_NAME}'."
+    exit 2
 }
 
-test ${ARCHITECTURE} = "x86_64" || {
-    echo "Error: We only support 'x86_64' platform.";
-    exit 2;
-}
-
-# Decide the APT tool.
-APT_GET="apt-get"
-if [ $(dpkg --compare-versions "${OS_VERSION}" ge "18.04"; echo $?) = "0" ]; then
-    APT_GET="apt"
+if dpkg --compare-versions "${OS_VERSION}" lt "${MINIMUM_OS_VERSION}"; then
+    echo "Error: We only support ${EXPECTED_OS} ${MINIMUM_OS_VERSION} and later, but the current OS is ${OS_NAME} ${OS_VERSION}."
+    exit 2
 fi
+
+test ${ARCHITECTURE} = "${EXPECTED_ARCHITECTURE}" || {
+    echo "Error: We only support '${EXPECTED_ARCHITECTURE}' platform."
+    exit 2
+}
 
 # Update the APT package list.
-sudo ${APT_GET} update
+sudo apt-get update || exit
 
 # Install software-properties-common so we can use apt-add-repository.
-sudo ${APT_GET} --yes install software-properties-common
+sudo apt-get --yes install software-properties-common || exit
 
-# Add PPAs
-# Git: https://launchpad.net/~git-core/+archive/ubuntu/ppa
-if [ "{OS_VERSION}" = "14.04" ]; then
-    sudo apt-add-repository --yes ppa:git-core/ppa
-fi
-# Ansible: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-ubuntu
-sudo apt-add-repository --yes ppa:ansible/ansible
+# Add Ansible PPA
+# https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html#latest-releases-via-apt-ubuntu
+sudo apt-add-repository --yes --no-update ppa:ansible/ansible || exit
 
-# Update the APT package list after adding all the PPAs.
-sudo ${APT_GET} update
+# Update the APT cache after adding all the PPAs.
+sudo apt-get update || exit
 
 # Install the required tools.
-sudo ${APT_GET} --yes install \
-    git \
+sudo apt-get --yes install \
     ansible \
-    python3
+    python3 \
+        || exit
 
 # Set up a temporary storage.
-TMP_DIR=$(mktemp --directory)
+TMP_DIR=$(mktemp --directory) || exit
 
 cleanup() {
     rm -fr "$TMP_DIR" || echo "WARNING: cleanup() failed" >&2
 }
 trap cleanup EXIT INT TERM
 
-# Find all the `requirements.yml`.
-find . -name "requirements.yml" -type f -print0 > "$TMP_DIR/REQUIREMENTS_FILES"
+# Find all the Ansible requirements files.
+find . -name "ansible-requirements.yml" -type f -print0 > "$TMP_DIR/ANSIBLE_REQUIREMENTS_FILES" || exit
 
 # Install the needed Ansible roles/collections.
-xargs --arg-file "$TMP_DIR/REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
-    ansible-galaxy install -r "{}"
+xargs --arg-file "$TMP_DIR/ANSIBLE_REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
+    ansible-galaxy install -r "{}" || exit
