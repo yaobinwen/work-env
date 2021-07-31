@@ -5,7 +5,7 @@
     path: '{{ansible_env.HOME}}/bin'
     state: directory
 
-- name: Install the utility that disables the track stick
+- name: Install the utility that disables the track stick.
   copy:
     src: 'disable-track-stick.py'
     dest: '{{ansible_env.HOME}}/bin'
