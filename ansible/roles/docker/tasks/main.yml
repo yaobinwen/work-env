@@ -1,4 +1,5 @@
 - block:
     - include_tasks: docker.yml
+    - include_tasks: python-libs.yml
   always:
     - meta: flush_handlers
