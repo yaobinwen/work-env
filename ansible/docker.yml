@@ -2,8 +2,4 @@
   gather_facts: yes # Needed by `ansible_env`.
   name: Set up docker.
   roles:
-    - role: geerlingguy.docker
-      become: yes
-      vars:
-        docker_users:
-          - "{{ ansible_env.USER}}"
+    - role: docker
