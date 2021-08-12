@@ -25,6 +25,10 @@
       include_role:
         name: ssh-server
 
+    - name: Install Docker.
+      include_role:
+        name: docker
+
     - name: Install Google Chrome.
       include_role:
         name: google-chrome
