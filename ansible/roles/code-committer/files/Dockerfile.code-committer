@@ -50,6 +50,9 @@ USER ${USER_NAME}
 # NOTE(ywen): Must double-quote the variables to get them interpolated.
 RUN git config --global user.email "${GIT_USER_EMAIL}"
 RUN git config --global user.name "${GIT_USER_NAME}"
+RUN git config --global log.showSignature true
+RUN git config --global alias.list \
+    "log --format='%C(auto)%h %aI %<(8)%aN [%G?] %s%d' --no-show-signature"
 
 # Configure the CLI prompt.
 RUN echo "export PS1=\"(${COMMITTER_NAME}) \$PS1\"" >> ${HOME}/.bashrc
@@ -72,3 +75,10 @@ RUN gpg --batch --import /tmp/sub_signing.key
 
 # Configure the GPG TTY.
 RUN echo "export GPG_TTY=\"\$(tty)\"" >> ${HOME}/.bashrc
+
+# Configure git to use the signing key.
+RUN gpg --list-secret-keys --with-colons > /tmp/GPG_KEYS
+RUN grep --max-count 1 "ssb:-:.*::s::" /tmp/GPG_KEYS > /tmp/GPG_KEYS_SIGNING
+RUN cut -d ":" -f 5 /tmp/GPG_KEYS_SIGNING > /tmp/GPG_KEYS_SIGNING_ID
+RUN xargs -a /tmp/GPG_KEYS_SIGNING_ID -I'{}' \
+    git config --global user.signingkey {}
