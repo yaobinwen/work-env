@@ -71,6 +71,10 @@ trap cleanup EXIT INT TERM
 # Find all the Ansible requirements files.
 find . -name "ansible-requirements.yml" -type f -print0 > "$TMP_DIR/ANSIBLE_REQUIREMENTS_FILES" || exit
 
-# Install the needed Ansible roles/collections.
+# Install the needed Ansible roles.
 xargs --arg-file "$TMP_DIR/ANSIBLE_REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
-    ansible-galaxy install -r "{}" || exit
+    ansible-galaxy role install -r "{}" || exit
+
+# Install the needed Ansible collections.
+xargs --arg-file "$TMP_DIR/ANSIBLE_REQUIREMENTS_FILES" -0 --no-run-if-empty --verbose -I"{}" \
+    ansible-galaxy collection install -r "{}" || exit
