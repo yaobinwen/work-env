@@ -1,0 +1,12 @@
+- name: Create the Docker container as the code committer.
+  docker_container:
+    name: "{{committer_container_name}}"
+    image: "{{committer_image_name}}:{{committer_image_tag}}"
+    detach: true
+    restart_policy: always
+    tty: yes
+    mounts:
+    - type: bind
+      read_only: no
+      source: "{{code_committer_host_code_root_dir}}"
+      target: "/home/ywen/code"

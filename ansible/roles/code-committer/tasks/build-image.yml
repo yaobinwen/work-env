@@ -1,0 +1,72 @@
+- name: Check if all the needed variables are defined.
+  assert:
+    that:
+      - code_committer_name is defined
+      - code_committer_ubuntu_version is defined
+      - code_committer_git_user_email is defined
+      - code_committer_git_user_name is defined
+      - code_committer_host_code_root_dir is defined
+      - code_committer_ssh_private_key_file_path is defined
+      - code_committer_gpg_signing_subkey_file_path is defined
+
+- name: Build the Docker image.
+  block:
+  - name: Create a temporary directory for use.
+    tempfile:
+      prefix: "{{code_committer_name}}-"
+      suffix: ".tmp"
+      state: directory
+    register: tmpdir
+
+  - name: Copy the Dockerfile.
+    copy:
+      src: Dockerfile.code-committer
+      dest: "{{tmpdir.path}}/Dockerfile.code-committer"
+      owner: "{{ansible_env.USER}}"
+      group: "{{ansible_env.USER}}"
+      mode: '0775'
+
+  - name: Copy the SSH private key file.
+    copy:
+      src: "{{code_committer_ssh_private_key_file_path}}"
+      dest: "{{tmpdir.path}}/id_rsa"
+      owner: "{{ansible_env.USER}}"
+      group: "{{ansible_env.USER}}"
+      # NOTE(ywen): We need to give read permission to the file for now because
+      # otherwise this file won't be able to be copied to the desired location
+      # within the Dockerfile which uses a different user ID to access it.
+      mode: '0644'
+
+  - name: Copy the GPG signing subkey file.
+    copy:
+      src: "{{code_committer_gpg_signing_subkey_file_path}}"
+      dest: "{{tmpdir.path}}/sub_signing.key"
+      owner: "{{ansible_env.USER}}"
+      group: "{{ansible_env.USER}}"
+      mode: "0644"
+
+  - name: Build the Docker image.
+    docker_image:
+      name: "{{committer_image_name}}:{{committer_image_tag}}"
+      build:
+        args:
+          UBUNTU_VERSION: "{{code_committer_ubuntu_version}}"
+          GIT_USER_EMAIL: "{{code_committer_git_user_email}}"
+          GIT_USER_NAME: "{{code_committer_git_user_name}}"
+          HOST_SSH_PRIVATE_KEY_FILE_NAME: "id_rsa"
+          HOST_GPG_SIGNING_SUBKEY_FILE_NAME: "sub_signing.key"
+          COMMITTER_NAME: "{{code_committer_name}}"
+          # NOTE(ywen): `ansible_facts.date_time.tz` could be `EDT` that is
+          # not in `/usr/share/zoneinfo` because it only has `EST5EDT`.
+          # Therefore, we use the value in `/etc/timezone` directly.
+          TZ: "{{lookup('file', '/etc/timezone')}}"
+        dockerfile: Dockerfile.code-committer
+        path: "{{tmpdir.path}}"
+        pull: no
+      source: build
+
+  always:
+  - name: Remove the temporary directory.
+    file:
+      path: "{{tmpdir.path}}"
+      state: absent

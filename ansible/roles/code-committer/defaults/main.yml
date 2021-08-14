@@ -1,3 +1,5 @@
+build_image: yes
+
 code_committer_ubuntu_version: 20.04
 
 committer_image_name: "code-committer-{{code_committer_name}}"
