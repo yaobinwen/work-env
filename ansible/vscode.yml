@@ -1,4 +1,5 @@
 - hosts: all
-  name: Install vscode.
+  name: Install and set up vscode.
+  gather_facts: yes
   roles:
     - role: vscode

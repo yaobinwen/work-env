@@ -1,17 +1,37 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 vscode_extensions:
+  
   - alefragnani.Bookmarks
   - EditorConfig.EditorConfig
   - foxundermoon.shell-format
   - hashicorp.terraform
+  - lextudio.restructuredtext
   - marcostazi.VS-code-vagrantfile
   - ms-azuretools.vscode-docker
   - ms-python.python
   - ms-vscode.cpptools
   - nobuhito.printcode
   - Stephanvs.dot
+  - streetsidesoftware.code-spell-checker
   - wholroyd.jinja
   - zbr.vscode-ansible
+
+# https://code.visualstudio.com/docs/getstarted/settings
+vscode_preferred_settings:
+  # We want `Detect Indentation` to be true because some file formats (e.g.,
+  # make file) always tabs for indentation and we shouldn't expand them into
+  # whitespaces.
+  "editor.detectIndentation": true
+  "editor.insertSpaces": true
+  "editor.tabSize": 4
+  "editor.renderWhitespace": "all"
+  "editor.rulers":
+    - 80
+    - 100
+    - 120
+  "explorer.autoReveal": focusNoScroll
+  "files.watcherExclude":
+    - "**/.venv/**": true
 
 # vim: set expandtab shiftwidth=2:

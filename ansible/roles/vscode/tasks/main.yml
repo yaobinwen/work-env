@@ -2,6 +2,10 @@
 
 # https://code.visualstudio.com/docs/setup/linux
 
+- name: Get the package facts.
+  package_facts:
+    manager: apt
+
 - name: Install Visual Studio Code.
   when: ansible_facts.packages['code'] is not defined
   block:
@@ -66,5 +70,61 @@
   # because otherwise the list is turned into its string representation.
   with_items: |
     {{vscode_extensions|difference(installed.stdout.splitlines())}}
+
+- name: >
+    Enlarge file watcher limit to fix the warning "unable to watch for file
+    changes in this large workspace".
+  become: yes
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: "524288"
+    state: present
+    reload: yes
+    sysctl_set: yes
+
+- name: Configure Visual Studio Code to my preferences.
+  vars:
+    settings_file: "{{ansible_env.HOME}}/.config/Code/User/settings.json"
+    current_user_settings: "{{lookup('file', settings_file)|from_json}}"
+
+    # NOTE(ywen): When the same key is present, the value from
+    # `vscode_preferred_settings` (i.e., `combine`'s argument) takes the
+    # precedence, so my preferred settings are always used.
+    merged_settings: >
+      {{current_user_settings | combine(vscode_preferred_settings)}}
+  block:
+    - name: Get the meta info of the current user settings.
+      stat:
+        path: "{{settings_file}}"
+      register: sf_stat
+
+    - name: Display the current user settings.
+      debug:
+        var: current_user_settings
+
+    - name: Display my preferred settings.
+      debug:
+        var: vscode_preferred_settings
+
+    - name: Display the merged settings.
+      debug:
+        var: merged_settings
+
+    - name: Get the current user info.
+      user:
+        name: "{{ansible_env.SUDO_USER|default(ansible_env.USER)}}"
+      register: curr_user_info
+
+    - name: Display the current user info.
+      debug:
+        var: curr_user_info
+
+    - name: Write the merged settings back to the file.
+      copy:
+        content: "{{merged_settings | to_nice_json}}"
+        dest: "{{settings_file}}"
+        mode: "{{sf_stat.stat.mode | default('0o644')}}"
+        owner: "{{sf_stat.stat.pw_name | default(curr_user_info.name)}}"
+        group: "{{sf_stat.stat.gr_name | default(curr_user_info.group)}}"
 
 # vim: set expandtab shiftwidth=2:
