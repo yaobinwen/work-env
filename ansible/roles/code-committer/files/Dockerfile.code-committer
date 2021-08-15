@@ -55,26 +55,25 @@ RUN git config --global alias.list \
     "log --format='%C(auto)%h %aI %<(8)%aN [%G?] %s%d' --no-show-signature"
 
 # Configure the CLI prompt.
-RUN echo "export PS1=\"(${COMMITTER_NAME}) \$PS1\"" >> ${HOME}/.bashrc
+RUN echo "export PS1=\"(${COMMITTER_NAME}) \$PS1\"" >> \
+    /home/${USER_NAME}/.bashrc
 
 # Copy the SSH private key.
-# NOTE(ywen): Somehow, I have to COPY the file to an intermediate location and
-# then I am able to correctly copy it to "${HOME}/.ssh". If I directly run
-# "COPY ./${HOST_SSH_PRIVATE_KEY_FILE_NAME} ${HOME}/.ssh/id_rsa", the last
-# "chmod" would fail.
-RUN mkdir -pv ${HOME}/.ssh
-COPY ./${HOST_SSH_PRIVATE_KEY_FILE_NAME} /tmp/id_rsa.copy
-RUN cp /tmp/id_rsa.copy ${HOME}/.ssh/id_rsa
+RUN mkdir -pv /home/${USER_NAME}/.ssh
+COPY --chown=${USER_ID}:${GROUP_ID} \
+    ${HOST_SSH_PRIVATE_KEY_FILE_NAME} /home/${USER_NAME}/.ssh/id_rsa
 
 # The SSH private key must be only accessible to the owner, hence 600.
-RUN chmod 600 ${HOME}/.ssh/id_rsa
+RUN chmod 600 /home/${USER_NAME}/.ssh/id_rsa
 
 # Import the signing subkey.
-COPY ./${HOST_GPG_SIGNING_SUBKEY_FILE_NAME} /tmp/sub_signing.key
+COPY --chown=${USER_ID}:${GROUP_ID} \
+    ${HOST_GPG_SIGNING_SUBKEY_FILE_NAME} /tmp/sub_signing.key
+RUN chmod 600 /tmp/sub_signing.key
 RUN gpg --batch --import /tmp/sub_signing.key
 
 # Configure the GPG TTY.
-RUN echo "export GPG_TTY=\"\$(tty)\"" >> ${HOME}/.bashrc
+RUN echo "export GPG_TTY=\"\$(tty)\"" >> /home/${USER_NAME}/.bashrc
 
 # Configure git to use the signing key.
 RUN gpg --list-secret-keys --with-colons > /tmp/GPG_KEYS
