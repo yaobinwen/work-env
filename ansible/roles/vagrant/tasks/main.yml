@@ -1,33 +1,40 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
-- name: Install Vagrant if not installed yet.
-  when: ansible_facts.packages["vagrant"] is not defined
-  block:
-  - name: Create a temporary directory for use.
-    tempfile:
-      prefix: "work-env-"
-      state: directory
-      suffix: ".tmp"
-    register: tmpdir
+- name: Determine the dpkg native architecture.
+  command: dpkg --print-architecture
+  register: dpkg_architecture
+  changed_when: false
 
-  - name: Download Vagrant debian package.
-    get_url:
-      checksum: "{{vagrant_checksum}}"
-      dest: "{{tmpdir.path}}/{{vagrant_deb_fname}}"
-      mode: 0644
-      # YAML multi-line string: https://stackoverflow.com/a/21699210/630364
-      url: "https://releases.hashicorp.com/vagrant/\
-        {{vagrant_version}}/{{vagrant_deb_fname}}"
+- name: Add the apt key for Vagrant.
+  become: yes
+  apt_key:
+    url: "https://apt.releases.hashicorp.com/gpg"
+    id: '0xDA418C88A3219F7B'
 
-  - name: Install Vagrant.
-    become: yes
-    apt:
-      deb: "{{tmpdir.path}}/{{vagrant_deb_fname}}"
+- name: Add the repository for Vagrant.
+  become: yes
+  apt_repository:
+    repo: "deb [arch={{arch}}] https://apt.releases.hashicorp.com {{release}} main"
+    mode: "0o644"
+    # The default Ansible filename for this repository is *not* good, because it
+    # includes the td-agent major version number (4) and hence causes repository
+    # conflicts when upgrades cross a major version.
+    filename: hashicorp-vagrant
+  vars:
+    arch: "{{dpkg_architecture.stdout_lines[0]}}"
+    release: "{{distribution_release_map[ansible_distribution][ansible_distribution_release]|default(ansible_distribution_release)}}"
 
-  always:
-    - name: Remove the temporary directory.
-      file:
-        path: "{{tmpdir.path}}"
-        state: absent
+- name: Update APT cache.
+  become: yes
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install Vagrant.
+  become: yes
+  apt:
+    name:
+      - vagrant
+    state: latest
 
 # vim: set expandtab shiftwidth=2:

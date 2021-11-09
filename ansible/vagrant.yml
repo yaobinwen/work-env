@@ -1,0 +1,5 @@
+- hosts: all
+  name: Install `vagrant` on the target machines.
+
+  roles:
+    - role: vagrant
