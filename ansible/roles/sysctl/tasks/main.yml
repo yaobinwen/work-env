@@ -1,0 +1,9 @@
+- name: Configure `max_user_watches`.
+  ansible.posix.sysctl:
+    name: "{{item.name}}"
+    value: "{{item.value}}"
+    state: present
+    reload: yes
+  loop:
+    - name: "fs.inotify.max_user_watches"
+      value: "{{max_user_watches}}"
