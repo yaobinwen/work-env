@@ -1,0 +1,15 @@
+- name: Install `reg`, the Docker CLI tool.
+  block:
+    - name: Create a temporary directory for use.
+      tempfile:
+        prefix: "docker-tools-"
+        suffix: ".tmp"
+        state: directory
+      register: tmpdir
+
+    - include_tasks: docker-reg.yml
+  always:
+    - name: Remove the temporary directory.
+      file:
+        path: "{{tmpdir.path}}"
+        state: absent

@@ -1,0 +1,34 @@
+- name: Get the CPU architecture.
+  command:
+    argv:
+      - dpkg
+      - "--print-architecture"
+  register: cpu_architecture_result
+
+- name: Set the fact of CPU architecture.
+  set_fact:
+    cpu_arch: "{{cpu_architecture_result.stdout_lines[0]}}"
+
+- name: Download the binary for the architecture.
+  get_url:
+    url: https://github.com/genuinetools/reg/releases/download/v{{docker_reg[cpu_arch].version}}/reg-linux-{{cpu_arch}}
+    dest: "{{tmpdir.path}}/reg"
+    sha256sum: "{{docker_reg[cpu_arch].sha256}}"
+    mode: "0o644" # No executable permissions.
+    owner: "0"
+    group: "0"
+
+- name: Install the downloaded binary to /usr/local/bin.
+  copy:
+    src: "{{tmpdir.path}}/reg"
+    remote_src: yes
+    dest: "/usr/local/bin/docker-reg"
+    mode: "0o755"
+    owner: "0"
+    group: "0"
+
+- name: Verify the command can be used.
+  command:
+    argv:
+      - docker-reg
+      - version

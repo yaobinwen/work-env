@@ -1,0 +1,7 @@
+- hosts: all
+  gather_facts: no
+  name: Set up tools for using Docker.
+  roles:
+    - role: docker-tools
+      vars:
+        ansible_become: yes

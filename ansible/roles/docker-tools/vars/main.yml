@@ -1,0 +1,6 @@
+docker_reg:
+  amd64:
+    arch_name: "amd64"
+    version: "0.16.1"
+    sha256: "ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228"
+
