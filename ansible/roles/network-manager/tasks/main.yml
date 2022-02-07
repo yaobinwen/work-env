@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: network-manager.yml
+  always:
+    - meta: flush_handlers

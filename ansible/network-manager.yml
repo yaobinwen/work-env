@@ -1,0 +1,6 @@
+- name: Configure NetworkManager(8).
+  hosts: all
+  roles:
+    - role: network-manager
+      vars:
+        ansible_become: yes

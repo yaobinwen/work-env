@@ -1,0 +1,7 @@
+# Network Manager
+nm_conf_dir: /etc/NetworkManager/conf.d
+
+# Connectivity check
+# See https://www.foell.org/justin/improved-connection-checking-in-ubuntu/
+connectivity_check_uri: http://network-test.debian.org/nm
+connectivity_check_interval: 300

@@ -1,0 +1,16 @@
+- name: Create `{{nm_conf_dir}}` if not existing.
+  file:
+    path: "{{nm_conf_dir}}"
+    state: directory
+    mode: "0o755"
+    owner: "0"
+    group: "0"
+
+- name: Install the connectivity check configuration file.
+  template:
+    src: "connectivity-check.conf.j2"
+    dest: "{{nm_conf_dir}}/connectivity-check.conf"
+    mode: "0o644"
+    owner: "0"
+    group: "0"
+  notify: restart Network Manager
