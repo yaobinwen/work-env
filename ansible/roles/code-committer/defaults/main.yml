@@ -1,3 +1,5 @@
+bashrc_file_name: .bashrc.code-committer-{{code_committer_name}}
+
 build_image: yes
 
 code_committer_ubuntu_version: 20.04

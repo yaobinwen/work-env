@@ -23,3 +23,7 @@
     - name: "Create the docker container as the code committer."
       include_role:
         name: code-committer
+
+    - include_role:
+        name: code-committer
+        tasks_from: unprivileged

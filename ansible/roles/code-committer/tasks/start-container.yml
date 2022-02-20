@@ -9,4 +9,4 @@
     - type: bind
       read_only: no
       source: "{{code_committer_host_code_root_dir}}"
-      target: "/home/ywen/code"
+      target: "{{ansible_env.HOME}}/code"
