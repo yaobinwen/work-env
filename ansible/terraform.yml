@@ -1,0 +1,8 @@
+- hosts: all
+  name: Install Terraform.
+  tasks:
+    - name: Install Terraform.
+      include_role:
+        name: terraform
+      vars:
+        ansible_become: yes
