@@ -5,7 +5,7 @@
   apt:
     # The direct download link is obtained from "Try again" link on this page:
     # https://slack.com/downloads/instructions/ubuntu
-    deb: https://downloads.slack-edge.com/linux_releases/slack-desktop-{{slack_desktop_version}}-amd64.deb
+    deb: https://downloads.slack-edge.com/releases/linux/{{slack_desktop_version}}/prod/x64/slack-desktop-{{slack_desktop_version}}-amd64.deb
   when: |
     ansible_facts.packages['slack-desktop'] is not defined
 
