@@ -5,6 +5,8 @@ ARG USER_ID=1000
 ARG GROUP_ID=1000
 ARG HOST_GPG_SIGNING_SUBKEY_FILE_NAME="sub_signing.key"
 ARG HOST_SSH_PRIVATE_KEY_FILE_NAME="id_rsa"
+ARG LOCALE="en_US.UTF-8"
+ARG LANGUAGE="en_US"
 ARG GIT_USER_EMAIL
 ARG GIT_USER_NAME
 ARG TZ=Etc/UTC
@@ -35,9 +37,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     bash-completion \
     git \
     gpg \
+    locales \
     openssh-server \
     openssh-client \
     vim
+
+# Generate and set the locale to UTF-8.
+RUN locale-gen ${LOCALE}
+ENV LANG ${LOCALE}
+ENV LC_ALL ${LOCALE}
+ENV LANGUAGE ${LANGUAGE}
 
 # Set the timezone.
 RUN ln -snf /usr/share/zoneinfo/${TZ} /etc/localtime
