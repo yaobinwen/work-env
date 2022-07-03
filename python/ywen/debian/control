@@ -1,0 +1,21 @@
+Source: ywen
+Section: python
+Priority: optional
+Maintainer: Yaobin Wen <robin.wyb@gmail.com>
+Build-Depends: debhelper (>= 11),
+ python3-all,
+ python3-pytest,
+ python3-pytest-cov,
+ python3-setuptools (>= 40.1.0),
+ dh-python,
+Standards-Version: 4.1.4
+X-Python3-Version: >= 3.6
+
+Package: python3-ywen
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends},
+ python3-pkg-resources,
+Description: Yaobin's reusable and shared Python code.
+ As Yaobin develops more and more code, he realized some of the code should be
+ put into a reusable module so future development doesn't need to duplicate
+ the same code.

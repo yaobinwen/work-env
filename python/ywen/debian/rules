@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+
+export DH_VERBOSE=1
+
+export PYBUILD_NAME:=$(shell dpkg-parsechangelog --file debian/changelog --show-field Source)
+ifeq (,$(PYBUILD_NAME))
+E := $(error dpkg-parsechangelog didn't find source name in debian/changelog)
+endif
+
+export UPSTREAM_VERSION:=$(shell dpkg-parsechangelog --file debian/changelog --show-field Version | cut -d "-" -f 1)
+ifeq (,$(UPSTREAM_VERSION))
+E := $(error dpkg-parsechangelog didn't find version in debian/changelog)
+endif
+
+override_dh_auto_clean:
+	rm -rf \
+	    src/.coverage \
+	    src/ywen/_version.py
+	dh_auto_clean
+
+override_dh_auto_build:
+	echo '__version__ = "$(UPSTREAM_VERSION)"' > src/ywen/_version.py
+	dh_auto_build
+
+override_dh_auto_test:
+	PYBUILD_SYSTEM=custom \
+	PYBUILD_TEST_ARGS="cd {dir}/src && {interpreter} -m pytest --cov=../src --cov-report=term-missing -v .." \
+	    dh_auto_test
+
+override_dh_python3:
+	dh_python3 --accept-upstream-versions
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+# vim: set noexpandtab shiftwidth=4:

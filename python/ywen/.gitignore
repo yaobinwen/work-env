@@ -1,0 +1,19 @@
+# pycache
+__pycache__
+
+# coverage
+.coverage
+
+# pybuild
+.pybuild/
+
+# pytest
+.cache/
+
+# setup.py
+build/
+dist/
+*.egg-info
+
+# auto-generated files
+_version.py
