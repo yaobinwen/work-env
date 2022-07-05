@@ -49,7 +49,8 @@ def run_query_stdout(
         if check and rc != 0:
             stderr_str = p.stderr.decode(encoding.PREFERRED_ENCODING)
             raise subprocess.CalledProcessError(
-                f"Command '{cmd}' returned non-zero exit status {p.returncode}: "
+                f"Command '{cmd}' "
+                f"returned non-zero exit status {p.returncode}: "
                 f"{stderr_str}"
             )
     finally:

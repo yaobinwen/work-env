@@ -4,7 +4,6 @@ import re
 import subprocess
 import typing
 
-from collections import namedtuple
 from setuptools import setup, find_namespace_packages
 
 
