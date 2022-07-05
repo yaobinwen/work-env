@@ -9,7 +9,7 @@ from ywen import encoding
 def run(
     *,
     cmd: typing.List[str],
-    cwd: pathlib.Path,
+    cwd: pathlib.Path=None,
     check: bool=False,
 ) -> typing.Tuple[int, str, str]:
     cp = subprocess.run(
@@ -25,8 +25,10 @@ def run(
 
     if cp.returncode != 0:
         raise subprocess.CalledProcessError(
-            f"Command '{cmd}' returned non-zero exit status {cp.returncode}: "
-            f"{stderr_str}"
+            returncode=cp.returncode,
+            cmd=cmd,
+            output=stdout_str,
+            stderr=stderr_str,
         )
 
     return cp.returncode, stdout_str, stderr_str
@@ -36,7 +38,7 @@ def run(
 def run_query_stdout(
     *,
     cmd: typing.List[str],
-    cwd: pathlib.Path,
+    cwd: pathlib.Path=None,
     check: bool=False,
 ) -> int:
     p = subprocess.Popen(
