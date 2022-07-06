@@ -65,7 +65,7 @@ _build_pkg() {
         return
     }
 
-    # Copy the `debian` files.
+    # Copy the source files.
     rsync -r -v "$PKG_PATH" "$TMP_DIR" || return
 
     # Create the tarball.
