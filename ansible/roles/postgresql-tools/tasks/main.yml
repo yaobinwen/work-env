@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: pgadmin4-desktop.yml
+  always:
+    - meta: flush_handlers

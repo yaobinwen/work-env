@@ -1,0 +1,6 @@
+- name: Install PostgreSQL tools.
+  hosts: all
+  roles:
+    - role: postgresql-tools
+      vars:
+        ansible_become: yes

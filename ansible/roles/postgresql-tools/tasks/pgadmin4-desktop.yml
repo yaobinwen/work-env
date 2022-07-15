@@ -1,0 +1,22 @@
+# Ref: https://www.pgadmin.org/download/pgadmin-4-apt/
+
+- name: Add pgAdmin APT key.
+  apt_key:
+    url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
+    keyring: /etc/apt/trusted.gpg.d/pgadmin.gpg
+    state: present
+
+- name: Add pgAdmin APT repository.
+  apt_repository:
+    repo: "deb https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{ansible_distribution_release}} pgadmin4 main"
+    mode: '0o644'
+
+- name: Update APT cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install pgAdmin Desktop.
+  apt:
+    name: pgadmin4-desktop
+    state: latest
