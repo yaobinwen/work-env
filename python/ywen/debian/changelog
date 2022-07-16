@@ -1,3 +1,13 @@
+ywen (0.4.0-1) UNRELEASED; urgency=low
+
+  * Allow the user to declare a CLI option deprecated.
+  * Deprecate the logging option `--logging` because the name `logging` is
+    the same as the module name `logging`.
+  * Add the test helper to assist the testing of `argparse`.
+  * Add unit test code to test `args_helpers` and `logging_helpers`.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Fri, 15 Jul 2022 22:19:34 -0400
+
 ywen (0.3.0-1) UNRELEASED; urgency=low
 
   * Add the module `debian` to handle the Debian packaging files. So far only

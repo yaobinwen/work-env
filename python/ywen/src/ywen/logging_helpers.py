@@ -3,21 +3,42 @@ import logging
 from ywen import args_helpers
 
 
+LOGGING_LEVELS = [
+    "debug", "info", "warning", "error", "critical",
+]
+
+
+def add_arg_logging(arg_parser):
+    group_logging = arg_parser.add_argument_group(
+        title="logging options",
+    )
+
+    d = LOGGING_LEVELS[0]
+    group_logging.add_argument(
+        "--logging",
+        help=args_helpers.arg_help(
+            help="Logging level",
+            default_value=d,
+            deprecated=True,
+        ),
+        choices=LOGGING_LEVELS,
+        default=d,
+    )
+
+
 def add_arg_logging_level(arg_parser):
     group_logging = arg_parser.add_argument_group(
         title="logging options",
     )
 
-    d = "debug"
+    d = LOGGING_LEVELS[0]
     group_logging.add_argument(
-        "--logging",
-        help=args_helpers.arg_help_with_default(
+        "--logging-level",
+        help=args_helpers.arg_help(
             help="Logging level",
-            default=d,
+            default_value=d,
         ),
-        choices=[
-            "debug", "info", "warning", "error", "critical",
-        ],
+        choices=LOGGING_LEVELS,
         default=d,
     )
 
