@@ -116,4 +116,8 @@ PKG_PATHS="
     python/ywen
 "
 
-_build_packages "$PKG_PATHS" || exit
+_build_packages "$PKG_PATHS" || {
+    echo "Build failed!"
+    exit
+}
+echo "Build succeeded!"
