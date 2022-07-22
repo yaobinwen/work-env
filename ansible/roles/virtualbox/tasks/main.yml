@@ -76,7 +76,7 @@
             - python3-bs4
           state: latest
 
-      - name: Get the download link of the latest version.
+      - name: Get the download link of the latest version of VirtualBox.
         vb_download_link:
           homepage: https://www.virtualbox.org/wiki/Linux_Downloads
           os_name: Ubuntu # case-insensitive
@@ -87,6 +87,54 @@
         become: yes
         apt:
           deb: "{{deb_pkg.link}}"
+
+      - name: >
+          Get the download link of the latest version of VirtualBox extension
+          pack.
+        vb_ext_download_link:
+          homepage: https://www.virtualbox.org/wiki/Downloads
+        register: vb_ext_pack
+
+      - name: Download the VirtualBox extension pack.
+        vars:
+          ext_fname: "Oracle_VM_VirtualBox_Extension_Pack-{{vb_ext_pack.version}}.vbox-extpack"
+        get_url:
+          url: "{{vb_ext_pack.link}}"
+          dest: /tmp/{{ext_fname}}
+          mode: "0o644"
+        register: download_vb_ext_pack
+
+      - name: Get the SHA256 of the extension pack license file.
+        block:
+          - name: Create a folder for the unarchived extention pack.
+            file:
+              path: /tmp/vb_extension_pack
+              state: directory
+              mode: "0o755"
+
+          - name: Unarchive the extention pack.
+            unarchive:
+              src: "{{download_vb_ext_pack.dest}}"
+              dest: /tmp/vb_extension_pack
+
+          - name: Calculate the SHA256 checksum of the license file.
+            stat:
+              path: /tmp/vb_extension_pack/ExtPack-license.txt
+              checksum_algorithm: sha256
+            register: ext_pack_license
+
+      - name: Install the VirtualBox extension pack.
+        become: yes
+        command:
+          argv:
+            - VBoxManage
+            - extpack
+            - install
+            - --replace
+            - --accept-license={{ext_pack_license.stat.checksum}}
+            - "{{download_vb_ext_pack.dest}}"
+        register: ext_pack_install
+        when: download_vb_ext_pack.changed
 
   - name: Install the version on the official Ubuntu package server.
     when: not install_latest
