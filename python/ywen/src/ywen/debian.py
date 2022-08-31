@@ -24,6 +24,16 @@ REGEX_ENTRY_HEADER_VALUE = re.compile(
     rf"^([\w\d\-_]+)\s\({_REGEX_VERSION}\)\s([\w\d]+);\surgency=(\w+)$"
 )
 
+# The fuzzy match regex helps to see if a line looks similar a entry header
+# line. If it looks similar but does not match `REGEX_ENTRY_HEADER_VALUE`,
+# chances are the header line is in a bad format (e.g., not using semver) so
+# we can report better error message. Otherwise, the line would be simply
+# skipped and later reported as "The line is not in any change entry" which
+# is too confusing.
+REGEX_ENTRY_HEADER_FUZZY_MATCH = re.compile(
+    r"^[\w\d\-_]+\s*\(.+\)\s*\w+;\s*urgency=\w+$"
+)
+
 
 def _changelog_field(
     *,
@@ -130,9 +140,20 @@ class Changes(object):
             if not line:
                 continue
 
+            maybe_header = (
+                REGEX_ENTRY_HEADER_FUZZY_MATCH.match(line) is not None
+            )
+
             m = REGEX_ENTRY_HEADER_VALUE.match(line)
             if m is None:
                 # Not a header line.
+                if maybe_header:
+                    raise ValueError(
+                        f"The line '{line}' looks like a change entry header "
+                        "but does not match the expected format. (A common "
+                        "mistake is not using semantic versioning 'x.y.z'.)"
+                    )
+
                 if in_entry:
                     # This must be a detailed line of the current change entry.
                     details += line

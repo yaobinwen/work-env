@@ -1,3 +1,11 @@
+ywen (0.4.1-1) UNRELEASED; urgency=low
+
+  * Report more clear error message when the changelog entry header line does
+    not match the expected format to make it easier for developers to figure
+    out the root cause. See `REGEX_ENTRY_HEADER_FUZZY_MATCH`.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Wed, 31 Aug 2022 11:48:29 -0400
+
 ywen (0.4.0-1) UNRELEASED; urgency=low
 
   * Allow the user to declare a CLI option deprecated.

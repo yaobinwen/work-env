@@ -25,6 +25,15 @@ abc (0.1.0-1) UNRELEASED; urgency=high
 """.strip("\n")
 
 
+_TEST_CHANGELOG_WRONG_HEADER_FORMAT = """
+abc (0.1-1) UNRELEASED; urgency=high
+
+  * Release 0.1.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Tue, 05 Jul 2022 10:52:15 -0400
+"""
+
+
 class TestParsing(unittest.TestCase):
     def test_parsing_all(self):
         with temp_dir(prefix="debian.", delete=False) as d:
@@ -83,3 +92,19 @@ class TestParsing(unittest.TestCase):
             self.assertEqual(c.Version.epoch, "0")
             self.assertEqual(c.Version.upstream, "0.2.0")
             self.assertEqual(c.Version.debian, "1")
+
+    def test_header_line_wrong_format(self):
+        with temp_dir(prefix="debian.", delete=False) as d:
+            changelog = d / "changelog"
+            with changelog.open(
+                mode="w",
+                encoding=PREFERRED_ENCODING,
+            ) as fh:
+                fh.write(_TEST_CHANGELOG_WRONG_HEADER_FORMAT)
+
+            try:
+                c = Changelog(changelog=changelog, all_changes=False)
+            except ValueError as ex:
+                msg = str(ex)
+                self.assertIn("looks like a change entry header", msg)
+                self.assertIn("does not match the expected format", msg)
