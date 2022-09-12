@@ -1,13 +1,73 @@
+from multiprocessing.sharedctypes import Value
 import unittest
 
 from ywen.encoding import PREFERRED_ENCODING
-from ywen.debian import Changelog
+from ywen.debian import (
+    Changelog,
+    Maintainer,
+    Version,
+)
 from ywen.tempfile import temp_dir
 
 
 class TestImport(unittest.TestCase):
     def test_import(self):
         import ywen.debian
+
+
+class TestMaintainer(unittest.TestCase):
+    def test_init(self):
+        name = "John Doe"
+        email = "john.doe@gmail.com"
+        m = Maintainer(
+            name=name,
+            email=email,
+        )
+        self.assertEqual(m.name, name)
+        self.assertEqual(m.email, email)
+
+    def test_from_str_success(self):
+        name = "John Doe"
+        email = "john.doe@gmail.com"
+        m = Maintainer.from_str(f"{name} <{email}>")
+        self.assertEqual(m.name, name)
+        self.assertEqual(m.email, email)
+
+    def test_from_str_failure(self):
+        name = "John Doe"
+        email = "john.doe@gmail.com"
+        self.assertRaises(
+            ValueError,
+            Maintainer.from_str,
+            value=f"{name} - {email}",
+        )
+
+
+class TestVersion(unittest.TestCase):
+    def test_init(self):
+        epoch = "1"
+        upstream = "1.2.3"
+        debian = "1"
+        v = Version(epoch=epoch, upstream=upstream, debian=debian)
+        self.assertEqual(v.epoch, epoch)
+        self.assertEqual(v.upstream, upstream)
+        self.assertEqual(v.debian, debian)
+
+    def test_from_str_success(self):
+        epoch = "0"
+        upstream = "1.2.3"
+        debian = "1"
+        v = Version.from_str(f"{upstream}-{debian}")
+        self.assertEqual(v.epoch, epoch)
+        self.assertEqual(v.upstream, upstream)
+        self.assertEqual(v.debian, debian)
+
+    def test_from_str_failure(self):
+        self.assertRaises(
+            ValueError,
+            Version.from_str,
+            value="abc",
+        )
 
 
 _TEST_CHANGELOG = """
@@ -28,6 +88,12 @@ abc (0.1.0-1) UNRELEASED; urgency=high
 _TEST_CHANGELOG_WRONG_HEADER_FORMAT = """
 abc (0.1-1) UNRELEASED; urgency=high
 
+  * Release 0.1.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Tue, 05 Jul 2022 10:52:15 -0400
+"""
+
+_TEST_CHANGELOG_MISSING_HEADER = """
   * Release 0.1.
 
  -- Yaobin Wen <robin.wyb@gmail.com>  Tue, 05 Jul 2022 10:52:15 -0400
@@ -108,3 +174,18 @@ class TestParsing(unittest.TestCase):
                 msg = str(ex)
                 self.assertIn("looks like a change entry header", msg)
                 self.assertIn("does not match the expected format", msg)
+
+    def test_missing_header_line(self):
+        with temp_dir(prefix="debian.", delete=False) as d:
+            changelog = d / "changelog"
+            with changelog.open(
+                mode="w",
+                encoding=PREFERRED_ENCODING,
+            ) as fh:
+                fh.write(_TEST_CHANGELOG_MISSING_HEADER)
+
+            try:
+                c = Changelog(changelog=changelog, all_changes=False)
+            except ValueError as ex:
+                msg = str(ex)
+                self.assertIn("The line is not in any change entry", msg)

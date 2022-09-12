@@ -1,3 +1,10 @@
+ywen (0.4.2-1) UNRELEASED; urgency=low
+
+  * Increase `debian.py` test coverage to 100%.
+  * Add unit tests for `tempfile.py`.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sun, 11 Sep 2022 21:13:48 -0400
+
 ywen (0.4.1-1) UNRELEASED; urgency=low
 
   * Report more clear error message when the changelog entry header line does
