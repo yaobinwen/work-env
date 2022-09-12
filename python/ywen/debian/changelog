@@ -1,3 +1,9 @@
+ywen (0.5.0-1) UNRELEASED; urgency=low
+
+  * Add the module `units` (that supports "cm", "m", and "ft").
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sun, 11 Sep 2022 21:38:43 -0400
+
 ywen (0.4.2-1) UNRELEASED; urgency=low
 
   * Increase `debian.py` test coverage to 100%.
