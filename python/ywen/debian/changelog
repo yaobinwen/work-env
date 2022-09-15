@@ -1,3 +1,10 @@
+ywen (0.6.0-1) UNRELEASED; urgency=low
+
+  * Expose `CalledProcessError` in `ywen.subprocess` so the caller can deal
+    with the error without having to import the standard module `subprocess`.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sat, 20 Aug 2022 13:36:25 -0400
+
 ywen (0.5.0-1) UNRELEASED; urgency=low
 
   * Add the module `units` (that supports "cm", "m", and "ft").

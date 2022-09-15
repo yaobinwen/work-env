@@ -59,3 +59,6 @@ def run_query_stdout(
         p.stdout.close()
 
     return p.returncode
+
+
+CalledProcessError = subprocess.CalledProcessError
