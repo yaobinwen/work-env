@@ -1,3 +1,9 @@
+ywen (0.7.0-1) UNRELEASED; urgency=low
+
+  * Add `config_logging` to module `logging_helpers`.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Wed, 21 Sep 2022 21:51:48 -0400
+
 ywen (0.6.0-1) UNRELEASED; urgency=low
 
   * Expose `CalledProcessError` in `ywen.subprocess` so the caller can deal

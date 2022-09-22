@@ -57,3 +57,16 @@ def logging_format(multiprocess: bool=False) -> str:
 
 def log_level(s: str) -> int:
     return int(getattr(logging, s.upper()))
+
+
+def config_logging(
+    *,
+    format: str,
+    datefmt: str,
+    log_level_str: str,
+):
+    logging.basicConfig(
+        format=format,
+        datefmt=datefmt,
+        level=log_level(log_level_str),
+    )
