@@ -1,0 +1,21 @@
+Source: encrypt-drive
+Section: python
+Priority: optional
+Maintainer: Yaobin Wen <robin.wyb@gmail.com>
+Build-Depends: debhelper (>= 11),
+ python3-all,
+ python3-pytest,
+ python3-pytest-cov,
+ python3-setuptools (>= 39.0.1),
+ dh-python,
+Standards-Version: 4.1.4
+X-Python3-Version: >= 3.6
+
+Package: python3-ywen-encrypt-drive
+Architecture: all
+Depends: ${python3:Depends}, ${misc:Depends},
+ cryptsetup,
+ python3-pkg-resources,
+Description: Yaobin's script to create an encrypted drive (e.g., USB disk).
+ Manually creating an encrypted drive (e.g., USB disk) using `cryptsetup` is
+ not difficult but this package automates the process as much as possible.
