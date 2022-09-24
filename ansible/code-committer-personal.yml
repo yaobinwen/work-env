@@ -6,7 +6,7 @@
 
   vars:
     code_committer_name: "personal"
-    code_committer_ubuntu_version: "20.04"
+    code_committer_ubuntu_version: "22.04"
     code_committer_git_user_email: "robin.wyb@gmail.com"
     code_committer_git_user_name: "Yaobin Wen"
 
