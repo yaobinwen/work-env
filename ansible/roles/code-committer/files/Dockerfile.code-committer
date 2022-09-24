@@ -63,6 +63,7 @@ RUN git config --global user.name "${GIT_USER_NAME}"
 RUN git config --global log.showSignature true
 RUN git config --global alias.list \
     "log --format='%C(auto)%h %aI %<(8)%aN [%G?] %s%d' --no-show-signature"
+RUN git config --global core.quotepath false
 
 # Configure the CLI prompt.
 RUN echo "export PS1=\"(${COMMITTER_NAME}) \$PS1\"" >> \
