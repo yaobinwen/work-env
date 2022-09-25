@@ -92,3 +92,8 @@ RUN grep --max-count 1 "ssb:-:.*::s::" /tmp/GPG_KEYS > /tmp/GPG_KEYS_SIGNING
 RUN cut -d ":" -f 5 /tmp/GPG_KEYS_SIGNING > /tmp/GPG_KEYS_SIGNING_ID
 RUN xargs -a /tmp/GPG_KEYS_SIGNING_ID -I'{}' \
     git config --global user.signingkey {}
+
+# Install git repository utilities.
+RUN apt-get -y install \
+    git-filter-repo \
+    pre-commit
