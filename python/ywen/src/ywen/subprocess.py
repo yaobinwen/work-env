@@ -3,62 +3,64 @@ import pathlib
 import subprocess
 import typing
 
-from ywen import encoding
+from ywen.encoding import PREFERRED_ENCODING
 
 
 def run(
     *,
     cmd: typing.List[str],
+    input: str=None,
+    input_timeout: float=None,
+    stderr: int=subprocess.PIPE,
+    stdout: int=subprocess.PIPE,
+    encoding: str=PREFERRED_ENCODING,
     cwd: pathlib.Path=None,
     check: bool=False,
 ) -> typing.Tuple[int, str, str]:
     cp = subprocess.run(
         args=cmd,
+        input=input,
+        timeout=input_timeout,
+        stderr=stderr,
+        stdout=stdout,
+        encoding=encoding,
         cwd=cwd,
-        stderr=subprocess.PIPE,
-        stdout=subprocess.PIPE,
         check=check,
     )
 
-    stdout_str = cp.stdout.decode(encoding.PREFERRED_ENCODING)
-    stderr_str = cp.stderr.decode(encoding.PREFERRED_ENCODING)
-
-    if cp.returncode != 0:
-        raise subprocess.CalledProcessError(
-            returncode=cp.returncode,
-            cmd=cmd,
-            output=stdout_str,
-            stderr=stderr_str,
-        )
-
-    return cp.returncode, stdout_str, stderr_str
+    return cp.returncode, cp.stdout, cp.stderr
 
 
 @contextlib.contextmanager
 def run_query_stdout(
     *,
     cmd: typing.List[str],
+    stderr: int=subprocess.PIPE,
+    stdout: int=subprocess.PIPE,
+    encoding: str=PREFERRED_ENCODING,
     cwd: pathlib.Path=None,
     check: bool=False,
 ) -> int:
     p = subprocess.Popen(
-        cmd, stdout=subprocess.PIPE, cwd=cwd
+        cmd,
+        stderr=stderr,
+        stdout=stdout,
+        encoding=encoding,
+        cwd=cwd,
     )
 
     try:
         yield p.stdout
         rc = p.wait()
         if check and rc != 0:
-            stderr_str = p.stderr.decode(encoding.PREFERRED_ENCODING)
             raise subprocess.CalledProcessError(
-                f"Command '{cmd}' "
-                f"returned non-zero exit status {p.returncode}: "
-                f"{stderr_str}"
+                returncode=p.returncode,
+                cmd=cmd,
+                stderr=p.stderr,
             )
     finally:
         p.stdout.close()
 
-    return p.returncode
-
 
 CalledProcessError = subprocess.CalledProcessError
+TimeoutExpired = subprocess.TimeoutExpired

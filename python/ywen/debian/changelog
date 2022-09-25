@@ -1,3 +1,11 @@
+ywen (0.8.0-1) UNRELEASED; urgency=low
+
+  * Improve `ywen.subprocess`:
+    * Support user input.
+    * 100% unit test coverage.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sun, 25 Sep 2022 16:40:57 -0400
+
 ywen (0.7.0-1) UNRELEASED; urgency=low
 
   * Add `config_logging` to module `logging_helpers`.
