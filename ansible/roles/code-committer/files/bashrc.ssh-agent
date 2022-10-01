@@ -1,0 +1,55 @@
+#!/bin/sh
+
+echo "============================="
+echo "Trying to set up SSH agent..."
+
+AGENT_SOCK_ADDR="$HOME/.ssh/agent"
+AGENT_BASH_CMD_FILE="$HOME/.ssh/agent-bash-commands"
+
+AGENT_ALIVE=
+
+if ! test -e "$AGENT_SOCK_ADDR" && ! test -e "$AGENT_BASH_CMD_FILE"
+then
+    echo "No agent exists. Starting a new one..."
+    killall ssh-agent || true
+    ssh-agent -s -a "$AGENT_SOCK_ADDR" > "$AGENT_BASH_CMD_FILE"
+    eval $(cat "$AGENT_BASH_CMD_FILE")
+    AGENT_ALIVE=1
+elif test -S "$AGENT_SOCK_ADDR" && test -f "$AGENT_BASH_CMD_FILE"
+then
+    echo "SSH agent is detected. Sourcing the environment variables..."
+    eval $(cat "$AGENT_BASH_CMD_FILE")
+    if test -z "$SSH_AGENT_PID" -o ! -e "/proc/$SSH_AGENT_PID"
+    then
+        echo "SSH agent process $SSH_AGENT_PID doesn't exist. Recreating the SSH agent..."
+        killall ssh-agent || true
+        rm -vf "$AGENT_SOCK_ADDR"
+        rm -vf "$AGENT_BASH_CMD_FILE"
+        ssh-agent -s -a "$AGENT_SOCK_ADDR" > "$AGENT_BASH_CMD_FILE"
+        eval $(cat "$AGENT_BASH_CMD_FILE")
+    fi
+    AGENT_ALIVE=2
+else
+    echo "'$AGENT_SOCK_ADDR' is not a socket OR/AND '$AGENT_BASH_CMD_FILE' is not a regular file."
+    echo "We can't find the SSH agent using these files and we don't want to touch them in case they are important."
+    echo "Please examine and rename them so we can create an SSH agent next time."
+    AGENT_ALIVE=0
+fi
+
+SSH_KEY_FILE="$HOME/.ssh/id_rsa"
+
+if [ $AGENT_ALIVE -gt 0 ]
+then
+    SSH_KEY_ADDED=$(ssh-add -L | grep "$SSH_KEY_FILE" | wc -l)
+    if [ $SSH_KEY_ADDED -gt 0 ]
+    then
+        echo "SSH key '$SSH_KEY_FILE' has been added. Skip adding it again."
+    else
+        echo "Adding SSH key '$SSH_KEY_FILE'..."
+        ssh-add "$SSH_KEY_FILE"
+    fi
+else
+    echo "SSH agent is not alive. Will not try to add SSH keys."
+fi
+
+echo "============================="
