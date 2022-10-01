@@ -106,3 +106,5 @@ COPY --chown=${USER_ID}:${GROUP_ID} \
     bashrc.ssh-agent /home/${USER_NAME}/.bashrc.ssh-agent
 RUN echo "test -f "\$HOME/.bashrc.ssh-agent" && . "\$HOME/.bashrc.ssh-agent"" >> \
     /home/${USER_NAME}/.bashrc
+
+WORKDIR /home/${USER_NAME}/code
