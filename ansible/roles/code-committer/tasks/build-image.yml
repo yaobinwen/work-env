@@ -26,6 +26,14 @@
       group: "{{ansible_env.USER}}"
       mode: '0775'
 
+  - name: Copy `bashrc.ssh-agent`.
+    copy:
+      src: bashrc.ssh-agent
+      dest: "{{tmpdir.path}}/bashrc.ssh-agent"
+      owner: "{{ansible_env.USER}}"
+      group: "{{ansible_env.USER}}"
+      mode: '0775'
+
   - name: Copy the SSH private key file.
     copy:
       src: "{{code_committer_ssh_private_key_file_path}}"
@@ -60,7 +68,9 @@
         dockerfile: Dockerfile.code-committer
         path: "{{tmpdir.path}}"
         pull: no
+      state: present
       source: build
+      force_source: yes
 
   always:
   - name: Remove the temporary directory.
