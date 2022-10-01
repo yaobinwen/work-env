@@ -18,37 +18,26 @@
       state: directory
     register: tmpdir
 
-  - name: Copy the Dockerfile.
+  - name: Copy files that are needed to build the image.
     copy:
-      src: Dockerfile.code-committer
-      dest: "{{tmpdir.path}}/Dockerfile.code-committer"
+      src: "{{item.src}}"
+      dest: "{{tmpdir.path}}/{{item.dest_fname}}"
       owner: "{{ansible_env.USER}}"
       group: "{{ansible_env.USER}}"
-      mode: '0775'
-
-  - name: Copy `bashrc.ssh-agent`.
-    copy:
-      src: bashrc.ssh-agent
-      dest: "{{tmpdir.path}}/bashrc.ssh-agent"
-      owner: "{{ansible_env.USER}}"
-      group: "{{ansible_env.USER}}"
-      mode: '0775'
-
-  - name: Copy the SSH private key file.
-    copy:
-      src: "{{code_committer_ssh_private_key_file_path}}"
-      dest: "{{tmpdir.path}}/id_rsa"
-      owner: "{{ansible_env.USER}}"
-      group: "{{ansible_env.USER}}"
-      mode: '0600'
-
-  - name: Copy the GPG signing subkey file.
-    copy:
-      src: "{{code_committer_gpg_signing_subkey_file_path}}"
-      dest: "{{tmpdir.path}}/sub_signing.key"
-      owner: "{{ansible_env.USER}}"
-      group: "{{ansible_env.USER}}"
-      mode: "0600"
+      mode: "{{item.mode}}"
+    loop:
+      - src: Dockerfile.code-committer
+        dest_fname: Dockerfile.code-committer
+        mode: "0o755"
+      - src: bashrc.ssh-agent
+        dest_fname: bashrc.ssh-agent
+        mode: "0o755"
+      - src: "{{code_committer_ssh_private_key_file_path}}"
+        dest_fname: id_rsa
+        mode: "0o600"
+      - src: "{{code_committer_gpg_signing_subkey_file_path}}"
+        dest_fname: sub_signing.key
+        mode: "0o600"
 
   - name: Build the Docker image.
     docker_image:
