@@ -1,0 +1,5 @@
+secret-file (0.1.0-1) UNRELEASED; urgency=low
+
+  * Implement my utilities to handle secret files.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sun, 02 Oct 2022 01:10:22 -0400
