@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 _banner() {
     local PKG_PATH
@@ -6,7 +6,7 @@ _banner() {
     PKG_PATH=$1
 
     WIDTH=$2
-    test -z $WIDTH && WIDTH=30
+    test -z "$WIDTH" && WIDTH=30
 
     printf -- =%.0s $(seq 1 $WIDTH) && echo
     echo "Building '$PKG_PATH'"
@@ -17,7 +17,7 @@ _build_pkg() {
     local TMP_DIR PKG_PATH CHANGELOG PKG_NAME PKG_VERSION TARBALL_FNAME OUTPUT_DIR
 
     PKG_PATH="$1"
-    _banner $PKG_PATH
+    _banner "$PKG_PATH"
 
     OUTPUT_DIR="$2"
     echo "OUTPUT_DIR=$OUTPUT_DIR"
@@ -49,15 +49,15 @@ _build_pkg() {
     # Figure out package version.
     dpkg-parsechangelog \
         --file "$PKG_PATH/debian/changelog" \
-        --show-field Version > "$TMP_DIR/pkg_full_version" || return
+        --show-field Version >"$TMP_DIR/pkg_full_version" || return
     PKG_FULL_VERSION=$(cat "$TMP_DIR/pkg_full_version")
     echo "PKG_FULL_VERSION=$PKG_FULL_VERSION"
-    grep "-" < "$TMP_DIR/pkg_full_version" || {
+    grep "-" <"$TMP_DIR/pkg_full_version" || {
         echo "ERROR: Cannot find '-' in version string 'PKG_FULL_VERSION'."
         return
     }
     PKG_VERSION=$(
-        cut -d "-" -f 1 < "$TMP_DIR/pkg_full_version"
+        cut -d "-" -f 1 <"$TMP_DIR/pkg_full_version"
     )
     echo "PKG_VERSION=$PKG_VERSION"
     test -n "$PKG_VERSION" || {
@@ -73,25 +73,25 @@ _build_pkg() {
     echo "TARBALL_FNAME=$TARBALL_FNAME"
     (
         cd "$TMP_DIR" &&
-        tar --exclude=debian -cJf "$TARBALL_FNAME" "$PKG_NAME"
+            tar --exclude=debian -cJf "$TARBALL_FNAME" "$PKG_NAME"
     ) || return
 
     # Build the package.
     (
         cd "$TMP_DIR/$PKG_NAME" &&
-        debuild -us -uc
+            debuild -us -uc
     ) || return
 
     # Copy the built artifacts to the output directory.
     (
         cd "$TMP_DIR" &&
-        cp -v *.deb "$OUTPUT_DIR" &&
-        cp -v *.build "$OUTPUT_DIR" &&
-        cp -v *.buildinfo "$OUTPUT_DIR" &&
-        cp -v *.changes "$OUTPUT_DIR" &&
-        cp -v *.debian.tar.xz "$OUTPUT_DIR" &&
-        cp -v *.dsc "$OUTPUT_DIR" &&
-        cp -v *.orig.tar.xz "$OUTPUT_DIR"
+            cp -v ./*.deb "$OUTPUT_DIR" &&
+            cp -v ./*.build "$OUTPUT_DIR" &&
+            cp -v ./*.buildinfo "$OUTPUT_DIR" &&
+            cp -v ./*.changes "$OUTPUT_DIR" &&
+            cp -v ./*.debian.tar.xz "$OUTPUT_DIR" &&
+            cp -v ./*.dsc "$OUTPUT_DIR" &&
+            cp -v ./*.orig.tar.xz "$OUTPUT_DIR"
     ) || return
 
     # Remove the temporary storage on success. We don't remove the temporary
