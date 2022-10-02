@@ -41,14 +41,13 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     openssh-server \
     openssh-client
 
-# Install git repository utilities.
-RUN apt-get -y install \
-    git-filter-repo \
-    pre-commit
-
 # Install additional utilities.
 RUN apt-get -y install \
+    git-filter-repo \
+    pre-commit \
     psmisc \
+    shellcheck \
+    shfmt \
     tree \
     vim
 
