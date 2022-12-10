@@ -34,4 +34,11 @@
       - vagrant
     state: latest
 
+- name: Check Vagrant can run successfully.
+  command:
+    argv:
+      - vagrant
+      - "--version"
+  changed_when: false
+
 # vim: set expandtab shiftwidth=2:
