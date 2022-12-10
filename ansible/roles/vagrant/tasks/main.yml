@@ -16,10 +16,7 @@
   apt_repository:
     repo: "deb [arch={{arch}}] https://apt.releases.hashicorp.com {{release}} main"
     mode: "0o644"
-    # The default Ansible filename for this repository is *not* good, because it
-    # includes the td-agent major version number (4) and hence causes repository
-    # conflicts when upgrades cross a major version.
-    filename: hashicorp-vagrant
+    filename: hashicorp
   vars:
     arch: "{{dpkg_architecture.stdout_lines[0]}}"
     release: "{{distribution_release_map[ansible_distribution][ansible_distribution_release]|default(ansible_distribution_release)}}"
