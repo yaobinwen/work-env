@@ -1,0 +1,5 @@
+- hosts: all
+  name: Install LaTeX on the target machines.
+
+  roles:
+    - role: latex

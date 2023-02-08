@@ -1,0 +1,8 @@
+# Ref: https://www.tug.org/texlive/quickinstall.html
+
+- name: Install
+  become: yes
+  apt:
+    name:
+      - texlive
+      - texlive-base
