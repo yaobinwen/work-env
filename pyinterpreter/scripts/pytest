@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# Run the local Python unit tests.
+
+cd "$(dirname "$0")" || exit
+cd .. || exit
+
+cd src &&
+	PYTHONPATH="$PWD/src:$PYTHONPATH" \
+		python3 -m pytest --cov=../src --cov-report=term-missing -v ..
+
+# vim: set expandtab shiftwidth=4:

@@ -1,0 +1,6 @@
+pyinterpreter (0.1.0-1) UNRELEASED; urgency=low
+
+  * Implement a tool that runs the given Python script using the latest (or
+    specified version) Python 3 interpreter.
+
+ -- Yaobin Wen <robin.wyb@gmail.com>  Sat, 11 Mar 2023 14:38:50 -0500
