@@ -17,4 +17,50 @@
     state: directory
     mode: 0o755
 
+- name: Update APT cache.
+  become: yes
+  apt:
+    update_cache: true
+    cache_valid_time: 900
+
+- name: Install `psutil` (needed by `dconf`).
+  become: yes
+  apt:
+    name:
+      - python3-psutil
+
+- name: Configure the power management.
+  dconf:
+    key: "{{item.key}}"
+    state: "present"
+    value: "{{item.value}}"
+  loop:
+    # Power: Dim screen when inactive
+    - key: "/org/gnome/settings-daemon/plugins/power/idle-dim"
+      value: "true"
+    # Power: Blank Screen "Never"
+    - key: "/org/gnome/desktop/session/idle-delay"
+      value: "uint32 900"
+    # Power: Automatic Suspend "When on Battery Power" after "15" minutes
+    - key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-type"
+      value: "'suspend'"
+    - key: "/org/gnome/settings-daemon/plugins/power/sleep-inactive-battery-timeout"
+      value: "900"
+
+- name: Configure the keyboard.
+  dconf:
+    key: "{{item.key}}"
+    state: "present"
+    value: "{{item.value}}"
+  loop:
+    # Repeat Keys: enabled
+    - key: "/org/gnome/desktop/peripherals/keyboard/repeat"
+      value: "true"
+    # Repeat Keys: delay
+    - key: "/org/gnome/desktop/peripherals/keyboard/delay"
+      value: "uint32 200"
+    # Repeat Keys: speed
+    - key: "/org/gnome/desktop/peripherals/keyboard/repeat-interval"
+      value: "uint32 30"
+
 # vim: set expandtab shiftwidth=2:
