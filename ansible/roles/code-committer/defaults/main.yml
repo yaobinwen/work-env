@@ -3,6 +3,9 @@ bashrc_file_name: .bashrc.code-committer-{{code_committer_name}}
 build_image: yes
 
 code_committer_ubuntu_version: 22.04
+code_committer_user_name: ywen
+code_committer_user_id: 1000
+code_committer_group_id: 1000
 
 committer_image_name: "code-committer-{{code_committer_name}}"
 committer_image_tag: "ubuntu-{{code_committer_ubuntu_version}}"

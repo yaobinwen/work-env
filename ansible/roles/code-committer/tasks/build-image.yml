@@ -3,6 +3,9 @@
     that:
       - code_committer_name is defined
       - code_committer_ubuntu_version is defined
+      - code_committer_user_name is defined
+      - code_committer_user_id is defined
+      - code_committer_group_id is defined
       - code_committer_git_user_email is defined
       - code_committer_git_user_name is defined
       - code_committer_host_code_root_dir is defined
@@ -45,6 +48,9 @@
       build:
         args:
           UBUNTU_VERSION: "{{code_committer_ubuntu_version}}"
+          USER_NAME: "{{code_committer_user_name}}"
+          USER_ID: "{{code_committer_user_id}}"
+          GROUP_ID: "{{code_committer_group_id}}"
           GIT_USER_EMAIL: "{{code_committer_git_user_email}}"
           GIT_USER_NAME: "{{code_committer_git_user_name}}"
           HOST_SSH_PRIVATE_KEY_FILE_NAME: "id_rsa"
