@@ -82,7 +82,15 @@
     reload: yes
     sysctl_set: yes
 
+- name: Get the status of the current user settings.
+  vars:
+    settings_file: "{{ansible_env.HOME}}/.config/Code/User/settings.json"
+  stat:
+    path: "{{settings_file}}"
+  register: sf_stat
+
 - name: Configure Visual Studio Code to my preferences.
+  when: sf_stat.stat.exists
   vars:
     settings_file: "{{ansible_env.HOME}}/.config/Code/User/settings.json"
     current_user_settings: "{{lookup('file', settings_file)|from_json}}"
@@ -93,11 +101,6 @@
     merged_settings: >
       {{current_user_settings | combine(vscode_preferred_settings)}}
   block:
-    - name: Get the meta info of the current user settings.
-      stat:
-        path: "{{settings_file}}"
-      register: sf_stat
-
     - name: Display the current user settings.
       debug:
         var: current_user_settings
