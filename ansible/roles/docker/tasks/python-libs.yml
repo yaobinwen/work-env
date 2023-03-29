@@ -5,6 +5,7 @@
     cache_valid_time: 900
 
 - name: Install pip and pip3.
+  become: yes
   apt:
     name:
       - python-pip
