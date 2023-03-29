@@ -32,6 +32,8 @@ Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for fu
     - `code_committer_ssh_private_key_file_path`
     - `code_committer_host_code_root_dir`
 - 2). Run `cd ./ansible`.
+- 3). Run `ansible-galaxy collection install -r ./ansible-requirements.yml` to install the needed Ansible collections.
+- 4). Run `ansible-galaxy role install -r ./ansible-requirements.yml` to install the needed Ansible roles.
 - 3). Run `ansible-playbook -Kvvv ./my-ubuntu-desktop-18.04.yml`.
 - 4). Run `ansible-playbook -vvv -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" -e code_committer_gpg_signing_subkey_file_path="/path/to/GPG-signing-subkey" -e code_committer_host_code_root_dir="/path/to/code/root-dir" code-committer-personal.yml`.
 
