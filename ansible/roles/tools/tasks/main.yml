@@ -22,6 +22,7 @@
   apt:
     name:
       - curl
+      - gnome-tweak-tool
       - meld
       - shellcheck
       - tree
