@@ -52,3 +52,13 @@ As of 2023-03-31, I am using a `Brother MFC-7860DW` printer/scanner. Follow the 
 - 7). Follow the "How to Install" steps to finish the actual installation. Some notes:
   - a). To run the installation script, I should provide `MFC-7860DW` as the input argument.
   - b). Because I am using a network printer, I should enter `yes` to the question "Will you specify the DeviceURI ?", and then enter the IP address of the printer.
+
+## Pre-commit
+
+Some of the repositories are configured to use [pre-commit](https://pre-commit.com/) to do preventative checks at the time of Git commits in order to minimize the commit mistakes.
+
+The official website provides the detailed steps to set up the pre-commit hooks. A quick recap is as follows:
+- Inside the repository root folder (i.e., where `.git` resides), run `pre-commit --version` to make sure `pre-commit` is installed.
+- Create `.pre-commit-config.yaml` as the configuration file. Use the `.pre-commit-config.yaml` of this repository as an example.
+- Run `pre-commit-validate-config ./.pre-commit-config.yaml` to validate the configuration file.
+- Run `pre-commit install` to install the hook entry point. Note this doesn't actually install the hook scripts but merely the entry point trigger. The actual hook scripts are installed at the first time the pre-commit hooks are called.
