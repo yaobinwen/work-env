@@ -1,11 +1,12 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 vscode_extensions:
-  
+
   - alefragnani.Bookmarks
   - EditorConfig.EditorConfig
   - foxundermoon.shell-format
   - hashicorp.terraform
+  - James-Yu.latex-workshop
   - lextudio.restructuredtext
   - marcostazi.VS-code-vagrantfile
   - ms-azuretools.vscode-docker
