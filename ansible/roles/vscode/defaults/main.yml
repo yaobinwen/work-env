@@ -16,6 +16,7 @@ vscode_extensions:
   - redhat.ansible
   - Stephanvs.dot
   - streetsidesoftware.code-spell-checker
+  - trond-snekvik.simple-rst
   - wholroyd.jinja
 
 # https://code.visualstudio.com/docs/getstarted/settings
