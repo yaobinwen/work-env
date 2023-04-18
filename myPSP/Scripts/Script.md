@@ -1,6 +1,6 @@
 # myPSP Script
 
-## Overview
+## 1. Overview
 
 This script defines my daily work process, including the activities, outputs, and measurements. The purpose is twofold:
 
@@ -14,73 +14,55 @@ This script has the following sections:
 - `Definition` has the detailed definition of my personal software process.
 - `Glossary` defines the terms used in this script that may not be known to everybody.
 
-## Version
+## 2. Version
 
-2018-08-15
+2023-04-18
 
-## Purposes
+## 3. Purposes
 
 | Purpose | Measurements | Notes |
 |:--------|:-------------|:------|
 | Find as many bugs as possible before the delivery of my task. | The number of bugs that are found after I publish my work. ||
 | Increase my throughput so I can get as many tasks done as possible. | The number of my Pull Requests that are ready for review and merge in one week. I don't use the number of _merged_ Pull Requests because the review depends on others availability. If I use the merged number, that also measures the others' throughput, not just mine. ||
 
-## Definition
+## 4. Definition
 
-### Planning
+### 4.1 Brief
 
-Set up a reminder for this phase.
+In this phase, I get briefed about the basics of the task:
+- Priority
+- Context: Whose work is this task related to; when is this task supposed to be finished.
 
-At this phase, I plan the tasks I want to work on for the day. The planned tasks come from the following sources:
+However, chances are I will not get the complete information about the task and will need the subsequent phases to explore it.
 
-- Emails
-- Calendar
-- Slack messages
-- GitHub issues
-- YouTrack issues
+### 4.2 Explore
 
-For each task, I need to do the following activities:
+In this phase, I explore the unknown territory of the task in order to make things clear. For example:
+- What solutions are possible and which one is preferred?
+- What technical issues are there and how to solve them?
 
-| Step | Activity | Output | Note |
-|:----:|:---------|:-------|:-----|
-| 1 | Determine task priority. | Task priority ||
-| 2 | Understand task context. | Whose work is this task related to; when is this task supposed to be finished ||
-| 3 | Figure out the task roadmap. | Task roadmap | [1] [2] |
-| 4 | Determine the task estimate. | Task estimate | [1] [2] |
+The output is the **task breakdown** that lists what should be done in order to finish the task.
 
-Notes:
+### 4.3 Plan
 
-- [1] If I can't develop a roadmap for a task, it means the task is not quite ready for implementation and I should set up a probe task to resolve all the uncertainties first.
-- [2] How to plan a probe task:
-  - Time-box it, such as one or two hours.
-  - In the time box, it's free to do anything to explore the territory of uncertainty.
-  - At the end of the time box (or anytime as long as I think I have collected enough information), I need to review the task and decide what to do next (maybe it would be another probe task).
+In this phase, I estimate the size and needed time for each item in the task breakdown.
 
-### Development
+The output is the task breakdown with size and time estimates.
 
-At this phase, I work on the tasks according to the priorities from the highest to the lowest.
+### 4.4 Develop & Test
 
-For each task, I need to do the following activities:
+In this phase, I work on the task implementation and testing.
 
-| Step | Activity | Output | Note |
-|:----:|:---------|:-------|:-----|
-| 1 | Log the time I spend on the task. | Task time log ||
-| 2 | Take breaks periodically to review if I work beyond the task scope. |||
+In addition to the work itself, I also need to do two things:
+- Log the actual time I spend on the task.
+- Take periodical breaks to review whether I am still in the scope.
 
-### Reflection
+### 4.5 Reflect
 
-Set up a reminder for this phase.
+In this phase, I reflect upon my whole day's work in the following aspects:
+- Whether I have followed the defined process.
+- Any other thoughts on what I can improve.
 
-At this phase, I reflect upon my whole day's work in the following aspects:
+## 5. Glossary
 
-| Aspect | Output | Note |
-|:-------|:-------|:-----|
-| Whether I have followed the defined process. | Reflection notes ||
-| Any other thoughts on what I can improve. | Reflection notes ||
-
-## Glossary
-
-| Term | Definition | Note |
-|:----:|:-----------|:-----|
-| Task roadmap | A list of things that to be done in order to finish the task. Developing the roadmap requires some insight into the task composition. ||
-| Probe task | A probe task is a time-boxed task that resolves the uncertainties of another task, hoping that the completion of the probe task can provide more information to the other task in order for me to give an estimate. ||
+- Task breakdown: A list of things that to be done in order to finish the task. Developing the breakdown requires some insight into the task composition.
