@@ -1,0 +1,61 @@
+- name: Debug
+  debug:
+    msg: Hello, '{{new_role_name}}'
+
+- debug:
+    msg: "playbook path: {{playbook_dir}}"
+
+- set_fact:
+    roles_path: "{{playbook_dir}}/roles"
+
+- name: Get the status of `ansible-role` directory.
+  stat:
+    path: "{{roles_path}}/ansible-role"
+  register: ansible_role_dir
+
+- name: >
+    Make sure `roles_path` is correct (by verifying `ansible-role` is its sub-
+    directory).
+  assert:
+    that:
+      - ansible_role_dir.stat.exists and ansible_role_dir.stat.isdir
+
+- set_fact:
+    new_role_path: "{{roles_path}}/{{new_role_name}}"
+
+- name: Create the new Ansible role's directory skeleton.
+  file:
+    path: "{{item}}"
+    state: directory
+  loop:
+    - "{{new_role_path}}"
+    - "{{new_role_path}}/defaults"
+    - "{{new_role_path}}/files"
+    - "{{new_role_path}}/handlers"
+    - "{{new_role_path}}/tasks"
+    - "{{new_role_path}}/templates"
+    - "{{new_role_path}}/vars"
+
+- name: Create the new Ansible role's files (part 1).
+  file:
+    path: "{{item}}/main.yml"
+    state: touch
+  loop:
+    - "{{new_role_path}}/defaults"
+    - "{{new_role_path}}/handlers"
+    - "{{new_role_path}}/vars"
+
+- name: Create the new Ansible role's files (part 2).
+  template:
+    src: "{{item.src_fname}}"
+    dest: "{{new_role_path}}/tasks/{{item.dest_fname}}"
+  loop:
+    - src_fname: included_tasks.yml.j2
+      dest_fname: "{{new_role_name}}.yml"
+    - src_fname: tasks_main.yml.j2
+      dest_fname: "main.yml"
+
+- name: Create the Ansible playbook that calls the role.
+  template:
+    src: "playbook.yml.j2"
+    dest: "{{playbook_dir}}/{{new_role_name}}.yml"

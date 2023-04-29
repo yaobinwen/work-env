@@ -1,0 +1,5 @@
+- name: Create a new Ansible role skeleton.
+  block:
+    - include_tasks: ansible-role.yml
+  always:
+    - meta: flush_handlers

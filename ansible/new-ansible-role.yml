@@ -1,0 +1,13 @@
+- hosts: localhost
+  name: >
+    Create a new empty Ansible role in the `ansible` folder so I don't need to
+    manually create all the sub-folders and files manually.
+  gather_facts: no
+
+  vars_prompt:
+    - name: new_role_name
+      prompt: What is the new Ansible role name?
+      private: false
+
+  roles:
+    - role: ansible-role
