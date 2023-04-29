@@ -1,0 +1,40 @@
+- name: Get status of /usr/local/bin/minikube
+  stat:
+    path: /usr/local/bin/minikube
+  register: minikube_stat
+
+- name: Install minikube.
+  when: not minikube_stat.stat.exists
+  block:
+    - name: Get architecture info.
+      command:
+        argv:
+          - dpkg
+          - --print-architecture
+      register: dpkg_arch
+
+    - name: Set architecture.
+      set_fact:
+        arch: "{{dpkg_arch.stdout_lines[0]}}"
+
+    - name: Get status of /var/cache/minikube-linux-{{arch}}
+      stat:
+        path: /var/cache/minikube-linux-{{arch}}
+      register: minikube_cache_stat
+
+    - name: Fetch the executable file.
+      when: not minikube_cache_stat.stat.exists
+      become: yes
+      get_url:
+        url: https://storage.googleapis.com/minikube/releases/latest/minikube-linux-{{arch}}
+        dest: /var/cache/minikube-linux-{{arch}}
+        mode: "0o755"
+
+    - name: Install the executable file.
+      become: yes
+      copy:
+        src: /var/cache/minikube-linux-{{arch}}
+        dest: /usr/local/bin/minikube
+        owner: "0"
+        group: "0"
+        mode: "0o755"

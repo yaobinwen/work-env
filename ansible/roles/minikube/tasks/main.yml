@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: minikube.yml
+  always:
+    - meta: flush_handlers
