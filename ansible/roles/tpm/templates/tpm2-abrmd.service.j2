@@ -1,0 +1,14 @@
+[Unit]
+Descript=TPM2 Access Broker and Resource Management Daemon
+
+[Service]
+Type=dbus
+Restart=always
+RestartSec=5
+BusName={{tpm2_abrmd_bus_name}}
+StandardOutput=syslog
+ExecStart={{tpm2_abrmd_path}} --tcti="{{tpm2_abrmd_tcti_config}}"
+User=tss
+
+[Install]
+WantedBy=multi-user.target

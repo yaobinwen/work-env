@@ -1,0 +1,80 @@
+- include_tasks: build-deps.yml
+
+- name: Create /var/cache
+  become: yes
+  file:
+    path: /var/cache
+    state: directory
+    mode: "0o755"
+    owner: "0"
+    group: "0"
+
+- name: Download IBM TPM simulator.
+  become: yes
+  get_url:
+    url: https://jaist.dl.sourceforge.net/project/ibmswtpm2/{{ibmtpm_fname}}
+    dest: /var/cache/{{ibmtpm_fname}}
+    mode: "0o644"
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: "Create /var/cache/{{ibmtpm_fname_stem}}"
+  become: yes
+  file:
+    path: /var/cache/{{ibmtpm_fname_stem}}
+    state: directory
+    mode: "0o755"
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Unarchive IBM TPM simulator source code.
+  unarchive:
+    src: /var/cache/{{ibmtpm_fname}}
+    dest: /var/cache/{{ibmtpm_fname_stem}}
+    remote_src: true
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Build tpm_server.
+  command:
+    argv:
+      - make
+    chdir: /var/cache/{{ibmtpm_fname_stem}}/src
+
+- name: Copy tpm_server to /usr/local/bin.
+  become: yes
+  copy:
+    src: /var/cache/{{ibmtpm_fname_stem}}/src/tpm_server
+    dest: /usr/local/bin/tpm_server
+    remote_src: true
+    mode: "0o755"
+    owner: "0"
+    group: "0"
+
+- name: Instantiate tpm-server.service.
+  become: yes
+  template:
+    src: tpm-server.service.j2
+    dest: /lib/systemd/system/tpm-server.service
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+  vars:
+    tpm_server_path: /usr/local/bin/tpm_server
+
+- name: Reload systemd daemon.
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: Enable tpm-server.service.
+  become: yes
+  systemd:
+    name: tpm-server.service
+    enabled: true
+
+- name: Enable tpm-server.service.
+  become: yes
+  systemd:
+    name: tpm-server.service
+    state: "started"

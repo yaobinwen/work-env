@@ -1,0 +1,8 @@
+- name: Install IBM TPM simulator.
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # The IBM TPM simulator.
+    - include_role:
+        name: tpm
+        tasks_from: ibmtpm.yml

@@ -1,0 +1,28 @@
+# IBM TPM 2.0 simulator
+# https://sourceforge.net/projects/ibmswtpm2/
+ibmtpm_version: "1682"
+ibmtpm_fname_stem: "ibmtpm{{ibmtpm_version}}"
+ibmtpm_fname: "{{ibmtpm_fname_stem}}.tar.gz"
+
+# TPM2 Access Broker & Resource Manager
+tpm2_abrmd_version: "3.0.0"
+tpm2_abrmd_fname_stem: "tpm2-abrmd-{{tpm2_abrmd_version}}"
+tpm2_abrmd_fname: "{{tpm2_abrmd_fname_stem}}.tar.gz"
+tpm2_abrmd_uri: https://github.com/tpm2-software/tpm2-abrmd/releases/download/{{tpm2_abrmd_version}}/{{tpm2_abrmd_fname}}
+
+# TPM2 TSS
+tpm2_tss_version: "4.0.1"
+tpm2_tss_fname_stem: "tpm2-tss-{{tpm2_tss_version}}"
+tpm2_tss_fname: "{{tpm2_tss_fname_stem}}.tar.gz"
+
+# TPM2 TSS OpenSSL Engine
+tpm2_tss_engine_version: "1.2.0"
+tpm2_tss_engine_fname_stem: "tpm2-tss-engine-{{tpm2_tss_engine_version}}"
+tpm2_tss_engine_fname: "{{tpm2_tss_engine_fname_stem}}.tar.gz"
+tpm2_tss_engine_uri: https://github.com/tpm2-software/tpm2-tss-engine/releases/download/{{tpm2_tss_engine_version}}/{{tpm2_tss_engine_fname}}
+
+# TPM2 Tools
+tpm2_tools_version: "5.5"
+tpm2_tools_fname_stem: "tpm2-tools-{{tpm2_tools_version}}"
+tpm2_tools_fname: "{{tpm2_tools_fname_stem}}.tar.gz"
+tpm2_tools_uri: "https://github.com/tpm2-software/tpm2-tools/releases/download/{{tpm2_tools_version}}/{{tpm2_tools_fname}}"

@@ -1,0 +1,49 @@
+- include_tasks: build-deps.yml
+
+- name: Download TPM2 TSS Engine source code.
+  become: yes
+  get_url:
+    url: "{{tpm2_tss_engine_uri}}"
+    dest: /var/cache/{{tpm2_tss_engine_fname}}
+    mode: "0o644"
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Unarchive TPM2 TSS Engine source code.
+  become: yes
+  unarchive:
+    src: /var/cache/{{tpm2_tss_engine_fname}}
+    # NOTE(ywen): We unarchive the code in /var/cache directly because the
+    # archive contains the folder {{tpm2_tss_engine_fname_stem}} already.
+    dest: /var/cache
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Build TPM2 TSS Engine source code.
+  block:
+  - name: Configure the code.
+    command:
+      argv:
+        - ./configure
+      chdir: /var/cache/{{tpm2_tss_engine_fname_stem}}
+
+  - name: Build the code.
+    command:
+      argv:
+        - make
+      chdir: /var/cache/{{tpm2_tss_engine_fname_stem}}
+
+  # Location: /usr/lib/x86_64-linux-gnu/engines-1.1
+  - name: Install the build artifacts.
+    become: yes
+    command:
+      argv:
+        - make
+        - install
+      chdir: /var/cache/{{tpm2_tss_engine_fname_stem}}
+
+  - name: Update dynamic linker run-time bindings.
+    become: yes
+    command:
+      argv:
+        - ldconfig

@@ -1,0 +1,10 @@
+- name: Install TPM2 Software Stack (TSS).
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # We need TPM2-TSS to use a TPM (simulator or not). TPM2-TSS is an open-
+    # source library that implements Trusted Computing Group's (TCG) TPM2
+    # Software Stack (TSS). See https://github.com/tpm2-software/tpm2-tss.
+    - include_role:
+        name: tpm
+        tasks_from: tpm2-tss.yml

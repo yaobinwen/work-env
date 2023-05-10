@@ -1,0 +1,8 @@
+- name: Install TPM2 TSS Engine.
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # We need tpm2-tss-engine in order to use openssl with TPM.
+    - include_role:
+        name: tpm
+        tasks_from: tpm2-tss-engine.yml

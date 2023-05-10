@@ -1,0 +1,17 @@
+- name: Install TPM2 Access Broker & Resource Manager.
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # TPM resource manager "...manages the TPM context in a manner similar to a
+    # virtual memory manager. It swaps objects, sessions, and sequences in and
+    # out of the limited TPM memory as needed. This layer is mostly transparent
+    # to the upper layers of the TSS and is not mandatory. However, if not
+    # implemented, the upper layers will be responsible for TPM context
+    # management."
+    #
+    # Because we are using a TPM simulator, we need to install an access broker
+    # implementation of it, which is what `tpm2-abrmd` (TPM2 Access Broker &
+    # Resource Manager) is all about.
+    - include_role:
+        name: tpm
+        tasks_from: tpm2-abrmd.yml

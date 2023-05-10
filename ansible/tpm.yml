@@ -1,0 +1,5 @@
+- import_playbook: tpm-ibmtpm.yml
+- import_playbook: tpm-tpm2-tss.yml
+- import_playbook: tpm-tpm2-abrmd.yml
+- import_playbook: tpm-tpm2-tss-engine.yml
+- import_playbook: tpm-tpm2-tools.yml

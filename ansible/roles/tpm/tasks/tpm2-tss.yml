@@ -1,0 +1,58 @@
+- include_tasks: build-deps.yml
+
+- name: Download TPM2 TSS source code.
+  become: yes
+  get_url:
+    url: https://github.com/tpm2-software/tpm2-tss/releases/download/4.0.1/{{tpm2_tss_fname}}
+    dest: /var/cache/{{tpm2_tss_fname}}
+    mode: "0o644"
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Unarchive TPM2 TSS source code.
+  become: yes
+  unarchive:
+    src: /var/cache/{{tpm2_tss_fname}}
+    # NOTE(ywen): We unarchive the code in /var/cache directly because the
+    # archive contains the folder {{tpm2_tss_fname_stem}} already.
+    dest: /var/cache
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Build TPM2 TSS source code.
+  block:
+  - name: Configure the code.
+    command:
+      argv:
+        - ./configure
+        # By default, the udev rules are installed to `${libdir}/udev/rules.d`
+        # which is `/usr/local/lib/udev/rules.d` on Ubuntu (18.04). However,
+        # udev doesn't query `/usr/local/lib` for rules (at least under Ubuntu
+        # but I'm not sure if this is udev behavior or Ubuntu behavior), so we
+        # need to override the installation path for udev rules.
+        # See:
+        # - https://github.com/tpm2-software/tpm2-tss/issues/1188
+        # - https://github.com/tpm2-software/tpm2-abrmd/issues/569
+        - --with-udevrulesdir=/etc/udev/rules.d
+      chdir: /var/cache/{{tpm2_tss_fname_stem}}
+
+  - name: Build the code.
+    command:
+      argv:
+        - make
+      chdir: /var/cache/{{tpm2_tss_fname_stem}}
+
+  # Location: /usr/local/lib
+  - name: Install the build artifacts.
+    become: yes
+    command:
+      argv:
+        - make
+        - install
+      chdir: /var/cache/{{tpm2_tss_fname_stem}}
+
+  - name: Update dynamic linker run-time bindings.
+    become: yes
+    command:
+      argv:
+        - ldconfig

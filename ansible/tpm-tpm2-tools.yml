@@ -1,0 +1,8 @@
+- name: Install TPM2 Tools.
+  hosts: all
+  gather_facts: yes
+  tasks:
+    # The TPM2 Tools.
+    - include_role:
+        name: tpm
+        tasks_from: tpm2-tools.yml

@@ -1,0 +1,118 @@
+# The user `tss` is used during bus name claim. `tpm2-tss` should already add
+# the user.
+- name: Create user `tss` if needed.
+  block:
+  - name: Get all existing users.
+    getent:
+      database: passwd
+      split: ":"
+
+  - name: Create user `tss` if it doesn't already exist.
+    when: ("tss" not in ansible_facts.getent_passwd.keys())
+    user:
+      name: tss
+      group: tss
+      create_home: false
+      system: true
+
+- name: Download tpm2-abrmd source code.
+  become: yes
+  get_url:
+    url: "{{tpm2_abrmd_uri}}"
+    dest: /var/cache/{{tpm2_abrmd_fname}}
+    mode: "0o644"
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Unarchive tpm2-abrmd source code.
+  become: yes
+  unarchive:
+    src: /var/cache/{{tpm2_abrmd_fname}}
+    # NOTE(ywen): We unarchive the code in /var/cache directly because the
+    # archive contains the folder {{tpm2_abrmd_fname}} already.
+    dest: /var/cache
+    owner: "{{ansible_facts.user_uid}}"
+    group: "{{ansible_facts.user_gid}}"
+
+- name: Build tpm2-abrmd source code.
+  block:
+  - name: Configure the code.
+    command:
+      argv:
+        - ./configure
+        # The directory where a policy that will allow `tss` user to claim a
+        # name on the D-Bus system bus.
+        - --with-dbuspolicydir=/etc/dbus-1/system.d
+        # The systemd unit directory that is needed for `tpm2-abrmd` daemon to
+        # be started as part of the boot process.
+        - --with-systemdsystemunitdir=/usr/lib/systemd/system
+      chdir: /var/cache/{{tpm2_abrmd_fname_stem}}
+
+  - name: Build the code.
+    command:
+      argv:
+        - make
+      chdir: /var/cache/{{tpm2_abrmd_fname_stem}}
+
+  # Locations:
+  # - /usr/local/sbin
+  # - /usr/local/lib
+  - name: Install the build artifacts.
+    become: yes
+    command:
+      argv:
+        - make
+        - install
+      chdir: /var/cache/{{tpm2_abrmd_fname_stem}}
+
+  - name: Update dynamic linker run-time bindings.
+    become: yes
+    command:
+      argv:
+        - ldconfig
+
+- name: Install the tpm2-abrmd D-Bus service.
+  become: yes
+  copy:
+    # This file is installed by `make install`.
+    src: /usr/local/share/dbus-1/system-services/com.intel.tss2.Tabrmd.service
+    dest: /usr/share/dbus-1/system-services/com.intel.tss2.Tabrmd.service
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+
+- name: Reload D-Bus (because dbus.service cannot be restarted manually).
+  become: yes
+  systemd:
+    name: dbus.service
+    state: "reloaded"
+
+- name: Install tpm2-abrmd systemd service file.
+  become: yes
+  template:
+    src: tpm2-abrmd.service.j2
+    dest: /lib/systemd/system/tpm2-abrmd.service
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+  vars:
+    tpm2_abrmd_bus_name: com.intel.tss2.Tabrmd
+    tpm2_abrmd_path: /usr/local/sbin/tpm2-abrmd
+    tpm2_abrmd_tcti_config: "libtss2-tcti-mssim.so.0:host=127.0.0.1,port=2321"
+
+- name: Reload systemd daemon.
+  become: yes
+  systemd:
+    daemon_reload: yes
+
+- name: Enable tpm2-abrmd.service.
+  become: yes
+  systemd:
+    name: tpm2-abrmd.service
+    enabled: true
+
+- name: Enable tpm2-abrmd.service.
+  become: yes
+  systemd:
+    name: tpm2-abrmd.service
+    state: "started"

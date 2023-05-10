@@ -1,0 +1,30 @@
+- name: Update APT cache.
+  become: yes
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install build dependencies.
+  become: yes
+  apt:
+    name:
+      - autoconf
+      - autoconf-archive
+      - automake
+      - dbus-x11
+      - gcc
+      - lcov
+      - libcmocka-dev
+      - libcurl4-gnutls-dev
+      - libdbus-1-dev
+      - libgcrypt20-dev
+      - libglib2.0-dev
+      - libjson-c-dev
+      - libssl-dev
+      - libtool
+      - liburiparser-dev
+      - pandoc
+      - pkg-config
+      - uthash-dev
+      - uuid-dev
+    state: latest
