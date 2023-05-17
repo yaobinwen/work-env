@@ -17,12 +17,14 @@
     update_cache: yes
     cache_valid_time: 900
 
+- name: Install GNOME Tweak tool
+  include_tasks: "gnome-tweak/{{ansible_distribution_version}}.yml"
+
 - name: Install helpful tools.
   become: yes
   apt:
     name:
       - curl
-      - gnome-tweak-tool
       - meld
       - shellcheck
       - tree

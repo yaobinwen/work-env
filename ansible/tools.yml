@@ -1,5 +1,6 @@
 - hosts: all
   name: Install helpful tools.
+  gather_facts: true
   roles:
     - role: tools
       become: yes
