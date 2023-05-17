@@ -5,30 +5,51 @@
   register: dpkg_architecture
   changed_when: false
 
-- name: Add the apt key for Vagrant.
-  become: yes
-  apt_key:
-    url: "https://apt.releases.hashicorp.com/gpg"
-    id: '0xDA418C88A3219F7B'
+- name: Create /var/cache.
+  become: true
+  file:
+    path: /var/cache
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0o755"
+
+- name: Download the armored GPG key for Hashicorp's APT repository.
+  become: true
+  get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /var/cache/apt.releases.hashicorp.com.gpg
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+
+- name: Dearmor the GPG key for Hashicorp's APT repository.
+  become: true
+  command:
+    argv:
+      - gpg
+      - --dearmor
+      - -o
+      - /usr/share/keyrings/hashicorp-archive-keyring.gpg
+      - /var/cache/apt.releases.hashicorp.com.gpg
 
 - name: Add the repository for Vagrant.
-  become: yes
+  become: true
   apt_repository:
-    repo: "deb [arch={{arch}}] https://apt.releases.hashicorp.com {{release}} main"
+    repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{release}} main"
     mode: "0o644"
     filename: hashicorp
   vars:
-    arch: "{{dpkg_architecture.stdout_lines[0]}}"
     release: "{{distribution_release_map[ansible_distribution][ansible_distribution_release]|default(ansible_distribution_release)}}"
 
 - name: Update APT cache.
-  become: yes
+  become: true
   apt:
     update_cache: yes
     cache_valid_time: 900
 
 - name: Install Vagrant.
-  become: yes
+  become: true
   apt:
     name:
       - vagrant
