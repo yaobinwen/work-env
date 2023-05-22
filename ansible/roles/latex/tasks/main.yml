@@ -1,14 +1,21 @@
 # Ref: https://www.tug.org/texlive/quickinstall.html
 
 - name: Install texlive.
-  become: yes
+  become: true
   apt:
     name:
       - texlive
       - texlive-base
+      - texlive-binaries
+      - texlive-fonts-recommended
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-latex-recommended
+      - texlive-pictures
+      - texlive-plain-generic
 
 - name: Install latexmk (for VS Code extension LaTeX Workshop).
-  become: yes
+  become: true
   apt:
     name:
       - latexmk
