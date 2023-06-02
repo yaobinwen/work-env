@@ -14,8 +14,8 @@ vscode_extensions:
   - ms-vscode.cpptools
   - pdconsec.vscode-print
   - redhat.ansible
-  - Stephanvs.dot
   - streetsidesoftware.code-spell-checker
+  - tintinweb.graphviz-interactive-preview
   - trond-snekvik.simple-rst
   - wholroyd.jinja
 
