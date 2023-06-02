@@ -1,5 +1,11 @@
 # Ref: https://www.tug.org/texlive/quickinstall.html
 
+- name: Update APT cache.
+  become: true
+  apt:
+    update_cache: true
+    cache_valid_time: 900
+
 - name: Install texlive.
   become: true
   apt:
