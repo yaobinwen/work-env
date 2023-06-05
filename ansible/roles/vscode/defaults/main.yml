@@ -3,20 +3,22 @@
 vscode_extensions:
 
   - alefragnani.Bookmarks
+  - brunnerh.insert-unicode
   - EditorConfig.EditorConfig
   - foxundermoon.shell-format
   - hashicorp.terraform
-  - James-Yu.latex-workshop
-  - lextudio.restructuredtext
+  - james-yu.latex-workshop
   - marcostazi.VS-code-vagrantfile
   - ms-azuretools.vscode-docker
+  - ms-python.flake8
   - ms-python.python
+  - ms-python.vscode-pylance
   - ms-vscode.cpptools
   - pdconsec.vscode-print
   - redhat.ansible
+  - redhat.vscode-yaml
   - streetsidesoftware.code-spell-checker
   - tintinweb.graphviz-interactive-preview
-  - trond-snekvik.simple-rst
   - wholroyd.jinja
 
 # https://code.visualstudio.com/docs/getstarted/settings
