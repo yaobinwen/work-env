@@ -1,0 +1,4 @@
+- hosts: all
+  name: Set up pgAdmin4.
+  roles:
+    - pgAdmin4
