@@ -1,0 +1,56 @@
+# Ref: https://www.pgadmin.org/download/pgadmin-4-apt/
+
+- name: Create the cache folder.
+  become: true
+  file:
+    path: /var/cache/ywen
+    state: directory
+    owner: "{{ansible_env.USER}}"
+    group: "{{ansible_env.USER}}"
+    mode: "0o755"
+
+- name: Download public key for the pgAdmin APT repository.
+  get_url:
+    url: https://www.pgadmin.org/static/packages_pgadmin_org.pub
+    dest: /var/cache/ywen/packages_pgadmin_org.pub
+    owner: "{{ansible_env.USER}}"
+    group: "{{ansible_env.USER}}"
+    mode: "0o644"
+
+- name: Dearmor the public key into /usr/share/keyrings/.
+  become: true
+  command:
+    argv:
+      - gpg
+      - "--yes"
+      - "--dearmor"
+      - "-o"
+      - "/usr/share/keyrings/packages-pgadmin-org.gpg"
+      - "/var/cache/ywen/packages_pgadmin_org.pub"
+
+- name: Create the APT source file.
+  vars:
+    lsb_codename: "{{ansible_distribution_release}}"
+  become: true
+  copy:
+    content: >
+      deb [signed-by=/usr/share/keyrings/packages-pgadmin-org.gpg]
+      https://ftp.postgresql.org/pub/pgadmin/pgadmin4/apt/{{lsb_codename}}
+      pgadmin4 main
+    dest: "/etc/apt/sources.list.d/pgadmin4.list"
+    mode: "0o644"
+    owner: "0"
+    group: "0"
+
+- name: Update APT cache.
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install pgAdmin4 Desktop.
+  become: true
+  apt:
+    name:
+      - pgadmin4-desktop
+    state: latest
