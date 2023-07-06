@@ -1,0 +1,138 @@
+#!/bin/sh
+
+# Check if the required tools are installed.
+XPRINTIDLE_PATH=$(which xprintidle)
+RAND_PATH=$(which rand)
+XDOTOOL_PATH=$(which xdotool)
+
+cat << __EOS__
+XPRINTIDLE_PATH=${XPRINTIDLE_PATH}
+RAND_PATH=${RAND_PATH}
+XDOTOOL_PATH=${XDOTOOL_PATH}
+__EOS__
+
+: ${XPRINTIDLE_PATH:? xprintidle is not found}
+: ${RAND_PATH:? rand is not found}
+: ${XDOTOOL_PATH:? xdotool is not found}
+
+# Define the options and their corresponding variables
+OPTIONS="x:y:h"
+LONGOPTS="dry-run,idle-time-ms:,x-max:,y-max:,interval-s:,verbose,help"
+
+# Parse the options
+PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+echo "PARSED=$PARSED"
+
+# Usage
+USAGE="""Usage: $0 [OPTIONS]
+
+  --dry-run:          Print what's to be run but do not run it.
+  --idle-time-ms:     The idle time (in milliseconds) before automatically
+                      moving the mouse.
+  -x/--x-max:         The max X-axis to move the mouse.
+  -y/--y-max:         The max Y-axis to move the mouse.
+  --interval-s:       The interval (in seconds) between two moves.
+  --verbose:          Display working details.
+  --help:             Show this help message.
+"""
+
+# Evaluate the parsing results
+eval set -- "$PARSED"
+
+# Figure out the default values.
+DEFAULT_DRY_RUN="0"
+DEFAULT_IDLE_TIME_MS="100000"
+DEFAULT_MOVE_X_MAX="800"
+DEFAULT_MOVE_Y_MAX="600"
+DEFAULT_INTERVAL_S="10"
+DEFAULT_VERBOSE="0"
+
+# Set the initial values.
+DRY_RUN="$DEFAULT_DRY_RUN"
+IDLE_TIME_MS="$DEFAULT_IDLE_TIME_MS"
+MOVE_X_MAX="$DEFAULT_MOVE_X_MAX"
+MOVE_Y_MAX="$DEFAULT_MOVE_Y_MAX"
+INTERVAL_S="$DEFAULT_INTERVAL_S"
+VERBOSE="$DEFAULT_VERBOSE"
+
+# Process the options and arguments
+while true; do
+  case "$1" in
+    --dry-run)
+      echo "Option --dry-run"
+      DRY_RUN="1"
+      shift
+      ;;
+    --idle-time-ms)
+      echo "Option --idle-time-ms"
+      IDLE_TIME_MS="$2"
+      shift 2
+      ;;
+    -x|--x-max)
+      echo "Option -x/--x-max"
+      MOVE_X_MAX="$2"
+      shift 2
+      ;;
+    -y|--y-max)
+      echo "Option -y/--y-max"
+      MOVE_Y_MAX="$2"
+      shift 2
+      ;;
+    --interval-s)
+      echo "Option --interval-s"
+      INTERVAL_S="$2"
+      shift 2
+      ;;
+    --verbose)
+      echo "Option --verbose"
+      VERBOSE="1"
+      shift
+      ;;
+    -h|--help)
+      echo "$USAGE"
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
+  esac
+done
+
+# Display current settings.
+echo "      DRY_RUN: $DRY_RUN"
+echo " IDLE_TIME_MS: $IDLE_TIME_MS"
+echo "   MOVE_X_MAX: $MOVE_X_MAX"
+echo "   MOVE_Y_MAX: $MOVE_Y_MAX"
+echo "   INTERVAL_S: $INTERVAL_S"
+echo "      VERBOSE: $VERBOSE"
+
+if [ "$DRY_RUN" = "1" ]; then
+  exit 0
+fi
+
+while :; do
+  IDLE_TIME=$(xprintidle)
+  if [ "$VERBOSE" = "1" ]; then
+    echo "IDLE_TIME=$IDLE_TIME"
+  fi
+
+  if  [ $IDLE_TIME -gt $IDLE_TIME_MS ]
+  then
+    X=$(rand -M $MOVE_X_MAX)
+    Y=$(rand -M $MOVE_Y_MAX)
+    if [ "$VERBOSE" = "1" ]; then
+      echo "X=$X; Y=$Y"
+    fi
+    xdotool mousemove "$X" "$Y";
+  fi
+
+  if [ "$VERBOSE" = "1" ]; then
+    echo "sleep $INTERVAL_S..."
+  fi
+  sleep "$INTERVAL_S"
+done

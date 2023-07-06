@@ -1,18 +1,28 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
+- name: Get current user info.
+  user:
+    name: '{{ansible_env.USER}}'
+  register: curr_user_info
+
 - name: Set up the home bin directory.
   file:
-    path: '{{ansible_env.HOME}}/bin'
+    path: '{{curr_user_info.home}}/bin'
     state: directory
+    owner: '{{curr_user_info.uid}}'
+    group: '{{curr_user_info.group}}'
+    mode: '0o755'
 
 - name: Install the utility that disables the track stick.
   copy:
     src: 'disable-track-stick.py'
-    dest: '{{ansible_env.HOME}}/bin'
-    mode: '0774'
+    dest: '{{curr_user_info.home}}/bin'
+    owner: '{{curr_user_info.uid}}'
+    group: '{{curr_user_info.group}}'
+    mode: '0o755'
 
 - name: Update APT cache.
-  become: yes
+  become: true
   apt:
     update_cache: yes
     cache_valid_time: 900
@@ -21,7 +31,7 @@
   include_tasks: "gnome-tweak/{{ansible_distribution_version}}.yml"
 
 - name: Install helpful tools.
-  become: yes
+  become: true
   apt:
     name:
       - curl
@@ -35,5 +45,33 @@
       # old to work with the `virtualbox`. Therefore, we also install
       # `vagrant` by downloading the Debian image.
       # - vagrant
+
+- name: Install the mouse mover to keep presence.
+  block:
+    - name: Install supporting tools.
+      become: true
+      apt:
+        name:
+          - rand
+          - xdotool
+          - xprintidle
+
+    - name: Create /usr/local/bin.
+      become: true
+      file:
+        path: /usr/local/bin
+        state: directory
+        owner: "0"
+        group: "0"
+        mode: "0o755"
+
+    - name: Install the mouse mover script to /usr/local/bin.
+      become: true
+      copy:
+        src: "mouse-mover"
+        dest: /usr/local/bin/mouse-mover
+        owner: "0"
+        group: "0"
+        mode: "0o755"
 
 # vim: set expandtab shiftwidth=2:
