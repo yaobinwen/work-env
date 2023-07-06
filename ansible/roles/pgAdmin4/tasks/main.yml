@@ -1,4 +1,5 @@
 # Ref: https://www.pgadmin.org/download/pgadmin-4-apt/
+# How to setup debugger: https://qtibia.com/how-to-install-the-pl-pgsql-debugger-and-use-it-in-pgadmin/
 
 - name: Create the cache folder.
   become: true
