@@ -115,6 +115,7 @@ _build_packages() {
 PKG_PATHS="
     python/ywen
     python/secret-file
+    python/tex-pkg
     openvpn-utils
     pyinterpreter
 "
