@@ -1,0 +1,5 @@
+- hosts: all
+  name: Configure Vim on the target machines.
+
+  roles:
+    - role: vim
