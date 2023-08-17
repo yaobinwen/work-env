@@ -1,5 +1,0 @@
-- hosts: all
-  name: Install `vimrc` on the target machines.
-
-  roles:
-    - role: vimrc
