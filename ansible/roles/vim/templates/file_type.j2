@@ -1,0 +1,7 @@
+setlocal shiftwidth={{vim_ft_shiftwidth}}
+setlocal tabstop={{vim_ft_tabstop}}
+{% if vim_ft_expandtab -%}
+    setlocal expandtab
+{%- else -%}
+    setlocal noexpandtab
+{%- endif -%}

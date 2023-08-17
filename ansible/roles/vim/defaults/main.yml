@@ -1,0 +1,11 @@
+# Vim configuration
+vim_colorcolumn_default: [50,72,80,100,120]
+vim_encoding_default: "utf-8"
+vim_shiftwidth_default: 4
+vim_tabstop_default: 4
+
+file_type_configs:
+  - type: yaml
+    shiftwidth: 2
+    tabstop: 2
+    expandtab: true
