@@ -6,8 +6,33 @@
   register: unprivileged_user
 
 - name: Create Vim configuration file.
-  copy:
-    src: 'vimrc'
+  template:
+    src: 'vimrc.j2'
     dest: '{{unprivileged_user.home}}/.vimrc'
     force: no
+    owner: '{{unprivileged_user.uid}}'
+    group: '{{unprivileged_user.group}}'
     mode: "0o0664"
+
+- name: Create folders for the file-type-specific configuration.
+  file:
+    state: directory
+    path: '{{unprivileged_user.home}}/{{item}}'
+    owner: '{{unprivileged_user.uid}}'
+    group: '{{unprivileged_user.group}}'
+  loop:
+    - '.vim'
+    - '.vim/after'
+    - '.vim/after/ftplugin'
+
+- name: Create Vim configuration for file types.
+  vars:
+    vim_ft_shiftwidth: '{{item.shiftwidth}}'
+    vim_ft_tabstop: '{{item.tabstop}}'
+    vim_ft_expandtab: '{{item.expandtab}}'
+  template:
+    src: 'file_type.j2'
+    dest: '{{unprivileged_user.home}}/.vim/after/ftplugin/{{item.type}}.vim'
+    owner: '{{unprivileged_user.uid}}'
+    group: '{{unprivileged_user.group}}'
+  loop: '{{file_type_configs}}'
