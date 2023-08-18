@@ -9,7 +9,6 @@
   template:
     src: 'vimrc.j2'
     dest: '{{unprivileged_user.home}}/.vimrc'
-    force: no
     owner: '{{unprivileged_user.uid}}'
     group: '{{unprivileged_user.group}}'
     mode: "0o0664"
