@@ -44,7 +44,11 @@
 
     - name: Get the version of the currently installed Go.
       set_fact: #2
-        go_curr_version: "{{lookup('file', '/usr/local/go/VERSION')}}"
+        # NOTE(ywen): From some Go version, the `VERSION` file contains two
+        # lines: the first line is the Go version string; the second line is
+        # a time that we don't care. So we call `split` to split the content
+        # into lines and only use the first line.
+        go_curr_version: "{{lookup('file', '/usr/local/go/VERSION').split('\n')[0]}}"
 
   # NOTE(ywen): This assert task must not be in the block #3 because the
   # `set_fact` #2 changes the value of `go_curr_version` if everything goes
