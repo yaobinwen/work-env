@@ -2,7 +2,7 @@
 # value is "present".
 go_lang_state: "present"
 
-go_lang_version: "1.16.4"
+go_lang_version: "1.21.1"
 
 architecture_mapping:
   x86_32: amd32
