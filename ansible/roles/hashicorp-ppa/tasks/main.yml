@@ -1,0 +1,36 @@
+# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
+
+- name: Create /var/cache.
+  become: true
+  file:
+    path: /var/cache
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0o755"
+
+- name: Download the armored GPG key for Hashicorp's APT repository.
+  become: true
+  get_url:
+    url: https://apt.releases.hashicorp.com/gpg
+    dest: /usr/share/keyrings/hashicorp-archive-keyring.gpg
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+
+- name: Add the repository for Vagrant.
+  become: true
+  apt_repository:
+    repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{release}} main"
+    mode: "0o644"
+    filename: hashicorp
+  vars:
+    release: "{{distribution_release_map[ansible_distribution][ansible_distribution_release]|default(ansible_distribution_release)}}"
+
+- name: Update APT cache.
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+# vim: set expandtab shiftwidth=2:

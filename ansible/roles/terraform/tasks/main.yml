@@ -1,13 +1,6 @@
-- name: Add Terraform APT key.
-  apt_key:
-    url: https://apt.releases.hashicorp.com/gpg
-    keyring: /etc/apt/trusted.gpg.d/hashicorp.gpg
-    state: present
-
-- name: Add HashiCorp APT repository.
-  apt_repository:
-    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ansible_distribution_release}} main"
-    mode: '0o644'
+- name: Set up HashiCorp PPA.
+  include_role:
+    name: hashicorp-ppa
 
 - name: Install Terraform.
   apt:
