@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if test $# -eq 0; then
+	cd src && python3 -m pytest --cov=../src --cov-report=term-missing -v ..
+else
+	T="$1"
+	shift
+	python3 -m coverage run -m "tests.unit.$PROJECT.test_$T" ${1+"$@"} || exit
+	python3 -m coverage report -m "src/$PROJECT/$T.py" || exit
+fi
