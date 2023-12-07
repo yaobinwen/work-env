@@ -10,9 +10,15 @@
   become: true
   apt:
     name:
+      # `texlive-extra-utils` installs `latexindent` which is used by the VS
+      # Code extension LaTex Workshop. `latexindent` before 3.9 requires the
+      # module Log4Perl; `latexindent` 3.9+ doesn't require it.
+      # See https://tex.stackexchange.com/a/587292/66282.
+      - liblog-log4perl-perl
       - texlive
       - texlive-base
       - texlive-binaries
+      - texlive-extra-utils
       - texlive-fonts-recommended
       - texlive-latex-base
       - texlive-latex-extra
