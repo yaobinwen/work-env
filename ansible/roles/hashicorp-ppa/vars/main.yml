@@ -1,0 +1,2 @@
+hashicorp_ppa_uri: https://apt.releases.hashicorp.com
+hashicorp_keyring_path: /usr/share/keyrings/hashicorp-archive-keyring.gpg
