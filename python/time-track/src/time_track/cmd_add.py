@@ -190,8 +190,8 @@ class TimeTrackDayStatistics(object):
         return self._tracked_mins
 
 
-# TODO(ywen): `StatisticsDB` is really not just file-based. However, to get
-# things started quickly, I'm making it a file-based DB.
+# TODO(ywen): `StatisticsDB` should really not be just a file-based database.
+# However, to get things started quickly, I'm making it a file-based DB for now.
 class StatisticsDB(object):
     def __init__(self, db_dpath: pathlib.Path):
         self._db_dpath = db_dpath
@@ -239,7 +239,7 @@ class StatisticsDB(object):
     def close(self):
         self._file_latest.close()
 
-    def append(self, day_statistics: TimeTrackDayStatistics):
+    def add(self, day_statistics: TimeTrackDayStatistics):
         writer = csv.writer(self._file_latest)
         writer.writerow(
             [
@@ -254,10 +254,7 @@ class StatisticsDB(object):
         )
 
 
-def _process_time_tracking_notes(
-    logger,
-    time_tracking_notes_content: str,
-):
+def _process_time_tracking_notes(logger, time_tracking_notes_content: str):
     lines = time_tracking_notes_content.splitlines()
 
     tt_notes = None
@@ -416,30 +413,42 @@ def _process_time_tracking_notes(
         tt_notes_begin = False
         tt_notes = None
 
-    return tt_notes_list
+    def custom_key(item):
+        return item.date
+
+    return sorted(tt_notes_list, key=custom_key)
 
 
 def _do_subcmd_add(
     logger,
     subcmd: str,
+    commit: bool,
     time_tracking_notes_file: pathlib.Path,
     statistics_db: pathlib.Path,
 ) -> int:
-    # Open the database of the historical statistics.
-    db = StatisticsDB(db_dpath=statistics_db)
-    db.open()
-
     content = time_tracking_notes_file.read_text(encoding=PREFERRED_ENCODING)
 
     tt_notes_list = _process_time_tracking_notes(
         logger=logger, time_tracking_notes_content=content
     )
 
-    # Append to the statistics database.
-    for tt_notes in tt_notes_list:
-        db.append(day_statistics=TimeTrackDayStatistics(time_track_notes=tt_notes))
+    if commit:
+        # Open the database of the historical statistics.
+        db = StatisticsDB(db_dpath=statistics_db)
+        db.open()
 
-    db.close()
+        # Append to the statistics database.
+        for tt_notes in tt_notes_list:
+            db.add(day_statistics=TimeTrackDayStatistics(time_track_notes=tt_notes))
+
+        db.close()
+    else:
+        logger.warning("*" * 80)
+        logger.warning(
+            "The `--commit` CLI option was not used "
+            "so the time tracking notes have NOT been added to the database."
+        )
+        logger.warning("*" * 80)
 
     return 0
 
@@ -448,6 +457,10 @@ def syntax_subcmd_add(subcmds):
     desc = "Add new time tracking notes into database"
     subcmd = subcmds.add_parser("add", description=desc, help=desc)
     subcmd.set_defaults(func=_do_subcmd_add)
+
+    subcmd.add_argument(
+        "--commit", action="store_true", help="Add time tracking notes to DB"
+    )
 
     subcmd.add_argument(
         "time_tracking_notes_file",
