@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: aws-cli.yml
+  always:
+    - meta: flush_handlers

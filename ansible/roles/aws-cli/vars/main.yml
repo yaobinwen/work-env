@@ -1,0 +1,14 @@
+# AWS CLI
+awscli_architectures:
+  amd64:
+    name: x86_64
+  arm64:
+    name: aarch64
+
+# NOTE(ywen): As of 2023-06-01, versions of 2.11.14+ causes "illegal
+# instruction" crash on aarch64 platforms. The latest version that works on
+# both x86-64 and aarch64 is 2.11.13.
+awscli_version: "2.11.13"
+
+# The directory to put cached files.
+cache_dir: /var/cache

@@ -1,0 +1,133 @@
+# References:
+# [1] https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+
+# Ensure needed tools are installed:
+# - unzip(1) is needed to extract the AWS CLI archive.
+# - gpg(1) is needed to verify the archive integrity.
+- name: Ensure that needed tools are installed.
+  apt:
+    name:
+      - gpg
+      - unzip
+    state: present
+    install_recommends: no
+
+- name: Create {{cache_dir}}/ywen.
+  file:
+    path: "{{cache_dir}}/ywen"
+    state: directory
+    mode: "0o755"
+
+- name: Determine the dpkg native architecture.
+  command: dpkg --print-architecture
+  register: dpkg_output
+  changed_when: false
+
+- name: Determine the AWS CLI zip filename.
+  vars:
+    arch_name: "{{awscli_architectures[dpkg_output.stdout_lines[0]].name}}"
+  set_fact:
+    awscli_zip_fname: awscli-exe-linux-{{arch_name}}-{{awscli_version}}.zip
+    awscli_zip_sigfile: awscli-exe-linux-{{arch_name}}-{{awscli_version}}.zip.sig
+
+- name: Download AWS CLI installer archive.
+  get_url:
+    url: https://awscli.amazonaws.com/{{awscli_zip_fname}}
+    dest: "{{cache_dir}}/ywen/{{awscli_zip_fname}}"
+    mode: "0o644"
+  register: download_awscli
+
+- name: Verify the integrity of the downloaded archive.
+  when: download_awscli.changed
+  block:
+    - name: Copy AWS CLI team public key.
+      copy:
+        src: awscli-team.pub
+        dest: "{{cache_dir}}/ywen"
+        mode: "0o644"
+
+    - name: Import AWS CLI team public key.
+      command:
+        argv:
+          - gpg
+          - --batch
+          - --import
+          - "{{cache_dir}}/ywen/awscli-team.pub"
+
+    - name: Download the signature file.
+      get_url:
+        url: https://awscli.amazonaws.com/{{awscli_zip_sigfile}}
+        dest: "{{cache_dir}}/ywen/{{awscli_zip_sigfile}}"
+        mode: "0o644"
+
+    - name: Verify the signature of the zip archive.
+      command:
+        argv:
+          - gpg
+          - --batch
+          - --verify
+          - "{{cache_dir}}/ywen/{{awscli_zip_sigfile}}"
+          - "{{cache_dir}}/ywen/{{awscli_zip_fname}}"
+
+- name: Get status of the .unarchive file.
+  stat:
+    path: "{{cache_dir}}/ywen/{{awscli_zip_fname}}.unarchive"
+  register: unarchive_stat
+
+- name: Get status of the AWS CLI installer extracted folder.
+  stat:
+    path: "{{cache_dir}}/ywen/awscli-{{awscli_version}}"
+  register: awscli_unarchive_stat
+
+- name: Unpack AWS CLI installer.
+  when: not unarchive_stat.stat.exists or not awscli_unarchive_stat.stat.exists
+  block:
+  - name: Create AWS CLI installer extracted folder.
+    file:
+      path: "{{cache_dir}}/ywen/awscli-{{awscli_version}}"
+      state: directory
+      owner: root
+      group: root
+      mode: "0o755"
+
+  - name: Unpack AWS CLI installer.
+    unarchive:
+      dest: "{{cache_dir}}/ywen/awscli-{{awscli_version}}"
+      src: "{{cache_dir}}/ywen/{{awscli_zip_fname}}"
+      remote_src: yes
+      owner: root
+      group: root
+      extra_opts:
+        - -q  # This unzip generates like 7000+ lines so make it quieter.
+    register: unpack_awscli
+
+  - name: Touch the .unarchive file.
+    when: unpack_awscli.changed
+    file:
+      path: "{{cache_dir}}/ywen/{{awscli_zip_fname}}.unarchive"
+      state: touch
+
+- name: Check whether we have installed AWS CLI.
+  stat:
+    path: /usr/local/aws-cli
+  register: awscli_installed
+
+# NOTE(ywen): `/usr/local/aws-cli` and `/usr/local/bin` are the default
+# values but listed here so the future readers don't have to refer back to
+# the documentation.
+- name: Install AWS CLI.
+  when: not awscli_installed.stat.exists
+  command:
+    argv:
+      - "{{cache_dir}}/ywen/awscli-{{awscli_version}}/aws/install"
+      - --install-dir
+      - /usr/local/aws-cli
+      - --bin-dir
+      - /usr/local/bin
+
+- name: Verify the installation is successful.
+  command:
+    argv:
+      - aws
+      - --version
+  changed_when: false

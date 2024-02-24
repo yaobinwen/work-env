@@ -1,0 +1,5 @@
+- hosts: all
+  name: "Install AWS CLI."
+
+  roles:
+    - role: "aws-cli"
