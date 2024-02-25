@@ -1,0 +1,5 @@
+- hosts: all
+  name: Configure the locales for the user on the target machine.
+
+  roles:
+    - role: "locales"

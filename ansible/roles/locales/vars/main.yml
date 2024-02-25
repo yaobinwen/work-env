@@ -1,0 +1,5 @@
+# The user whose locales will be set.
+locale_user_name: "{{ansible_env.USER}}"
+
+preferred_language: en_US
+preferred_locale: en_US.UTF-8
