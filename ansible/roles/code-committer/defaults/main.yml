@@ -1,6 +1,7 @@
 bashrc_file_name: .bashrc.code-committer-{{code_committer_name}}
 
 build_image: yes
+start_container: yes
 
 code_committer_ubuntu_version: 22.04
 code_committer_user_name: ywen

@@ -3,5 +3,6 @@
       when: build_image
 
     - include_tasks: start-container.yml
+      when: start_container
   always:
     - meta: flush_handlers
