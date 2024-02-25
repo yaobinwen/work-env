@@ -1,0 +1,41 @@
+- name: Git Config - Get current configuration.
+  git_config:
+    list_all: yes
+    scope: global
+  register: config
+
+- name: Git Config - Set user name to {{git_user_full_name}}.
+  git_config:
+    name: user.name
+    value: '{{git_user_full_name}}'
+    scope: global
+  when: >-
+    (git_user_full_name is defined) and
+    ('user.name' not in config.config_values)
+
+- name: Git Config - Set user email to {{git_user_email}}.
+  git_config:
+    name: user.email
+    value: '{{git_user_email}}'
+    scope: global
+  when: >-
+    (git_user_email is defined) and
+    ('user.email' not in config.config_values)
+
+- name: Git Config - Show GPG signature.
+  git_config:
+    name: log.showSignature
+    value: 'true'
+    scope: global
+
+- name: Git Config - Alias `list`.
+  git_config:
+    name: alias.list
+    value: log --format='%C(auto)%h %aI %<(8)%aN [%G?] %s%d' --no-show-signature
+    scope: global
+
+- name: Git Config - Do not quote paths (in order to display UTC-8).
+  git_config:
+    name: core.quotepath
+    value: 'false'
+    scope: global

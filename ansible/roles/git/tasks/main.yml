@@ -1,47 +1,17 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 - name: Add git PPA.
-  become: yes
   apt_repository:
     repo: ppa:git-core/ppa
 
 - name: Update APT cache.
-  become: yes
   apt:
     update_cache: yes
     cache_valid_time: 900
 
 - name: Install git.
-  become: yes
   apt:
     name: git
     state: latest
-
-- name: Configure git.
-  block:
-
-    - name: Git Config - Get current configuration.
-      git_config:
-        list_all: yes
-        scope: global
-      register: config
-
-    - name: Git Config - Set user name to {{git_user_full_name}}.
-      git_config:
-        name: user.name
-        value: '{{git_user_full_name}}'
-        scope: global
-      when: >-
-        (git_user_full_name is defined) and
-        ('user.name' not in config.config_values)
-
-    - name: Git Config - Set user email to {{git_user_email}}.
-      git_config:
-        name: user.email
-        value: '{{git_user_email}}'
-        scope: global
-      when: >-
-        (git_user_email is defined) and
-        ('user.email' not in config.config_values)
 
 # vim: set expandtab shiftwidth=2:
