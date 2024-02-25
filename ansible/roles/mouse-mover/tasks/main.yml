@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: mouse-move.yml
+  always:
+    - meta: flush_handlers

@@ -1,0 +1,5 @@
+- hosts: all
+  name: Install a mouse mover.
+
+  roles:
+    - role: "mouse-mover"

@@ -1,0 +1,25 @@
+- name: Install supporting tools.
+  become: true
+  apt:
+    name:
+      - rand
+      - xdotool
+      - xprintidle
+
+- name: Create /usr/local/bin.
+  become: true
+  file:
+    path: /usr/local/bin
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0o755"
+
+- name: Install the mouse mover script to /usr/local/bin.
+  become: true
+  copy:
+    src: "mouse-mover"
+    dest: /usr/local/bin/mouse-mover
+    owner: "0"
+    group: "0"
+    mode: "0o755"
