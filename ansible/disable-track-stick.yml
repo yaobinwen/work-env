@@ -1,0 +1,5 @@
+- hosts: all
+  name: "Install the script that disables the track stick."
+
+  roles:
+    - role: "disable-track-stick"

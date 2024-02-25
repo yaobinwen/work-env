@@ -1,0 +1,20 @@
+- name: Get current user info.
+  user:
+    name: '{{ansible_env.USER}}'
+  register: curr_user_info
+
+- name: Set up the home bin directory.
+  file:
+    path: '{{curr_user_info.home}}/bin'
+    state: directory
+    owner: '{{curr_user_info.uid}}'
+    group: '{{curr_user_info.group}}'
+    mode: '0o755'
+
+- name: Install the utility that disables the track stick.
+  copy:
+    src: 'disable-track-stick.py'
+    dest: '{{curr_user_info.home}}/bin'
+    owner: '{{curr_user_info.uid}}'
+    group: '{{curr_user_info.group}}'
+    mode: '0o755'

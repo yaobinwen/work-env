@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: disable-track-stick.yml
+  always:
+    - meta: flush_handlers
