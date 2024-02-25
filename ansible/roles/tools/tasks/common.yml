@@ -1,0 +1,25 @@
+- name: Update APT cache.
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install helpful tools.
+  become: true
+  apt:
+    name:
+      - bash-completion
+      - curl
+      - dnsutils
+      - gpg
+      - iproute2
+      - iputils-ping
+      - locales
+      - pre-commit
+      - psmisc
+      - shellcheck
+      - shfmt
+      - tree
+      - vim
+      - wget
+      - xclip

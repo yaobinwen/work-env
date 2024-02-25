@@ -1,0 +1,9 @@
+- include_tasks: common.yml
+
+- name: Install GNOME Tweak tool
+  include_tasks: "gnome-tweak/{{ansible_distribution_version}}.yml"
+
+- name: Install Desktop tools.
+  apt:
+    name:
+      - meld
