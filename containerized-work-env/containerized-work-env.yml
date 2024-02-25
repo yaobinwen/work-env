@@ -1,0 +1,36 @@
+- hosts: all
+  name: >
+    Provision the target machine with the Docker image and the container as
+    a containerized work environment (in order to isolate different work
+    environmental settings, e.g., the user name, user email, and credentials).
+  gather_facts: yes
+  tasks:
+    - include_role:
+        name: git
+      vars:
+        ansible_become: yes
+
+    - include_role:
+        name: git
+        tasks_from: configure
+
+    - include_role:
+        name: locales
+      vars:
+        ansible_become: yes
+
+    # TODO(ywen):
+    # - Configure SSH keys.
+    # - Configure GPG signing key.
+    # - Configure git to use the signing key.
+
+    - include_role:
+        name: terraform
+      vars:
+        ansible_become: yes
+
+    - include_role:
+        name: aws-cli
+      vars:
+        ansible_become: yes
+        cache_dir: /tmp
