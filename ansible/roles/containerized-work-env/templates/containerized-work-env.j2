@@ -1,0 +1,52 @@
+#!/bin/sh
+
+usage() {
+    echo "TODO: Display help info"
+}
+
+test $# -eq 1 || {
+    echo "Expect exactly one argument but get $#: $@"
+    usage
+    exit 1
+}
+
+cmd_start() {
+    docker run \
+        --name {{containerized_work_env_container_name}} \
+        --detach \
+        --rm \
+        -t \
+        --mount type=bind,source={{home_path_on_host}},destination=/home/{{containerized_work_env_user_name}} \
+        {{containerized_work_env_image_name}}:{{containerized_work_env_image_version}} || return
+}
+
+cmd_stop() {
+    docker stop {{containerized_work_env_container_name}}
+}
+
+cmd_login() {
+    docker exec \
+        -it \
+        {{containerized_work_env_container_name}} \
+        /bin/bash || return
+}
+
+# Handle the sub-command.
+case "$1" in
+  start)
+    cmd_start
+    exit
+    ;;
+  stop)
+    cmd_stop
+    exit
+    ;;
+  login)
+    cmd_login
+    exit
+    ;;
+  *)
+    echo "Unknown command: $1"
+    exit 1
+    ;;
+esac

@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: containerized-work-env.yml
+  always:
+    - meta: flush_handlers
