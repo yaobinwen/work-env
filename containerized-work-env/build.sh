@@ -8,6 +8,7 @@ _check_required_tools() {
 _clean_leftover() {
   rm -f cid.stage-0 || return
   rm -f inventory || return
+  rm -f work-env-image-id || return
 }
 
 _main() {
@@ -65,22 +66,22 @@ _main() {
 
     # Start stage 0 container for further configuration.
     docker run -d \
+        --name "${IMAGE_STAGE_0}" \
         --cidfile cid.stage-0 \
         --tmpfs /tmp:exec \
-        -v "$PWD:/build:ro" \
         -v /etc/localtime:/etc/localtime:ro \
         "${IMAGE_STAGE_0}:${IMAGE_VERSION}" \
-            /bin/sh -c 'while sleep 3600; do :; done' || return
+            /bin/sh -c 'while sleep 600; do :; done' || return
 
       # Run the Ansible provisioner.
       CID="$(cat "cid.stage-0")" || return
-      echo "$CID ansible_user=${USER_NAME} ansible_python_interpreter=auto" \
+      echo "$CID ansible_user=root ansible_python_interpreter=auto" \
           >"inventory" || return
 
       ansible-playbook -vv -c docker -i "inventory" \
         -e "git_user_email='$GIT_USER_EMAIL'" \
         -e "git_user_full_name='$GIT_USER_NAME'" \
-        -e "locale_user_name='$USER_NAME'" \
+        -e "unprivileged_user_name='$USER_NAME'" \
         "containerized-work-env.yml" || return
 
       docker stop "$CID" || return

@@ -1,0 +1,8 @@
+ARG BASE_IMAGE
+FROM $BASE_IMAGE
+
+# Switch to the unprivileged user.
+USER ${USER_NAME}
+
+# Set the working directory after login.
+WORKDIR /home/${USER_NAME}/code

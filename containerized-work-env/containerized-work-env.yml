@@ -6,6 +6,38 @@
   gather_facts: yes
   tasks:
     - include_role:
+        name: unprivileged-user
+      vars:
+        ansible_become: yes
+
+    - include_role:
+        name: tools
+        tasks_from: docker-container
+      vars:
+        ansible_become: yes
+
+    - include_role:
+        name: gpg
+        tasks_from: import
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
+        gpg_key_path: "/home/{{unprivileged_user_name}}/.gpg/sub_signing.key"
+
+    - command:
+        argv:
+          - gpg
+          - "--list-secret-keys"
+          - "--with-colons"
+      register: gpg_secret_keys
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
+
+    - set_fact:
+        gpg_signing_sub_key: "{{gpg_secret_keys.stdout | regex_search('ssb:-:.*::s::', multiline=True, ignorecase=True) | regex_search('[0-9A-F]{16}')}}"
+
+    - include_role:
         name: git
       vars:
         ansible_become: yes
@@ -13,16 +45,22 @@
     - include_role:
         name: git
         tasks_from: configure
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
+
+    - include_role:
+        name: gpg
+        tasks_from: config-tty
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
 
     - include_role:
         name: locales
       vars:
         ansible_become: yes
-
-    # TODO(ywen):
-    # - Configure SSH keys.
-    # - Configure GPG signing key.
-    # - Configure git to use the signing key.
+        locale_user_name: "{{unprivileged_user_name}}"
 
     - include_role:
         name: terraform
