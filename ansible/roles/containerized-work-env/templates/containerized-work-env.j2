@@ -17,7 +17,11 @@ cmd_start() {
         --detach \
         --rm \
         -t \
-        --mount type=bind,source={{home_path_on_host}},destination=/home/{{containerized_work_env_user_name}} \
+        --mount type=bind,source={{home_path_on_host}}/.aws,destination=/home/{{containerized_work_env_user_name}}/.aws \
+        --mount type=bind,source={{home_path_on_host}}/.gnupg,destination=/home/{{containerized_work_env_user_name}}/.gnupg \
+        --mount type=bind,source={{home_path_on_host}}/.gpg,destination=/home/{{containerized_work_env_user_name}}/.gpg \
+        --mount type=bind,source={{home_path_on_host}}/.ssh,destination=/home/{{containerized_work_env_user_name}}/.ssh \
+        --mount type=bind,source={{home_path_on_host}}/code,destination=/home/{{containerized_work_env_user_name}}/code \
         {{containerized_work_env_image_name}}:{{containerized_work_env_image_version}} || return
 }
 
