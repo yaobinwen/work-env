@@ -2,4 +2,4 @@
   name: Configure Vim on the target machines.
 
   roles:
-    - role: vim
+    - role: config-vim
