@@ -1,0 +1,6 @@
+- command:
+    argv:
+      - gpg
+      - "--batch"
+      - "--import"
+      - "{{gpg_key_path}}"

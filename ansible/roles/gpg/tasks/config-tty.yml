@@ -1,0 +1,21 @@
+# NOTE(ywen): `ansible_env` doesn't seem to be updated to reflect the current
+# user's environment if the current user was switch from the login user by
+# `ansible_become` and `ansible_become_user`.
+- name: Copy files that are needed to build the image.
+  vars:
+    curr_user: "{{ lookup('ansible.builtin.env', 'USER') }}"
+    curr_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
+  copy:
+    src: "bashrc.gpg-tty"
+    dest: "{{curr_home}}/.bashrc.gpg-tty"
+    owner: "{{curr_user}}"
+    group: "{{curr_user}}"
+    mode: "0644"
+
+- name: Update "{{curr_home}}/.bashrc".
+  vars:
+    curr_home: "{{ lookup('ansible.builtin.env', 'HOME') }}"
+  lineinfile:
+    path: "{{curr_home}}/.bashrc"
+    line: "test -f \"$HOME/.bashrc.gpg-tty\" && . \"$HOME/.bashrc.gpg-tty\""
+    state: present
