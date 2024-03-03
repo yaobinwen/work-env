@@ -22,6 +22,12 @@
     (git_user_email is defined) and
     ('user.email' not in config.config_values)
 
+- name: Git Config - Set editor to vim.
+  git_config:
+    name: core.editor
+    value: vim
+    scope: global
+
 - name: Git Config - Show GPG signature.
   git_config:
     name: log.showSignature
