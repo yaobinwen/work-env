@@ -45,3 +45,10 @@
     name: core.quotepath
     value: 'false'
     scope: global
+
+- name: Git Config - Use the signing key (if provided)
+  when: gpg_signing_sub_key | length > 0
+  git_config:
+    name: user.signingkey
+    value: "{{gpg_signing_sub_key}}"
+    scope: global
