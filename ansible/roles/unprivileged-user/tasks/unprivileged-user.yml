@@ -1,0 +1,16 @@
+- name: Create the unprivileged user group {{unprivileged_group_name}}.
+  group:
+    name: "{{unprivileged_group_name}}"
+    gid: "{{unprivileged_gid}}"
+    state: present
+    system: no
+
+- name: Create the unprivileged user account {{unprivileged_user_name}}.
+  user:
+    name: "{{unprivileged_user_name}}"
+    uid: "{{unprivileged_uid}}"
+    group: "{{unprivileged_group_name}}"
+    create_home: yes
+    state: present
+    system: no
+    comment: Unprivileged user {{unprivileged_user_full_name}}

@@ -1,0 +1,5 @@
+- hosts: all
+  name: "TODO: Playbook name"
+
+  roles:
+    - role: "unprivileged-user"
