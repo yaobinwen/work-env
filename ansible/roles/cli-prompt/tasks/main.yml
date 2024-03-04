@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: cli-prompt.yml
+  always:
+    - meta: flush_handlers

@@ -1,0 +1,5 @@
+- hosts: all
+  name: Configure the target macine's CLI prompt.
+
+  roles:
+    - role: "cli-prompt"
