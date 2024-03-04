@@ -29,6 +29,7 @@ _main() {
     HOME_PATH_ON_HOST="$7"
 
     IMAGE_STAGE_0="containerized-work-env-${WORK_ENV_NAME}.stage-0"
+    IMAGE_STAGE_1="containerized-work-env-${WORK_ENV_NAME}.stage-1"
     WORK_ENV_IMAGE="containerized-work-env-${WORK_ENV_NAME}"
     IMAGE_VERSION="ubuntu-22.04"  # TODO(ywen): Do not hard-code.
 
@@ -54,7 +55,7 @@ _main() {
         docker build \
             --file Dockerfile.0 \
             --tag "${IMAGE_STAGE_0}:${IMAGE_VERSION}" \
-            --label "name=${WORK_ENV_IMAGE}" \
+            --label "name=${IMAGE_STAGE_0}" \
             --label "version=${IMAGE_VERSION}" \
             --build-arg BASE_IMAGE="${BASE_IMAGE}" \
             --build-arg WORK_ENV_NAME="${WORK_ENV_NAME}" \
@@ -70,10 +71,12 @@ _main() {
             --cidfile cid.stage-0 \
             --tmpfs /tmp:exec \
             -v /etc/localtime:/etc/localtime:ro \
+            --mount "type=bind,source=/home/${USER_NAME}/yaobin/.gnupg,destination=/tmp/.gnupg" \
+            --mount "type=bind,source=/home/${USER_NAME}/yaobin/.gpg,destination=/tmp/.gpg" \
             "${IMAGE_STAGE_0}:${IMAGE_VERSION}" \
                 /bin/sh -c 'while sleep 600; do :; done' || return
 
-        # Run the Ansible provisioner.
+        # Run the Ansible provisioner.--file Dockerfile.0 \
         CID="$(cat "cid.stage-0")" || return
         echo "$CID ansible_user=root ansible_python_interpreter=auto" \
             >"inventory" || return
@@ -86,9 +89,22 @@ _main() {
 
         docker stop "$CID" || return
 
-        docker commit "$CID" "${WORK_ENV_IMAGE}:${IMAGE_VERSION}" || return
+        docker commit "$CID" "${IMAGE_STAGE_1}:${IMAGE_VERSION}" || return
+
+        # Start stage 1 container for further configuration.
+        docker build \
+            --file Dockerfile.2 \
+            --tag "${WORK_ENV_IMAGE}:${IMAGE_VERSION}" \
+            --label "name=${WORK_ENV_IMAGE}" \
+            --label "version=${IMAGE_VERSION}" \
+            --build-arg BASE_IMAGE="${IMAGE_STAGE_1}:${IMAGE_VERSION}" \
+            --build-arg WORK_ENV_NAME="${WORK_ENV_NAME}" \
+            --build-arg USER_NAME="${USER_NAME}" \
+            --build-arg GROUP_NAME="${GROUP_NAME}" \
+            .  || return
 
         docker image rm -f "${IMAGE_STAGE_0}:${IMAGE_VERSION}" || return
+        docker image rm -f "${IMAGE_STAGE_1}:${IMAGE_VERSION}" || return
     else
         echo "The Docker image '${WORK_ENV_IMAGE}:${IMAGE_VERSION}' already exists." || return
     fi

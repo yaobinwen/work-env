@@ -22,11 +22,14 @@
       vars:
         ansible_become: yes
         ansible_become_user: "{{unprivileged_user_name}}"
-        gpg_key_path: "/home/{{unprivileged_user_name}}/.gpg/sub_signing.key"
+        gpg_home_dir: "/tmp/.gnupg"
+        gpg_key_path: "/tmp/.gpg/sub_signing.key"
 
     - command:
         argv:
           - gpg
+          - "--homedir"
+          - "/tmp/.gnupg"
           - "--list-secret-keys"
           - "--with-colons"
       register: gpg_secret_keys

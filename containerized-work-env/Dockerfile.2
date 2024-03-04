@@ -1,6 +1,8 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
+ARG USER_NAME
+
 # Switch to the unprivileged user.
 USER ${USER_NAME}
 

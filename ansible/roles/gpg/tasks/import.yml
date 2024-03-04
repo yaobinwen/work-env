@@ -1,6 +1,8 @@
 - command:
     argv:
       - gpg
+      - "--homedir"
+      - "{{gpg_home_dir}}"
       - "--batch"
       - "--import"
       - "{{gpg_key_path}}"
