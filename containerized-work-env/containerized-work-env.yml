@@ -17,6 +17,12 @@
         ansible_become: yes
 
     - include_role:
+        name: cli-prompt
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
+
+    - include_role:
         name: gpg
         tasks_from: import
       vars:
@@ -64,6 +70,13 @@
       vars:
         ansible_become: yes
         locale_user_name: "{{unprivileged_user_name}}"
+
+    - include_role:
+        name: ssh
+        tasks_from: install-bashrc.ssh-agent
+      vars:
+        ansible_become: yes
+        ansible_become_user: "{{unprivileged_user_name}}"
 
     - include_role:
         name: terraform

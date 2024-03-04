@@ -82,6 +82,7 @@ _main() {
             >"inventory" || return
 
         ansible-playbook -vv -c docker -i "inventory" \
+            -e "containerized_work_env_name='$WORK_ENV_NAME'" \
             -e "git_user_email='$GIT_USER_EMAIL'" \
             -e "git_user_full_name='$GIT_USER_NAME'" \
             -e "unprivileged_user_name='$USER_NAME'" \
