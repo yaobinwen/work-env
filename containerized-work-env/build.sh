@@ -28,9 +28,6 @@ _main() {
     GIT_USER_NAME="$6"
     HOME_PATH_ON_HOST="$7"
 
-    # Configure the work env folder on the host.
-    ansible-playbook -v host-work-env-dir.yml || return
-
     IMAGE_STAGE_0="containerized-work-env-${WORK_ENV_NAME}.stage-0"
     IMAGE_STAGE_1="containerized-work-env-${WORK_ENV_NAME}.stage-1"
     WORK_ENV_IMAGE="containerized-work-env-${WORK_ENV_NAME}"
