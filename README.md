@@ -11,7 +11,7 @@ This repository has the scripts to set up my own work environment. See `Setup` s
 1. A freshly installed Ubuntu 18.04 or later.
 2. Cell phone with the app `Authenticator` available for GitHub's two-factor authentication.
 
-### Step 1: Download This Repo
+### Step 1: Download this repo
 
 Because this is a freshly installed OS, `git`, as well as the personal SSH private key, is unlikely to be set up yet. Therefore, you will need to use the `Download ZIP` function on GitHub to download this repository.
 
@@ -23,7 +23,7 @@ Change into the root of the decompressed folder so you will find the script `boo
 
 Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for further setup.
 
-### Step 3: Set up Work Environment
+### Step 3: Set up host system
 
 - 1). Determine the work environment you want to set up, including:
   - The target machine (e.g., `localhost`).
@@ -34,10 +34,10 @@ Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for fu
 - 2). Run `cd ./ansible`.
 - 3). Run `ansible-galaxy collection install -r ./ansible-requirements.yml` to install the needed Ansible collections.
 - 4). Run `ansible-galaxy role install -r ./ansible-requirements.yml` to install the needed Ansible roles.
-- 3). Run `ansible-playbook -Kvvv ./my-ubuntu-desktop-18.04.yml`.
-- 4). Run `ansible-playbook -vvv -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" -e code_committer_gpg_signing_subkey_file_path="/path/to/GPG-signing-subkey" -e code_committer_host_code_root_dir="/path/to/code/root-dir" code-committer-personal.yml`.
+- 5). Run `ansible-playbook -Kvvv ./my-ubuntu-desktop-18.04.yml`.
+- 6). Run `ansible-playbook -vvv -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" -e code_committer_gpg_signing_subkey_file_path="/path/to/GPG-signing-subkey" -e code_committer_host_code_root_dir="/path/to/code/root-dir" code-committer-personal.yml`.
 
-### Step 4: Set up Printer
+### Step 4: Set up the printer
 
 As of 2023-03-31, I am using a `Brother MFC-7860DW` printer/scanner. Follow the steps below to set up the driver:
 
