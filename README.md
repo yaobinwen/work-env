@@ -35,9 +35,20 @@ Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for fu
 - 3). Run `ansible-galaxy collection install -r ./ansible-requirements.yml` to install the needed Ansible collections.
 - 4). Run `ansible-galaxy role install -r ./ansible-requirements.yml` to install the needed Ansible roles.
 - 5). Run `ansible-playbook -Kvvv ./my-ubuntu-desktop-18.04.yml`.
-- 6). Run `ansible-playbook -vvv -e code_committer_ssh_private_key_file_path="/path/to/SSH-private-key" -e code_committer_gpg_signing_subkey_file_path="/path/to/GPG-signing-subkey" -e code_committer_host_code_root_dir="/path/to/code/root-dir" code-committer-personal.yml`.
 
-### Step 4: Set up the printer
+### Step 4: Set up the containerized work env
+
+- 1). `source ./env.sh`.
+- 2). `cd containerized-work-env`
+- 3). `ansible-playbook -v host-work-env-dir.yml` (to create the `$HOME/yaobin` as the work env directory).
+- 4). Copy the following required files:
+  - a). GPG signing key to `$HOME/yaobin/.gpg`.
+  - b). SSH private key to `$HOME/yaobin/.ssh`.
+- 5). Optionally, copy the AWS configuration files into `$HOME/yaobin/.aws`. But they are not used by `build.sh`.
+- 6). `./build.sh` (to build the `containerized-work-env` container).
+- 7). Run `containerized-work-env start` to start the container; run `containerized-work-env stop` to stop the container; run `containerized-work-env login` to log in the container.
+
+### Step 5: Set up the printer
 
 As of 2023-03-31, I am using a `Brother MFC-7860DW` printer/scanner. Follow the steps below to set up the driver:
 
