@@ -1,5 +1,0 @@
-- name: Create the `.bashrc.*` for the current code committer.
-  template:
-    src: "bashrc.code-committer.j2"
-    dest: "{{ansible_env.HOME}}/{{bashrc_file_name}}"
-    mode: "0o644"
