@@ -1,7 +1,0 @@
-- hosts: all
-  name: Configure the hosts to run the containerized work environment.
-
-  roles:
-    - role: "containerized-work-env"
-      vars:
-        ansible_become: yes

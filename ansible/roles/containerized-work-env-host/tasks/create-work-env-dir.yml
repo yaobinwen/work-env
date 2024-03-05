@@ -1,0 +1,33 @@
+- name: Get current user's info.
+  user:
+    name: "{{lookup('env', 'USER')}}"
+  register: curr_user
+
+- name: Create the work env folder on the host machine.
+  vars:
+    work_env_folder: "{{curr_user.home}}/yaobin"
+  block:
+    - name: Create "{{work_env_folder}}".
+      file:
+        path: "{{work_env_folder}}"
+        state: directory
+        owner: "{{curr_user.uid}}"
+        group: "{{curr_user.group}}"
+        mode: "0o755"
+
+    - name: Create sub-folders inside "{{work_env_folder}}".
+      file:
+        path: "{{work_env_folder}}/{{item.name}}"
+        state: directory
+        owner: "{{curr_user.uid}}"
+        group: "{{curr_user.group}}"
+        mode: "{{item.mode}}"
+      loop:
+        - name: ".aws"
+          mode: "0o700"
+        - name: ".gpg"
+          mode: "0o700"
+        - name: ".gnupg"
+          mode: "0o700"
+        - name: ".ssh"
+          mode: "0o700"

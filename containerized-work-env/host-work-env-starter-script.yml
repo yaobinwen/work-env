@@ -1,0 +1,7 @@
+- hosts: all
+  name: Install the `containerized-work-env` starter script.
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: containerized-work-env-host
+        tasks_from: containerized-work-env-starter-script

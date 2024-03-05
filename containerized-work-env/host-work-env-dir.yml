@@ -1,0 +1,9 @@
+- hosts: all
+  name: >
+    Configure the work env folder on the host that will be used as the home
+    folder in the work env container.
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: containerized-work-env-host
+        tasks_from: create-work-env-dir

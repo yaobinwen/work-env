@@ -28,6 +28,9 @@ _main() {
     GIT_USER_NAME="$6"
     HOME_PATH_ON_HOST="$7"
 
+    # Configure the work env folder on the host.
+    ansible-playbook -v host-work-env-dir.yml || return
+
     IMAGE_STAGE_0="containerized-work-env-${WORK_ENV_NAME}.stage-0"
     IMAGE_STAGE_1="containerized-work-env-${WORK_ENV_NAME}.stage-1"
     WORK_ENV_IMAGE="containerized-work-env-${WORK_ENV_NAME}"
@@ -110,16 +113,15 @@ _main() {
         echo "The Docker image '${WORK_ENV_IMAGE}:${IMAGE_VERSION}' already exists." || return
     fi
 
-    # Configure the host system.
-    cd "${WORK_ENV_ROOT_DIR}/ansible" || return
-    ansible-playbook -Kv \
+    # Install the starter script.
+    ansible-playbook -v \
       -e "containerized_work_env_name='$WORK_ENV_NAME'" \
       -e "containerized_work_env_image_name='$WORK_ENV_IMAGE'" \
       -e "containerized_work_env_image_version='$IMAGE_VERSION'" \
       -e "containerized_work_env_container_name='$WORK_ENV_IMAGE'" \
       -e "containerized_work_env_user_name='$USER_NAME'" \
       -e "home_path_on_host='$HOME_PATH_ON_HOST'" \
-      containerized-work-env.yml || return
+      host-work-env-starter-script.yml || return
 }
 
 # Define the options and their corresponding variables
