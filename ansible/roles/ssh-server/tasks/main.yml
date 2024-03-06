@@ -1,9 +1,0 @@
-# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
-
-- name: Install SSH server.
-  become: yes
-  apt:
-    name: openssh-server
-    state: present
-
-# vim: set expandtab shiftwidth=2:

@@ -5,7 +5,9 @@
   vars:
     ansible_become: yes
 
-  roles:
-    - role: ssh-server
+  tasks:
+    - include_role:
+        name: ssh
+        tasks_from: install-ssh-server
 
 # vim: set expandtab shiftwidth=2:
