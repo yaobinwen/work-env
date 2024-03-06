@@ -3,5 +3,6 @@ aws
 
 # Temporary files
 cid.*
+iid.*
 inventory
 work-env-image-id
