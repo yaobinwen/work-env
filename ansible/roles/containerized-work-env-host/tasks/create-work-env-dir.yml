@@ -31,5 +31,16 @@
           mode: "0o700"
         - name: ".ssh"
           mode: "0o700"
-        - name: "code"
+
+    - name: Create the sub-folder "code" inside "{{work_env_folder}}".
+      copy:
+        src: "{{item.name}}"
+        dest: "{{work_env_folder}}"
+        owner: "{{curr_user.uid}}"
+        group: "{{curr_user.group}}"
+        mode: "{{item.mode}}"
+      loop:
+        - name: code
+          mode: "0o755"
+        - name: upstreams
           mode: "0o755"

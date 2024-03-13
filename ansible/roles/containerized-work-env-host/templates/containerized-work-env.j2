@@ -24,6 +24,7 @@ cmd_start() {
         --mount type=bind,source={{home_path_on_host}}/.gpg,destination=/home/{{containerized_work_env_user_name}}/.gpg,readonly \
         --mount type=bind,source={{home_path_on_host}}/.ssh,destination=/home/{{containerized_work_env_user_name}}/.ssh \
         --mount type=bind,source={{home_path_on_host}}/code,destination=/home/{{containerized_work_env_user_name}}/code \
+        --mount type=bind,source={{home_path_on_host}}/upstreams,destination=/home/{{containerized_work_env_user_name}}/upstreams \
         {{containerized_work_env_image_name}}:{{containerized_work_env_image_version}} \
         /bin/bash || return
 }
