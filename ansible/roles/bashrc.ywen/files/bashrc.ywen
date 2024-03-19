@@ -1,3 +1,21 @@
 # Create "$HOME/bin" so I can put my own executables there without having to
 # become privileged.
 export PATH="$PATH:$HOME/bin"
+
+# -----------------------------------------------------------------------------
+# Alias: ywen-psc
+
+usage-ywen-psc() {
+    echo "ywen-psc: Show the processes and their cgroups"
+    echo "    Alias of 'ps xawf -eo pid,user,cgroup,args'"
+    echo "    See $HOME/.bashrc.ywen"
+}
+
+ywen-psc() {
+    # Process the positional arguments.
+    if [ $# -eq 0 ]; then
+        ps xawf -eo pid,user,cgroup,args
+    else
+        usage-ywen-psc
+    fi
+}
