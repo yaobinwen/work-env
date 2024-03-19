@@ -1,16 +1,5 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
-- name: Install my bashrc (~/.bashrc.ywen).
-  copy:
-    src: bashrc.ywen
-    dest: "{{ansible_env.HOME}}/.bashrc.ywen"
-
-- name: Source ~/.bashrc.ywen from ~/.bashrc
-  lineinfile:
-    path: "{{ansible_env.HOME}}/.bashrc"
-    state: present
-    line: 'test -f "$HOME/.bashrc.ywen" && . "$HOME/.bashrc.ywen"'
-
 - name: Create ~/.ssh.
   file:
     path: "{{ansible_env.HOME}}/.ssh"

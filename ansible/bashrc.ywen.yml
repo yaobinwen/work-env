@@ -1,0 +1,5 @@
+- hosts: all
+  name: "Install .bashrc.ywen to the unprivileged user's home folder."
+
+  roles:
+    - role: "bashrc.ywen"

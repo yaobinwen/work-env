@@ -1,0 +1,3 @@
+# Create "$HOME/bin" so I can put my own executables there without having to
+# become privileged.
+export PATH="$PATH:$HOME/bin"
