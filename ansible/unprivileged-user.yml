@@ -3,3 +3,5 @@
 
   roles:
     - role: "unprivileged-user"
+      vars:
+        ansible_become: yes
