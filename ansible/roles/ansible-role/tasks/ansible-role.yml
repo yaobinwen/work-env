@@ -1,5 +1,4 @@
-- name: Debug
-  debug:
+- debug:
     msg: Hello, '{{new_role_name}}'
 
 - debug:
