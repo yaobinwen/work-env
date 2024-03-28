@@ -1,0 +1,9 @@
+- hosts: all
+  name: >
+    Configure the target machine with mDNS (so the machine can be accessed via
+    an mDNS domain name instead of the IP)
+
+  roles:
+    - role: "mDNS"
+      vars:
+        ansible_become: yes

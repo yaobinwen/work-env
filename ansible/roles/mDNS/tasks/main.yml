@@ -1,0 +1,4 @@
+- block:
+    - include_tasks: mDNS.yml
+  always:
+    - meta: flush_handlers
