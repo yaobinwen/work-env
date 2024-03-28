@@ -1,3 +1,14 @@
 #!/bin/sh
 
-ansible-playbook -v -i inventory/localhost.yml new-ansible-role.yml
+test $# -le 1 || {
+	echo "USAGE: $0 [ROLE-NAME]"
+	exit 1
+}
+
+ROLE_NAME="$1"
+
+if [ -n "$ROLE_NAME" ]; then
+	ansible-playbook -v -i inventory/localhost.yml -e new_role_name="$ROLE_NAME" new-ansible-role.yml
+else
+	ansible-playbook -v -i inventory/localhost.yml new-ansible-role.yml
+fi
