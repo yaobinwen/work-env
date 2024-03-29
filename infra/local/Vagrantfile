@@ -1,0 +1,85 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+def stdopt(
+  config, hostname:, cpus: 1, memory_mb: 1024, box: "ubuntu/jammy64"
+)
+  config.vm.box = box
+  config.vm.hostname = hostname
+
+  config.ssh.forward_agent = true
+
+  config.vm.synced_folder ".", "/host_share"
+
+  config.vm.provider "virtualbox" do |vbox|
+    vbox.linked_clone = true
+    vbox.cpus = cpus
+    vbox.memory = memory_mb
+    # Force allocation of all specified VM memory at start. Change the 1 below
+    # to 0 to allow for "as needed allocation".
+    vbox.customize ["setextradata", :id, "VBoxInternal/RamPreAlloc", 1]
+  end
+end
+
+def opt_network(config, ifname:, forwarded_ports: {})
+  config.vm.network "public_network", bridge: ifname
+
+  # Set up the port forwarding.
+  forwarded_ports.each do |guest_port, host_port|
+    config.vm.network "forwarded_port", guest: guest_port, host: host_port
+  end
+end
+
+def provision(config, name:, playbook_fname:, run: "never", extra_vars: {})
+  config.vm.provision name, type: "ansible", run: run do |ansible|
+    ansible.verbose = "vvv"
+    ansible.playbook = File.join("..", "..", "ansible", playbook_fname)
+    ansible.extra_vars = {
+      "ansible_python_interpreter": "auto",
+    }.merge(extra_vars)
+  end
+end
+
+Vagrant.configure("2") do |config|
+  # For IT infrastructure (primary).
+  config.vm.define "infra0" do |infra0|
+    stdopt(
+      infra0,
+      hostname: "infra0",
+      memory_mb: 2048,
+    )
+
+    opt_network(
+      infra0,
+      ifname: "enp0s31f6",
+    )
+
+    provision(
+      infra0,
+      name: "unprivileged-user",
+      playbook_fname: "unprivileged-user.yml",
+      run: "once",
+      extra_vars: {
+        "unprivileged_user_name": "vagrant",
+        "unprivileged_uid": 1000,
+        "unprivileged_user_full_name": "vagrant",
+        "unprivileged_group_name": "vagrant",
+        "unprivileged_gid": 1000,
+      },
+    )
+
+    provision(
+      infra0,
+      name: "mDNS",
+      playbook_fname: "mDNS.yml",
+      run: "once",
+    )
+
+    provision(
+      infra0,
+      name: "docker",
+      playbook_fname: "docker.yml",
+      run: "once",
+    )
+  end
+end
