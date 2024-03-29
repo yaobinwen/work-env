@@ -1,5 +1,7 @@
 - hosts: all
   gather_facts: yes # Needed by `ansible_env`.
-  name: Set up docker.
+  name: Set up docker on the target machine.
   roles:
     - role: docker
+      vars:
+        ansible_become: yes

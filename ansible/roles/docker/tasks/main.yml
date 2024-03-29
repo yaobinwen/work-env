@@ -1,5 +1,11 @@
 - block:
-    - include_tasks: docker.yml
+    - name: Install Docker.
+      include_role:
+        name: geerlingguy.docker
+      vars:
+        docker_install_compose: false
+
     - include_tasks: python-libs.yml
+      when: ansible_distribution_version == 18.04
   always:
     - meta: flush_handlers
