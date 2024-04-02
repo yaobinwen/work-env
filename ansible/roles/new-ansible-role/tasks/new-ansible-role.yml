@@ -7,17 +7,17 @@
 - set_fact:
     roles_path: "{{playbook_dir}}/roles"
 
-- name: Get the status of `ansible-role` directory.
+- name: Get the status of `new-ansible-role` directory.
   stat:
-    path: "{{roles_path}}/ansible-role"
-  register: ansible_role_dir
+    path: "{{roles_path}}/new-ansible-role"
+  register: new_ansible_role_dir
 
 - name: >
     Make sure `roles_path` is correct (by verifying `ansible-role` is its sub-
     directory).
   assert:
     that:
-      - ansible_role_dir.stat.exists and ansible_role_dir.stat.isdir
+      - new_ansible_role_dir.stat.exists and new_ansible_role_dir.stat.isdir
 
 - set_fact:
     new_role_path: "{{roles_path}}/{{new_role_name}}"

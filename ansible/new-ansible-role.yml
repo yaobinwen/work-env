@@ -10,4 +10,4 @@
       private: false
 
   roles:
-    - role: ansible-role
+    - role: new-ansible-role
