@@ -1,0 +1,21 @@
+- name: Install the archived notification sounds.
+  copy:
+    src: "{{item}}"
+    dest: "{{target_user_info.home}}/sounds"
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
+    mode: "0o644"
+
+- name: Unarchive the notification sounds.
+  unarchive:
+    src: "{{target_user_info.home}}/sounds/{{item}}"
+    dest: "{{target_user_info.home}}/sounds"
+    remote_src: yes
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
+    mode: "0o644"
+
+- name: Remove the archived notification sounds.
+  file:
+    path: "{{target_user_info.home}}/sounds/{{item}}"
+    state: absent

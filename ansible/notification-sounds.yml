@@ -1,0 +1,7 @@
+- hosts: all
+  name: Set up the notification sounds for the target user.
+
+  roles:
+    - role: "notification-sounds"
+      vars:
+        ansible_become: yes
