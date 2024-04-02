@@ -1,26 +1,26 @@
-- name: Get current user's info.
+- name: Get target user's info.
   user:
-    name: "{{lookup('env', 'USER')}}"
-  register: curr_user
+    name: "{{target_user}}"
+  register: target_user_info
 
 - name: Create the work env folder on the host machine.
   vars:
-    work_env_folder: "{{curr_user.home}}/yaobin"
+    work_env_folder: "{{target_user_info.home}}/{{work_env_folder_name}}"
   block:
     - name: Create "{{work_env_folder}}".
       file:
         path: "{{work_env_folder}}"
         state: directory
-        owner: "{{curr_user.uid}}"
-        group: "{{curr_user.group}}"
+        owner: "{{target_user_info.uid}}"
+        group: "{{target_user_info.group}}"
         mode: "0o755"
 
     - name: Create sub-folders inside "{{work_env_folder}}".
       file:
         path: "{{work_env_folder}}/{{item.name}}"
         state: directory
-        owner: "{{curr_user.uid}}"
-        group: "{{curr_user.group}}"
+        owner: "{{target_user_info.uid}}"
+        group: "{{target_user_info.group}}"
         mode: "{{item.mode}}"
       loop:
         - name: ".aws"
@@ -36,8 +36,8 @@
       copy:
         src: "{{item.name}}"
         dest: "{{work_env_folder}}"
-        owner: "{{curr_user.uid}}"
-        group: "{{curr_user.group}}"
+        owner: "{{target_user_info.uid}}"
+        group: "{{target_user_info.group}}"
         mode: "{{item.mode}}"
       loop:
         - name: code

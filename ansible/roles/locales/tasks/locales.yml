@@ -17,18 +17,18 @@
 
 - name: Find the user's info.
   user:
-    name: "{{locale_user_name}}"
-  register: locale_user_info
+    name: "{{target_user}}"
+  register: target_user_info
 
 - template:
     src: bashrc.locale.j2
-    dest: "{{locale_user_info.home}}/.bashrc.locale"
-    owner: "{{locale_user_info.uid}}"
-    group: "{{locale_user_info.group}}"
+    dest: "{{target_user_info.home}}/.bashrc.locale"
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
     mode: "0o644"
 
-- name: Update `{{locale_user_info.home}}/.bashrc`.
+- name: Update `{{target_user_info.home}}/.bashrc`.
   lineinfile:
-    path: "{{locale_user_info.home}}/.bashrc"
+    path: "{{target_user_info.home}}/.bashrc"
     line: "test -f \"$HOME/.bashrc.locale\" && . \"$HOME/.bashrc.locale\""
     state: present

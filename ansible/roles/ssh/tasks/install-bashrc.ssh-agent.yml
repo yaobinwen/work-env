@@ -1,0 +1,18 @@
+- name: Get current user's info.
+  user:
+    name: "{{target_user}}"
+  register: target_user_info
+
+- name: Copy bashrc.ssh-agent to the user's home folder.
+  copy:
+    src: bashrc.ssh-agent
+    dest: "{{target_user_info.home}}/.bashrc.ssh-agent"
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
+    mode: "0o644"
+
+- name: Update "{{target_user_info.home}}/.bashrc".
+  lineinfile:
+    path: "{{target_user_info.home}}/.bashrc"
+    line: "test -f \"$HOME/.bashrc.ssh-agent\" && . \"$HOME/.bashrc.ssh-agent\""
+    state: present

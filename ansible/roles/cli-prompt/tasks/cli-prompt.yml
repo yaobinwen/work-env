@@ -1,0 +1,18 @@
+- name: Get target user's info.
+  user:
+    name: "{{target_user}}"
+  register: target_user_info
+
+- name: Create .bashrc.cli-prompt in the user's home folder.
+  template:
+    src: bashrc.cli-prompt.j2
+    dest: "{{target_user_info.home}}/.bashrc.cli-prompt"
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
+    mode: "0o644"
+
+- name: Source .bashrc.cli-prompt in "{{target_user_info.home}}/.bashrc".
+  lineinfile:
+    path: "{{target_user_info.home}}/.bashrc"
+    line: "test -f \"$HOME/.bashrc.cli-prompt\" && . \"$HOME/.bashrc.cli-prompt\""
+    state: present

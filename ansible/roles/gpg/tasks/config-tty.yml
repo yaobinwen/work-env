@@ -1,0 +1,18 @@
+- name: Get target user's info.
+  user:
+    name: "{{target_user}}"
+  register: target_user_info
+
+- name: Copy files that are needed to build the image.
+  copy:
+    src: "bashrc.gpg-tty"
+    dest: "{{target_user_info.home}}/.bashrc.gpg-tty"
+    owner: "{{target_user_info.uid}}"
+    group: "{{target_user_info.group}}"
+    mode: "0644"
+
+- name: Update "{{target_user_info.home}}/.bashrc".
+  lineinfile:
+    path: "{{target_user_info.home}}/.bashrc"
+    line: "test -f \"$HOME/.bashrc.gpg-tty\" && . \"$HOME/.bashrc.gpg-tty\""
+    state: present
