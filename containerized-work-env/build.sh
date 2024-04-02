@@ -9,12 +9,6 @@ _check_required_tools() {
     ansible-playbook --version || return
 }
 
-_clean_leftover() {
-    rm -f cid.stage-0 || return
-    rm -f inventory || return
-    rm -f work-env-image-id || return
-}
-
 _get_docker_image_id() {
     local IMAGE_NAME
     local IMAGE_VERSION
@@ -90,8 +84,6 @@ _main() {
         # The work env image does not exist yet so we need to create it.
         _check_required_tools || return
 
-        _clean_leftover || return
-
         STAGE_0_IMAGE_ID=$(_get_docker_image_id "${STAGE_0_IMAGE_NAME}" "${IMAGE_VERSION}" "iid.stage-0")
         if [ -z "${STAGE_0_IMAGE_ID}" ]; then
             echo "The Docker image '${STAGE_0_IMAGE_NAME}:${IMAGE_VERSION}' does not exist. Creating it..." || return
@@ -140,7 +132,7 @@ _main() {
             -e "containerized_work_env_name='$WORK_ENV_NAME'" \
             -e "git_user_email='$GIT_USER_EMAIL'" \
             -e "git_user_full_name='$GIT_USER_NAME'" \
-            -e "unprivileged_user_name='$USER_NAME'" \
+            -e "work_env_user_name='$USER_NAME'" \
             "containerized-work-env.yml" || return
 
         docker stop "$CID" || return

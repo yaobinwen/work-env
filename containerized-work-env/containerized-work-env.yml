@@ -6,7 +6,7 @@
   gather_facts: yes
   tasks:
     - include_role:
-        name: unprivileged-user
+        name: work-env-user
       vars:
         ansible_become: yes
 
@@ -20,14 +20,14 @@
         name: cli-prompt
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
 
     - include_role:
         name: gpg
         tasks_from: import
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
         gpg_home_dir: "/tmp/.gnupg"
         gpg_key_path: "/tmp/.gpg/sub_signing.key"
 
@@ -41,7 +41,7 @@
       register: gpg_secret_keys
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
 
     - set_fact:
         gpg_signing_sub_key: "{{gpg_secret_keys.stdout | regex_search('ssb:-:.*::s::', multiline=True, ignorecase=True) | regex_search('[0-9A-F]{16}')}}"
@@ -56,27 +56,27 @@
         tasks_from: configure
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
 
     - include_role:
         name: gpg
         tasks_from: config-tty
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
 
     - include_role:
         name: locales
       vars:
         ansible_become: yes
-        locale_user_name: "{{unprivileged_user_name}}"
+        locale_user_name: "{{work_env_user_name}}"
 
     - include_role:
         name: ssh
         tasks_from: install-bashrc.ssh-agent
       vars:
         ansible_become: yes
-        ansible_become_user: "{{unprivileged_user_name}}"
+        ansible_become_user: "{{work_env_user_name}}"
 
     - include_role:
         name: terraform

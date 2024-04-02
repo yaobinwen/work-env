@@ -7,3 +7,5 @@
     - include_role:
         name: containerized-work-env-host
         tasks_from: create-work-env-dir
+      vars:
+        target_user: ywen
