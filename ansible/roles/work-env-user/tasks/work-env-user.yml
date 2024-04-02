@@ -1,0 +1,16 @@
+- name: Create the work env user group {{work_env_group_name}}.
+  group:
+    name: "{{work_env_group_name}}"
+    gid: "{{work_env_gid}}"
+    state: present
+    system: no
+
+- name: Create the work env user account {{work_env_user_name}}.
+  user:
+    name: "{{work_env_user_name}}"
+    uid: "{{work_env_uid}}"
+    group: "{{work_env_group_name}}"
+    create_home: yes
+    state: present
+    system: no
+    comment: Work env user {{work_env_user_full_name}}

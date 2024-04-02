@@ -1,7 +1,0 @@
-- hosts: all
-  name: Configure the target machine with an unprivileged user.
-
-  roles:
-    - role: "unprivileged-user"
-      vars:
-        ansible_become: yes

@@ -1,0 +1,9 @@
+- hosts: all
+  name: >
+    Configure the target machine with the work env user (not necessarily an
+    unprivileged user).
+
+  roles:
+    - role: "work-env-user"
+      vars:
+        ansible_become: yes
