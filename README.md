@@ -44,7 +44,8 @@ Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for fu
 - 4). Copy the following required files:
   - a). GPG signing key to `$HOME/yaobin/.gpg/sub_signing.key`.
   - b). SSH private key to `$HOME/yaobin/.ssh/id_rsa`.
-- 5). Optionally, copy the AWS configuration files into `$HOME/yaobin/.aws`. But they are not used by `build.sh`.
+- 5). Optionally, copy the AWS configuration files into `$HOME/yaobin/.aws`.
+  - If you do it, you will be able to access AWS from within the containerized work environment directly.
 - 6). `./build.sh` (to build the `containerized-work-env` container).
 - 7). Run `containerized-work-env start` to start the container; run `containerized-work-env stop` to stop the container; run `containerized-work-env login` to log in the container.
 
