@@ -1,7 +1,6 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 vscode_extensions:
-
   - alefragnani.Bookmarks
   - brunnerh.insert-unicode
   - EditorConfig.EditorConfig
@@ -38,4 +37,4 @@ vscode_preferred_settings:
   "files.watcherExclude":
     - "**/.venv/**": true
 
-# vim: set expandtab shiftwidth=2:
+work_env_user_name: ywen

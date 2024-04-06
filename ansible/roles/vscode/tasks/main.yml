@@ -32,13 +32,11 @@
           - "{{tmpdir.path}}/packages.microsoft.asc"
 
     - name: Add the key.
-      become: yes
       command: >
         install -o root -g root -m 644 {{tmpdir.path}}/packages.microsoft.gpg
         /etc/apt/trusted.gpg.d/
 
     - name: Add the repository list file.
-      become: yes
       copy:
         content: >
           deb
@@ -50,7 +48,7 @@
     - name: Install Visual Studio Code.
       become: yes
       apt:
-        name: ['apt-transport-https', 'code']
+        name: ["apt-transport-https", "code"]
         update_cache: yes
 
   always:
@@ -63,6 +61,8 @@
   command: code --list-extensions
   register: installed
   changed_when: False
+  become: yes
+  become_user: "{{work_env_user_name}}"
 
 - name: Install Visual Studio Code extensions that haven't been installed.
   command: code --install-extension {{item}}
@@ -70,11 +70,12 @@
   # because otherwise the list is turned into its string representation.
   with_items: |
     {{vscode_extensions|difference(installed.stdout.splitlines())}}
+  become: yes
+  become_user: "{{work_env_user_name}}"
 
 - name: >
     Enlarge file watcher limit to fix the warning "unable to watch for file
     changes in this large workspace".
-  become: yes
   sysctl:
     name: fs.inotify.max_user_watches
     value: "524288"
@@ -129,5 +130,3 @@
         mode: "{{sf_stat.stat.mode | default('0o644')}}"
         owner: "{{sf_stat.stat.pw_name | default(curr_user_info.name)}}"
         group: "{{sf_stat.stat.gr_name | default(curr_user_info.group)}}"
-
-# vim: set expandtab shiftwidth=2:
