@@ -1,3 +1,0 @@
-#!/bin/sh
-
-PYTHONPATH="$PWD/src:$PYTHONPATH" python3 -m time_track.main ${1+"$@"}
