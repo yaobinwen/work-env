@@ -3,3 +3,5 @@
 
   roles:
     - role: vagrant
+      vars:
+        ansible_become: yes

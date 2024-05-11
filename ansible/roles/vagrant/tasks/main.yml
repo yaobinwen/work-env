@@ -10,7 +10,6 @@
     name: hashicorp-ppa
 
 - name: Install Vagrant.
-  become: true
   apt:
     name:
       - vagrant
