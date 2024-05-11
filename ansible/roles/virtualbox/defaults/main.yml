@@ -6,6 +6,8 @@
 # the official Ubuntu package server (which is usually not the latest version).
 install_latest: true
 
+target_user: ywen
+
 virtualbox_version: 6.1
 
 # vim: set expandtab shiftwidth=2:

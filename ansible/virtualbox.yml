@@ -3,3 +3,5 @@
 
   roles:
     - role: virtualbox
+      vars:
+        ansible_become: yes

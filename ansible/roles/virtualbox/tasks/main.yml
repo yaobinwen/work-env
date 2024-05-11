@@ -1,8 +1,6 @@
 # -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
 
 - name: Get the number of running VMs.
-  vars:
-    login_user: "{{lookup('env', 'USER')}}"
   become: yes
   # NOTE(ywen): `virtualbox` VMs are created on a per-user basis, so running
   # `vboxmanage list runningvms` on one user account usually produces different
@@ -20,7 +18,7 @@
   # NOTE(ywen): If the entire playbook is called in the context of an
   # unprivileged user, all the "become_" stuff may not be needed. I still put
   # them here for purpose of learning and future reference.
-  become_user: "{{ansible_user|default(login_user)}}"
+  become_user: "{{target_user}}"
   command: vboxmanage list runningvms
   register: runningvms
   # NOTE(ywen): If `virtualbox` is not installed, `vboxmanage` won't be found
@@ -48,7 +46,6 @@
     )
   block:
   - name: Install GPG keys for the VirtualBox APT repository.
-    become: yes
     apt_key:
       id: '{{item.id}}'
       url: 'https://www.virtualbox.org/download/{{item.fname}}'
@@ -60,8 +57,7 @@
 
   - name: >-
       Install prerequisites for building VirtualBox kernel modules
-      (required on Ubuntu 18.04).
-    become: yes
+      (required on Ubuntu 18.04).
     apt:
       name: [build-essential, dkms]
       install_recommends: no
@@ -70,7 +66,6 @@
     when: install_latest
     block:
       - name: Install Beautiful Soup 4 for `vb_download_link` module.
-        become: yes
         apt:
           name:
             - python3-bs4
@@ -84,7 +79,6 @@
         register: deb_pkg
 
       - name: Install VirtualBox {{deb_pkg.version}} at {{deb_pkg.link}}.
-        become: yes
         apt:
           deb: "{{deb_pkg.link}}"
 
@@ -124,7 +118,6 @@
             register: ext_pack_license
 
       - name: Install the VirtualBox extension pack.
-        become: yes
         command:
           argv:
             - VBoxManage
@@ -140,14 +133,12 @@
     when: not install_latest
     block:
     - name: Add the VirtualBox APT repository.
-      become: yes
       apt_repository:
         repo: >-
           deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian
           {{ansible_distribution_release}} contrib
 
     - name: Install VirtualBox {{virtualbox_version}}.
-      become: yes
       apt:
         name: virtualbox-{{virtualbox_version}}
         state: present
