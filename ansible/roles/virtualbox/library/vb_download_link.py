@@ -6,14 +6,14 @@ from bs4 import BeautifulSoup
 
 
 def _exception_msg(e):
-    return '{type}: {msg}'.format(type=type(e).__name__, msg=str(e))
+    return "{type}: {msg}".format(type=type(e).__name__, msg=str(e))
 
 
 def _find_pkg_version(soup):
     P = re.compile(r"^VirtualBox(\d+\.\d+\.\d+)forLinux$")
     pkg_version = None
 
-    for h3 in soup.find_all('h3'):
+    for h3 in soup.find_all("h3"):
         h3_id = h3.get("id")
         if h3_id is None:
             continue
@@ -94,5 +94,7 @@ def main():
         version=pkg_version,
     )
 
+
 from ansible.module_utils.basic import *
+
 main()
