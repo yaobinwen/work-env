@@ -1,16 +1,45 @@
 #!/bin/sh
 
+T=$(mktemp -d -t "{{containerized_work_env_container_name}}.XXXXXXXX") || exit
+
+cleanup() {
+    rm -fr "$T" || echo "WARNING: cleanup() failed" >&2
+}
+trap cleanup EXIT INT TERM
+
 usage() {
-    echo "TODO: Display help info"
+    local SCRIPT="$(basename "$0")" || return
+
+    cat <<__EOS__
+$SCRIPT <COMMAND>
+
+COMMAND:
+
+    start   Start the Docker container '{{containerized_work_env_container_name}}'
+    login   Log into the Docker container '{{containerized_work_env_container_name}}'
+    stop    Stop the Docker container '{{containerized_work_env_container_name}}'
+__EOS__
 }
 
 test $# -eq 1 || {
-    echo "Expect exactly one argument but get $#: $@"
+    echo "Expect exactly one argument but get $#: $@" || exit
     usage
     exit 1
 }
 
 cmd_start() {
+    local NUM
+
+    docker container ls --filter "Name={{containerized_work_env_container_name}}" --format "\{\{.ID\}\}" > "$T/cid" || return
+    NUM=$(wc -l < "$T/cid") || return
+
+    if [ $NUM -eq 1 ]; then
+        echo "Container '{{containerized_work_env_container_name}}' was already created." || return
+        return
+    fi
+
+    rm -f /tmp/cid.{{containerized_work_env_container_name}} || return
+
     docker run \
         --name {{containerized_work_env_container_name}} \
         --cidfile /tmp/cid.{{containerized_work_env_container_name}} \
@@ -30,10 +59,12 @@ cmd_start() {
 }
 
 cmd_stop() {
-    docker stop {{containerized_work_env_container_name}}
+    docker stop {{containerized_work_env_container_name}} || return
 }
 
 cmd_login() {
+  cmd_start || return
+
     docker exec \
         -it \
         {{containerized_work_env_container_name}} \
