@@ -1,0 +1,7 @@
+- hosts: all
+  name: Install the `containerized-work-env` command-line helper.
+  gather_facts: no
+  tasks:
+    - include_role:
+        name: containerized-work-env-host
+        tasks_from: containerized-work-env-cli

@@ -1,0 +1,22 @@
+- name: Get the current user's info.
+  user:
+    name: "{{lookup('env', 'USER')}}"
+  register: curr_user
+
+- name: >
+    Install the `containerized-work-env-{{containerized_work_env_name}}`
+    command-line helper.
+  template:
+    src: bashrc.work-env.j2
+    dest: "{{curr_user.home}}/.bashrc.work-env-{{containerized_work_env_name}}"
+    mode: "0o644"
+    owner: "{{curr_user.uid}}"
+    group: "{{curr_user.group}}"
+
+- name: Source `.bashrc.work-env-{{containerized_work_env_name}}` in `.bashrc`.
+  lineinfile:
+    path: "{{curr_user.home}}/.bashrc"
+    state: present
+    line: >
+      test -f "$HOME/.bashrc.work-env-{{containerized_work_env_name}}" &&
+      . "$HOME/.bashrc.work-env-{{containerized_work_env_name}}"

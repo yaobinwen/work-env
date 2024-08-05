@@ -173,7 +173,8 @@ _main() {
 		-e "containerized_work_env_container_name='$WORK_ENV_IMAGE_NAME'" \
 		-e "containerized_work_env_user_name='$USER_NAME'" \
 		-e "home_path_on_host='$HOME_PATH_ON_HOST'" \
-		host-work-env-starter-script.yml || return
+		host-work-env-starter-script.yml \
+		host-work-env-cli.yml || return
 }
 
 # Define the options and their corresponding variables
