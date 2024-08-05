@@ -51,7 +51,6 @@ _get_docker_container_id() {
 	if [ -e "${ID_FILE_NAME}" ]; then
 		CONTAINER_ID=$(cat "${ID_FILE_NAME}") || return
 	fi
-	rm -f "${ID_FILE_NAME}"
 
 	echo "${CONTAINER_ID}"
 }
@@ -113,13 +112,15 @@ _main() {
 			echo "The Docker container '${STAGE_0_IMAGE_NAME}' does not exist. Starting it..." || return
 
 			# Start stage 0 container for further configuration.
-			docker run -d \
+			rm -vf cid.stage-0 &&
+			docker run \
+				--detach \
+				--rm \
 				--name "${STAGE_0_IMAGE_NAME}" \
 				--cidfile cid.stage-0 \
 				--tmpfs /tmp:exec \
 				-v /etc/localtime:/etc/localtime:ro \
-				--mount "type=bind,source=/home/${USER_NAME}/yaobin/.gnupg,destination=/tmp/.gnupg" \
-				--mount "type=bind,source=/home/${USER_NAME}/yaobin/.gpg,destination=/tmp/.gpg" \
+				--mount "type=bind,source=/home/${USER_NAME}/yaobin/,destination=/tmp/yaobin" \
 				"${STAGE_0_IMAGE_NAME}:${IMAGE_VERSION}" \
 				/bin/sh -c 'while sleep 600; do :; done' || return
 		else
@@ -136,11 +137,14 @@ _main() {
 			"$GIT_USER_NAME" \
 			"$USER_NAME" || return
 
-		docker stop "$CID" || return
-
+		echo "Committing the Docker container '${STAGE_0_IMAGE_NAME}' to '${IMAGE_STAGE_1}:${IMAGE_VERSION}'..." || return
 		docker commit "$CID" "${IMAGE_STAGE_1}:${IMAGE_VERSION}" || return
 
+		echo "Stopping the Docker container '${STAGE_0_IMAGE_NAME}'..." || return
+		docker stop "$CID" || return
+
 		# Start stage 1 container for further configuration.
+		echo "Building Docker image '${WORK_ENV_IMAGE_NAME}:${IMAGE_VERSION}'..." || return
 		docker build \
 			--file Dockerfile.2 \
 			--tag "${WORK_ENV_IMAGE_NAME}:${IMAGE_VERSION}" \
@@ -152,8 +156,10 @@ _main() {
 			--build-arg GROUP_NAME="${GROUP_NAME}" \
 			. || return
 
-		docker container rm -f "${STAGE_0_IMAGE_NAME}" || return
+		# Clean up.
+		echo "Removing Docker image '${STAGE_0_IMAGE_NAME}:${IMAGE_VERSION}'..." || return
 		docker image rm -f "${STAGE_0_IMAGE_NAME}:${IMAGE_VERSION}" || return
+		echo "Removing Docker image '${IMAGE_STAGE_1}:${IMAGE_VERSION}'..." || return
 		docker image rm -f "${IMAGE_STAGE_1}:${IMAGE_VERSION}" || return
 	else
 		echo "The Docker image '${WORK_ENV_IMAGE_NAME}:${IMAGE_VERSION}' already exists." || return
