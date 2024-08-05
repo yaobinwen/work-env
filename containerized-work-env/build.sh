@@ -185,7 +185,20 @@ PARSED=$(getopt --options="$OPTIONS" --longoptions="$LONGOPTS" --name "$0" -- "$
 echo "PARSED=$PARSED"
 
 # Usage
-USAGE="""Usage: $0 TODO(ywen): Add help info.
+USAGE="""Usage: $0 [OPTION...]
+
+Build the containerized work environment Docker image.
+
+OPTION:
+
+    --base-image-version    work-env Docker base image version
+    --work-env-name         work-env name
+    --user-name             user name inside work-env
+    --group-name            group name inside work-env
+    --git-user-email        git user email
+    --git-user-name         git user name
+    --home-path-on-host     host's path that's bound into work-env as its home
+    --help                  show this info
 """
 
 # Evaluate the parsing results
