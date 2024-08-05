@@ -17,6 +17,12 @@
         ansible_become: yes
 
     - include_role:
+        name: tmux
+      vars:
+        ansible_become: yes
+        tmux_conf_dir: "/tmp/yaobin"
+
+    - include_role:
         name: cli-prompt
       vars:
         ansible_become: yes
@@ -28,14 +34,14 @@
       vars:
         ansible_become: yes
         ansible_become_user: "{{work_env_user_name}}"
-        gpg_home_dir: "/tmp/.gnupg"
-        gpg_key_path: "/tmp/.gpg/sub_signing.key"
+        gpg_home_dir: "/tmp/yaobin/.gnupg"
+        gpg_key_path: "/tmp/yaobin/.gpg/sub_signing.key"
 
     - command:
         argv:
           - gpg
           - "--homedir"
-          - "/tmp/.gnupg"
+          - "/tmp/yaobin/.gnupg"
           - "--list-secret-keys"
           - "--with-colons"
       register: gpg_secret_keys

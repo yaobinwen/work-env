@@ -1,0 +1,13 @@
+- name: Install tmux.
+  apt:
+    name:
+      - tmux
+    state: present
+
+- name: Install tmux configuration file.
+  copy:
+    src: tmux.conf
+    dest: "{{tmux_conf_dir}}/.tmux.conf"
+    mode: "0644"
+    owner: "{{work_env_user_name}}"
+    group: "{{work_env_user_name}}"
