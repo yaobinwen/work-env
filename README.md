@@ -47,7 +47,7 @@ Run `sudo ./bootstrap.sh` to install the initial tools (mainly `ansible`) for fu
 - 5). Optionally, copy the AWS configuration files into `$HOME/yaobin/.aws`.
   - If you do it, you will be able to access AWS from within the containerized work environment directly.
 - 6). `./build.sh` (to build the `containerized-work-env` container).
-- 7). Run `containerized-work-env start` to start the container; run `containerized-work-env stop` to stop the container; run `containerized-work-env login` to log in the container.
+- 7). Run `containerized-work-env-personal start` to start the container; run `containerized-work-env-personal stop` to stop the container; run `containerized-work-env-personal login` to log in the container.
 
 ### Step 5: Set up the printer
 
