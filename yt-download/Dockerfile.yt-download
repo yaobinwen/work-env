@@ -1,0 +1,45 @@
+ARG BASE_IMAGE=ubuntu:22.04
+ARG USER_NAME=ubuntu
+FROM $BASE_IMAGE
+
+RUN apt-get update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    software-properties-common \
+    sudo
+
+ENV TZ=America/New_York
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    python3-pip \
+    python3-venv
+
+RUN pip3 install yt-dlp
+
+# Recommended by `yt-dlp`.
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    ffmpeg
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    git \
+    tree \
+    vim \
+    wget
+
+RUN useradd \
+    --home-dir /home/ubuntu \
+    --create-home \
+    --shell /bin/bash \
+    ubuntu
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
+    locales
+
+# Switch to the unprivileged user.
+USER ${USER_NAME}
+
+# Generate the locale `en_US.UTF-8` in order to display non-English characters.
+RUN /usr/sbin/locale-gen "en_US.UTF-8"
+
+# COPY .bashrc /home/ubuntu
+COPY --chown=ubuntu:ubuntu .bashrc.locale /home/ubuntu/
+# Call `.bashrc.locale` in `.bashrc`.
+RUN printf "\ntest -e ~/.bashrc.locale && . ~/.bashrc.locale\n" >> /home/ubuntu/.bashrc
