@@ -8,7 +8,7 @@
     starter script.
   template:
     src: containerized-work-env.j2
-    dest: "{{curr_user.home}}/bin/containerized-work-env-{{containerized_work_env_name}}"
+    dest: "/usr/local/bin/containerized-work-env-{{containerized_work_env_name}}"
     mode: "0o755"
     owner: "{{curr_user.uid}}"
     group: "{{curr_user.group}}"
