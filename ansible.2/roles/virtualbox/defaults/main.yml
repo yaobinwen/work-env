@@ -1,0 +1,7 @@
+# Whether to install the latest available version.
+# If true, we will use the `.deb` file that's published on VirtualBox official
+# Download page. If false, we will run `apt install` to install the version on
+# the official Ubuntu package server (which is usually not the latest version).
+install_latest: true
+
+target_user: ywen

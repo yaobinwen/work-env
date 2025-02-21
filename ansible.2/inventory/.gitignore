@@ -1,0 +1,3 @@
+*.yml
+!localhost.yml
+!target-example.yml

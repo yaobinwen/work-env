@@ -1,0 +1,6 @@
+- hosts: all
+  name: Install VirtualBox on the target machines.
+  roles:
+    - role: virtualbox
+      vars:
+        ansible_become: yes

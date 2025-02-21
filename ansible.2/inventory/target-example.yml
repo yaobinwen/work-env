@@ -1,0 +1,10 @@
+all:
+  # Variables that apply to all hosts.
+  vars:
+    # SSH login name.
+    ansible_user: ywen
+
+  hosts:
+    target-name:
+      ansible_host: 127.0.0.1
+      ansible_python_interpreter: auto

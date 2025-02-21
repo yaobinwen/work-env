@@ -1,0 +1,137 @@
+- name: Get the info of the target user '{{target_user}}'.
+  user:
+    name: "{{target_user}}"
+  register: target_user_info
+  check_mode: true
+
+- name: Fail if the target user '{{target_user}}' doesn't exist.
+  when: target_user_info.changed
+  fail:
+    msg: The target user '{{target_user}}' should already exist.
+
+- name: Get the number of running VMs.
+  become: yes
+  # NOTE(ywen): `virtualbox` VMs are created on a per-user basis, so running
+  # `vboxmanage list runningvms` on one user account usually produces different
+  # result than running on another user account. For example, `ywen` may have
+  # one VM running currently, but without `become_user`, `list runningvms` is
+  # run under `root` according to the current playbook configuration. Because
+  # `root` doesn't have any running VMs, the command would return 0 but not 1.
+  # Therefore, we must run `vboxmanage list runningvms` on the desired user
+  # account. People are discussing how to share a VM across different user
+  # accounts, such as: https://askubuntu.com/q/455389/514711.
+  # NOTE(ywen): This also assumes that the target machine is actively used by
+  # only one unprivileged user. If the target machine allows multiple users to
+  # log in simultaneously, we may need to check all the user accounts that are
+  # currently logged in.
+  #
+  # NOTE(ywen): If the entire playbook is called in the context of an
+  # unprivileged user, all the "become_" stuff may not be needed. I still put
+  # them here for purpose of learning and future reference.
+  become_user: "{{target_user}}"
+  command: vboxmanage list runningvms
+  register: runningvms
+  # NOTE(ywen): If `virtualbox` is not installed, `vboxmanage` won't be found
+  # and the command will fail. We ignore the error and let the following block
+  # handle it (see its `when` conditions).
+  ignore_errors: yes
+
+# Ref: https://www.virtualbox.org/wiki/Linux_Downloads
+- name: >
+    Install VirtualBox when `virtualbox` is not installed or
+    is installed but there is no running VM.
+  # NOTE(ywen): The `when` condition consists of two checks:
+  # - 1). Whether `virtualbox` is installed (If not installed, `vboxmanage`
+  #   won't be found.)
+  # - 2). Whether there is any running VM if `virtualbox` is installed.
+  when: >
+    (
+      (runningvms.rc > 0) and
+      (runningvms.msg is defined) and
+      (runningvms.msg is search("No such file or directory"))
+    ) or
+    (
+      (runningvms.stdout_lines is defined) and
+      (runningvms.stdout_lines|length == 0)
+    )
+  block:
+  - name: Install the latest version from the official Download page.
+    when: install_latest
+    block:
+      - name: Install Beautiful Soup 4 for `vb_download_link` module.
+        apt:
+          name:
+            - python3-bs4
+          state: latest
+
+      - name: Get the download link of the latest version of VirtualBox.
+        vb_download_link:
+          homepage: https://www.virtualbox.org/wiki/Linux_Downloads
+          os_name: Ubuntu # case-insensitive
+          os_version: "24.04"
+        register: deb_pkg
+
+      - name: Install VirtualBox {{deb_pkg.version}} at {{deb_pkg.link}}.
+        apt:
+          deb: "{{deb_pkg.link}}"
+
+      - name: >
+          Get the download link of the latest version of VirtualBox extension
+          pack.
+        vb_extpack_download_link:
+          homepage: https://www.virtualbox.org/wiki/Downloads
+        register: vb_ext_pack
+
+      - name: Download the VirtualBox extension pack.
+        vars:
+          ext_fname: "Oracle_VirtualBox_Extension_Pack-{{vb_ext_pack.version}}.vbox-extpack"
+        get_url:
+          url: "{{vb_ext_pack.link}}"
+          dest: /tmp/{{ext_fname}}
+          owner: "{{target_user_info.uid}}"
+          group: "{{target_user_info.group}}"
+          mode: "0o644"
+        register: download_vb_ext_pack
+
+      - name: Get the SHA256 of the extension pack license file.
+        block:
+          - name: Create a folder for the unarchived extention pack.
+            file:
+              path: /tmp/vb_extension_pack
+              state: directory
+              owner: "{{target_user_info.uid}}"
+              group: "{{target_user_info.group}}"
+              mode: "0o755"
+
+          - name: Unarchive the extention pack.
+            unarchive:
+              src: "{{download_vb_ext_pack.dest}}"
+              dest: /tmp/vb_extension_pack
+              owner: "{{target_user_info.uid}}"
+              group: "{{target_user_info.group}}"
+              mode: "0o755"
+
+          - name: Calculate the SHA256 checksum of the license file.
+            stat:
+              path: /tmp/vb_extension_pack/ExtPack-license.txt
+              checksum_algorithm: sha256
+            register: ext_pack_license
+
+      - name: Install the VirtualBox extension pack.
+        command:
+          argv:
+            - VBoxManage
+            - extpack
+            - install
+            - --replace
+            - --accept-license={{ext_pack_license.stat.checksum}}
+            - "{{download_vb_ext_pack.dest}}"
+        register: ext_pack_install
+        when: download_vb_ext_pack.changed
+
+  - name: Install the version on the official Ubuntu package server.
+    when: not install_latest
+    apt:
+      name: virtualbox
+      state: latest
+      install_recommends: no
