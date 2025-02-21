@@ -1,0 +1,40 @@
+- name: Fetch the content of the Hashicorp PPA key.
+  ansible.builtin.uri:
+    url: https://apt.releases.hashicorp.com/gpg
+    return_content: yes
+  register: gpg_key
+
+- name: Dearmor the Hashicorp PPA key.
+  ansible.builtin.command:
+    argv:
+      - gpg
+      - --dearmor
+      - -o
+      - "{{hashicorp_ppa_key_path}}"
+    creates: "{{hashicorp_ppa_key_path}}"
+    stdin: "{{gpg_key.content}}"
+
+- name: Determine the dpkg native architecture.
+  command: dpkg --print-architecture
+  register: dpkg_result
+  changed_when: false
+
+- name: Add the Hashicorp PPA `.sources` file.
+  deb822_repository:
+    name: Hashicorp PPA
+    types:
+      - deb
+    uris:
+      - https://apt.releases.hashicorp.com
+    suites:
+      - "{{ansible_distribution_release}}"
+    components:
+      - main
+    architectures:
+      - "{{dpkg_result.stdout_lines[0]}}"
+    signed_by: "{{hashicorp_ppa_key_path}}"
+
+- name: Update APT cache.
+  apt:
+    update_cache: true
+    cache_valid_time: 900
