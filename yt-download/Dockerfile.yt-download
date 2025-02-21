@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:24.04
 ARG USER_NAME=ubuntu
 FROM $BASE_IMAGE
 
@@ -8,27 +8,16 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     sudo
 
 ENV TZ=America/New_York
-RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    python3-pip \
-    python3-venv
-
-RUN pip3 install yt-dlp
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install yt-dlp
 
 # Recommended by `yt-dlp`.
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     ffmpeg
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
-    git \
     tree \
     vim \
     wget
-
-RUN useradd \
-    --home-dir /home/ubuntu \
-    --create-home \
-    --shell /bin/bash \
-    ubuntu
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install \
     locales
