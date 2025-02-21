@@ -1,0 +1,16 @@
+- name: Set up the Hashicorp PPA.
+  include_role:
+    name: hashicorp-ppa
+
+- name: Install Vagrant.
+  apt:
+    name:
+      - vagrant
+    state: latest
+
+- name: Confirm Vagrant can run successfully.
+  command:
+    argv:
+      - vagrant
+      - --version
+  changed_when: false

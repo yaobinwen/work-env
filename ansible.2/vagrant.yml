@@ -1,0 +1,6 @@
+- hosts: all
+  name: Install Hashicorp Vagrant on the target machines.
+  roles:
+    - role: vagrant
+      vars:
+        ansible_become: yes
