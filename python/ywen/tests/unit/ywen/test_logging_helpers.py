@@ -40,8 +40,9 @@ class Test_arg_logging(unittest.TestCase):
 
         inspector = ArgParserInspector(arg_parser=p)
 
-        self.assertTrue(inspector.has_group("positional arguments"))
-        self.assertTrue(inspector.has_group("optional arguments"))
+        # Do not test the internal implementation details of `argparse`.
+        # self.assertTrue(inspector.has_group("positional arguments"))
+        # self.assertTrue(inspector.has_group("optional arguments"))
 
         g = inspector.get_group("logging options")
         self.assertIsNotNone(g)
@@ -55,8 +56,9 @@ class Test_arg_logging(unittest.TestCase):
 
         inspector = ArgParserInspector(arg_parser=p)
 
-        self.assertTrue(inspector.has_group("positional arguments"))
-        self.assertTrue(inspector.has_group("optional arguments"))
+        # Do not test the internal implementation details of `argparse`.
+        # self.assertTrue(inspector.has_group("positional arguments"))
+        # self.assertTrue(inspector.has_group("optional arguments"))
 
         g = inspector.get_group("logging options")
         self.assertIsNotNone(g)
