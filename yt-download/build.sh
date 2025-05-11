@@ -4,7 +4,7 @@ set -x
 
 docker build \
     --file Dockerfile.yt-download \
-    --tag yt-download:ubuntu-24.04 \
+    --tag yt-download:ubuntu-22.04 \
     .
 
 docker run \
@@ -16,5 +16,5 @@ docker run \
     --volume "$PWD:/yt-download:rw" \
     --volume "$HOME/Downloads:/Downloads:rw" \
     --workdir "/Downloads" \
-    yt-download:ubuntu-24.04 \
+    yt-download:ubuntu-22.04 \
     /bin/bash
