@@ -1,0 +1,8 @@
+- name: Install Firefox.
+  hosts: all
+  gather_facts: no
+  vars:
+    ansible_become: yes
+
+  roles:
+    - role: firefox

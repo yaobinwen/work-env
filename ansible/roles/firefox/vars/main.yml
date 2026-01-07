@@ -1,0 +1,4 @@
+apt_repo_keys_dir: /etc/apt/keyrings
+
+mozilla_signing_key_file: "{{apt_repo_keys_dir}}/packages.mozilla.org.asc"
+mozilla_package_server_uri: https://packages.mozilla.org/apt

@@ -1,0 +1,60 @@
+# Ref: https://support.mozilla.org/en-US/kb/install-firefox-linux
+
+- name: Create the directory to store APT repository keys.
+  file:
+    path: "{{apt_repo_keys_dir}}"
+    state: directory
+    owner: "0"
+    group: "0"
+    mode: "0o755"
+
+- name: Import the Mozilla APT repository signing key.
+  get_url:
+    url: "{{mozilla_package_server_uri}}/repo-signing-key.gpg"
+    dest: "{{mozilla_signing_key_file}}"
+    mode: "0o644"
+
+- name: Make sure it was the Mozilla APT repository signing key that was added.
+  block:
+    - command:
+        argv:
+          - gpg
+          - -n
+          - -q
+          - --import
+          - --import-options
+          - import-show
+          - "{{mozilla_signing_key_file}}"
+      register: gpg_output
+
+    - set_fact:
+        mozilla_key_fingerprint: "{{gpg_output.stdout_lines[1].strip()}}"
+
+    - assert:
+        that:
+          mozilla_key_fingerprint.upper() == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3"
+
+- name: Add the Mozilla APT repository.
+  apt_repository:
+    repo: "deb [signed-by={{mozilla_signing_key_file}}] {{mozilla_package_server_uri}} mozilla main"
+    mode: "0o644"
+    update_cache: yes
+
+- name: Prioritize packages from the Mozilla repository.
+  copy:
+    src: etc/apt/preferences.d/mozilla
+    dest: /etc/apt/preferences.d/mozilla
+    owner: "0"
+    group: "0"
+    mode: "0o644"
+
+- name: Update APT cache.
+  apt:
+    update_cache: yes
+    cache_valid_time: 900
+
+- name: Install the latest Firefox.
+  apt:
+    name:
+      - firefox
+    state: latest
