@@ -1,9 +1,4 @@
-# -*- mode: yaml; tab-width: 8; indent-tabs-mode: nil; -*-
-
 - name: Download and install the Debian package.
-  become: yes
   apt:
     deb: "https://dl.google.com/linux/direct/{{ package_name }}"
   when: ansible_facts.packages['google-chrome-stable'] is not defined
-
-# vim: set expandtab shiftwidth=2:

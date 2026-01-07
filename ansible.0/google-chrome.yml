@@ -1,5 +1,0 @@
-- hosts: all
-  name: Install Google Chrome on the target machines.
-
-  roles:
-    - role: google-chrome

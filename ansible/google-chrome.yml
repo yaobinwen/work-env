@@ -1,0 +1,6 @@
+- name: Install the latest Google Chrome.
+  hosts: all
+  vars:
+    ansible_become: yes
+  roles:
+    - role: google-chrome
