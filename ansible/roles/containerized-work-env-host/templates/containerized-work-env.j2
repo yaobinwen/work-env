@@ -43,8 +43,8 @@ cmd_start() {
     docker run \
         --name {{containerized_work_env_container_name}} \
         --cidfile /tmp/cid.{{containerized_work_env_container_name}} \
+        --restart always \
         --detach \
-        --rm \
         -it \
         --mount type=bind,source=/etc/timezone,destination=/etc/timezone,readonly \
         --mount type=bind,source=/etc/localtime,destination=/etc/localtime,readonly \
